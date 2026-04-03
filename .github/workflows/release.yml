@@ -1,0 +1,138 @@
+name: Build and Release RyukGram
+
+on:
+    push:
+        branches:
+            - 'main'
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build:
+        name: Build RyukGram
+        runs-on: macos-latest
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                submodules: recursive
+
+            - name: Install Dependencies
+              run: brew install ldid dpkg make
+
+            - name: Set PATH
+              run: echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH
+
+            - name: Setup Theos
+              uses: actions/checkout@v4
+              with:
+                repository: theos/theos
+                ref: master
+                path: ${{ github.workspace }}/theos
+                submodules: recursive
+
+            - name: SDK Caching
+              id: SDK
+              uses: actions/cache@v4
+              env:
+                cache-name: iPhoneOS16.2.sdk
+              with:
+                path: ${{ github.workspace }}/theos/sdks/
+                key: ${{ env.cache-name }}
+                restore-keys: ${{ env.cache-name }}
+
+            - name: Download iOS SDK
+              if: steps.SDK.outputs.cache-hit != 'true'
+              run: |
+                git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/xybp888/iOS-SDKs/
+                cd iOS-SDKs
+                git sparse-checkout set --no-cone iPhoneOS16.2.sdk
+                git checkout
+                mv *.sdk $THEOS/sdks
+              env:
+                THEOS: ${{ github.workspace }}/theos
+
+            - name: Get Version
+              id: version
+              run: |
+                VERSION=$(awk '/Version:/ {print $2}' control)
+                echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+                echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+            - name: Build dylib
+              run: |
+                export THEOS="${{ github.workspace }}/theos"
+                ./build.sh dylib
+                ls -la packages/
+
+            - name: Build rootless deb
+              run: |
+                export THEOS="${{ github.workspace }}/theos"
+                ./build.sh rootless
+                cd packages
+                mv "$(ls -t *.deb | head -n1)" "RyukGram_${VERSION}_rootless.deb"
+                ls -la
+
+            - name: Upload dylib artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: RyukGram_v${{ steps.version.outputs.version }}_dylib
+                path: packages/RyukGram.dylib
+                if-no-files-found: error
+
+            - name: Upload deb artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: RyukGram_v${{ steps.version.outputs.version }}_rootless
+                path: packages/RyukGram_${{ env.VERSION }}_rootless.deb
+                if-no-files-found: error
+
+            - name: Check if release
+              id: check_release
+              run: |
+                COMMIT_MSG=$(git log -1 --pretty=%B)
+                if [[ "$COMMIT_MSG" == *"[release]"* ]] || [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                  echo "should_release=true" >> "$GITHUB_OUTPUT"
+                else
+                  echo "should_release=false" >> "$GITHUB_OUTPUT"
+                fi
+
+            - name: Generate release notes
+              if: steps.check_release.outputs.should_release == 'true'
+              id: notes
+              run: |
+                BODY=$(git log -1 --pretty=%b)
+
+                {
+                  echo "## Changelog"
+                  echo ""
+                  if [ -n "$BODY" ]; then
+                    echo '```'
+                    echo "$BODY"
+                    echo '```'
+                  fi
+                  echo ""
+                  echo "**[All commits](https://github.com/${{ github.repository }}/commits/main)**"
+                } > /tmp/release_notes.md
+
+            - name: Create Release
+              if: steps.check_release.outputs.should_release == 'true'
+              id: create_release
+              run: |
+                # Strip [release] from commit subject for the release title
+                SUBJECT=$(git log -1 --pretty=%s | sed 's/\[release\]//g' | xargs)
+                TITLE="${SUBJECT:-RyukGram v${VERSION}}"
+                gh release create "v${VERSION}" \
+                  --repo "${{ github.repository }}" \
+                  --title "$TITLE" \
+                  --notes-file /tmp/release_notes.md \
+                  packages/RyukGram.dylib \
+                  "packages/RyukGram_${VERSION}_rootless.deb"
+              env:
+                GH_TOKEN: ${{ github.token }}
