@@ -4,10 +4,15 @@
 #import <substrate.h>
 
 // ============ KEEP DELETED MESSAGES ============
-// Blocks remote unsends while allowing local deletes.
+// Blocks remote unsends while allowing local deletes-for-you.
+//
 // IGDirectMessageUpdate._removeMessages_reason: 0 = unsend, 2 = delete-for-you.
-// Delete-for-you fires reason=2 then reason=0 follow-up — tracked with a counter.
-// Remote unsend fires only reason=0 — blocked when counter is 0 and not local.
+// Delete-for-you fires reason=2 first, then a reason=0 follow-up. Remote
+// unsends only fire reason=0. We remember the message keys from reason=2
+// updates; a later reason=0 with matching keys is passed through (it's the
+// follow-up), anything else is treated as a remote unsend and blocked.
+// Tracked keys expire after 10s so a partial delete-for-you can't permanently
+// swallow future remote unsends.
 
 static BOOL sciKeepDeletedEnabled() {
     return [SCIUtils getBoolPref:@"keep_deleted_message"];
@@ -20,7 +25,8 @@ static BOOL sciIndicateUnsentEnabled() {
 static void sciUpdateCellIndicator(id cell);
 static BOOL sciLocalDeleteInProgress = NO;
 static NSMutableArray *sciPendingUpdates = nil;
-static NSInteger sciDeleteForYouCount = 0;
+// Server message ID -> timestamp the reason=2 (delete-for-you) was observed.
+static NSMutableDictionary<NSString *, NSDate *> *sciDeleteForYouKeys = nil;
 static NSMutableSet *sciPreservedIds = nil;
 
 #define SCI_PRESERVED_IDS_KEY @"SCIPreservedMsgIds"
@@ -65,8 +71,32 @@ static id new_msgUpdate_alloc(id self, SEL _cmd) {
 
 // ============ REMOTE UNSEND DETECTION ============
 
+static NSString *sciExtractServerId(id key) {
+    @try {
+        Ivar sidIvar = class_getInstanceVariable([key class], "_messageServerId");
+        if (sidIvar) {
+            NSString *sid = object_getIvar(key, sidIvar);
+            if ([sid isKindOfClass:[NSString class]] && sid.length > 0) return sid;
+        }
+    } @catch(id e) {}
+    return nil;
+}
+
+static void sciPruneStaleDeleteForYouKeys() {
+    if (!sciDeleteForYouKeys) return;
+    NSDate *cutoff = [NSDate dateWithTimeIntervalSinceNow:-10.0];
+    NSArray *allKeys = [sciDeleteForYouKeys allKeys];
+    for (NSString *k in allKeys) {
+        if ([sciDeleteForYouKeys[k] compare:cutoff] == NSOrderedAscending)
+            [sciDeleteForYouKeys removeObjectForKey:k];
+    }
+}
+
 static BOOL sciConsumeRemoteUnsend() {
     if (!sciPendingUpdates) return NO;
+    if (!sciDeleteForYouKeys) sciDeleteForYouKeys = [NSMutableDictionary dictionary];
+
+    sciPruneStaleDeleteForYouKeys();
 
     BOOL shouldBlock = NO;
     @synchronized(sciPendingUpdates) {
@@ -84,23 +114,38 @@ static BOOL sciConsumeRemoteUnsend() {
                     reason = *(long long *)((char *)(__bridge void *)update + off);
                 }
 
+                // Delete-for-you initiator: remember the keys for the upcoming
+                // reason=0 follow-up so we don't block it.
                 if (reason == 2) {
-                    sciDeleteForYouCount++;
+                    NSDate *now = [NSDate date];
+                    for (id key in keys) {
+                        NSString *sid = sciExtractServerId(key);
+                        if (sid) sciDeleteForYouKeys[sid] = now;
+                    }
                     continue;
                 }
 
                 if (reason == 0 && !sciLocalDeleteInProgress) {
-                    if (sciDeleteForYouCount > 0) {
-                        sciDeleteForYouCount--;
+                    // If every key matches a recent delete-for-you, this is the
+                    // expected follow-up — let it through.
+                    BOOL allMatched = YES;
+                    for (id key in keys) {
+                        NSString *sid = sciExtractServerId(key);
+                        if (!sid || !sciDeleteForYouKeys[sid]) { allMatched = NO; break; }
+                    }
+                    if (allMatched) {
+                        for (id key in keys) {
+                            NSString *sid = sciExtractServerId(key);
+                            if (sid) [sciDeleteForYouKeys removeObjectForKey:sid];
+                        }
                         continue;
                     }
+
+                    // Otherwise this is a genuine remote unsend — preserve the
+                    // affected message IDs and block the entire apply call.
                     for (id key in keys) {
-                        Ivar sidIvar = class_getInstanceVariable([key class], "_messageServerId");
-                        if (sidIvar) {
-                            NSString *sid = object_getIvar(key, sidIvar);
-                            if ([sid isKindOfClass:[NSString class]] && sid.length > 0)
-                                [sciGetPreservedIds() addObject:sid];
-                        }
+                        NSString *sid = sciExtractServerId(key);
+                        if (sid) [sciGetPreservedIds() addObject:sid];
                     }
                     sciSavePreservedIds();
                     shouldBlock = YES;
@@ -119,7 +164,8 @@ static void (*orig_applyUpdates)(id self, SEL _cmd, id updates, id completion, i
 static void new_applyUpdates(id self, SEL _cmd, id updates, id completion, id userAccess) {
     if (sciKeepDeletedEnabled() && sciConsumeRemoteUnsend()) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            // Update visible cell indicators
+            // Refresh visible cells so newly preserved messages show the
+            // "Unsent" indicator immediately without waiting for a scroll.
             Class cellClass = NSClassFromString(@"IGDirectMessageCell");
             if (cellClass) {
                 UIWindow *window = [UIApplication sharedApplication].keyWindow;
@@ -136,7 +182,7 @@ static void new_applyUpdates(id self, SEL _cmd, id updates, id completion, id us
                 }
             }
 
-            // Show pill notification
+            // Top-of-screen toast notifying the user that an unsend was caught.
             if ([SCIUtils getBoolPref:@"unsent_message_toast"]) {
                 UIView *hostView = [UIApplication sharedApplication].keyWindow;
                 if (hostView) {
@@ -222,48 +268,106 @@ static NSString * _Nullable sciGetCellServerId(id cell) {
     return nil;
 }
 
+// Hide trailing action buttons (forward, share, AI, etc.) on preserved cells —
+// they don't work on preserved messages and overlap the "Unsent" label.
+// _tappableAccessoryViews holds the inner tap targets; their visible wrapper
+// (gray circle) is the closest squarish ancestor.
+
+static BOOL sciCellIsPreserved(id cell) {
+    NSString *sid = sciGetCellServerId(cell);
+    return sid && [sciGetPreservedIds() containsObject:sid];
+}
+
+// Returns the closest squarish ancestor (32-60 pt, roughly equal width/height),
+// which is the visible button wrapper. Falls back to the view itself.
+static UIView *sciFindAccessoryWrapper(UIView *view) {
+    UIView *cur = view;
+    while (cur && cur.superview) {
+        CGRect f = cur.frame;
+        if (f.size.width >= 32 && f.size.width <= 60 &&
+            fabs(f.size.width - f.size.height) < 4) {
+            return cur;
+        }
+        cur = cur.superview;
+    }
+    return view;
+}
+
+static void sciSetTrailingButtonsHidden(UIView *cell, BOOL hidden) {
+    if (!cell) return;
+    Ivar accIvar = class_getInstanceVariable([cell class], "_tappableAccessoryViews");
+    if (!accIvar) return;
+    id accViews = object_getIvar(cell, accIvar);
+    if (![accViews isKindOfClass:[NSArray class]]) return;
+    for (UIView *v in (NSArray *)accViews) {
+        if (![v isKindOfClass:[UIView class]]) continue;
+        UIView *wrapper = sciFindAccessoryWrapper(v);
+        wrapper.hidden = hidden;
+        if (wrapper != v) v.hidden = hidden;
+    }
+}
+
+static void (*orig_addTappableAccessoryView)(id self, SEL _cmd, id view);
+static void new_addTappableAccessoryView(id self, SEL _cmd, id view) {
+    orig_addTappableAccessoryView(self, _cmd, view);
+    if (sciIndicateUnsentEnabled() && sciCellIsPreserved(self)) {
+        if ([view isKindOfClass:[UIView class]]) {
+            UIView *wrapper = sciFindAccessoryWrapper((UIView *)view);
+            wrapper.hidden = YES;
+            if (wrapper != view) ((UIView *)view).hidden = YES;
+        }
+    }
+}
+
 static void sciUpdateCellIndicator(id cell) {
     UIView *view = (UIView *)cell;
     UIView *oldIndicator = [view viewWithTag:SCI_PRESERVED_TAG];
+    Ivar bubbleIvar = class_getInstanceVariable([cell class], "_messageContentContainerView");
+    UIView *bubble = bubbleIvar ? object_getIvar(cell, bubbleIvar) : nil;
 
     if (!sciIndicateUnsentEnabled()) {
         if (oldIndicator) [oldIndicator removeFromSuperview];
+        sciSetTrailingButtonsHidden(view, NO);
         return;
     }
 
     NSString *serverId = sciGetCellServerId(cell);
     BOOL isPreserved = serverId && [sciGetPreservedIds() containsObject:serverId];
 
-    if (isPreserved) {
-        if (!oldIndicator) {
-            Ivar bubbleIvar = class_getInstanceVariable([cell class], "_messageContentContainerView");
-            UIView *bubble = bubbleIvar ? object_getIvar(cell, bubbleIvar) : nil;
-            UIView *parent = bubble ?: view;
-
-            UILabel *label = [[UILabel alloc] init];
-            label.tag = SCI_PRESERVED_TAG;
-            label.text = @"Unsent";
-            label.font = [UIFont italicSystemFontOfSize:10];
-            label.textColor = [UIColor colorWithRed:1.0 green:0.3 blue:0.3 alpha:0.9];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            // Add as subview of the bubble so it moves with the bubble during
-            // long-press context menu animation (otherwise it stays on the cell
-            // and gets exposed behind the bubble).
-            [parent addSubview:label];
-
-            [NSLayoutConstraint activateConstraints:@[
-                [label.leadingAnchor constraintEqualToAnchor:parent.trailingAnchor constant:4],
-                [label.centerYAnchor constraintEqualToAnchor:parent.centerYAnchor],
-            ]];
-        }
-    } else if (oldIndicator) {
-        [oldIndicator removeFromSuperview];
+    if (!isPreserved) {
+        if (oldIndicator) [oldIndicator removeFromSuperview];
+        sciSetTrailingButtonsHidden(view, NO);
+        return;
     }
+
+    sciSetTrailingButtonsHidden(view, YES);
+
+    if (oldIndicator) return;
+
+    UIView *parent = bubble ?: view;
+    UILabel *label = [[UILabel alloc] init];
+    label.tag = SCI_PRESERVED_TAG;
+    label.text = @"Unsent";
+    label.font = [UIFont italicSystemFontOfSize:10];
+    label.textColor = [UIColor colorWithRed:1.0 green:0.3 blue:0.3 alpha:0.9];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    [parent addSubview:label];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [label.leadingAnchor constraintEqualToAnchor:parent.trailingAnchor constant:4],
+        [label.centerYAnchor constraintEqualToAnchor:parent.centerYAnchor],
+    ]];
 }
 
 static void (*orig_configureCell)(id self, SEL _cmd, id vm, id ringSpec, id launcherSet);
 static void new_configureCell(id self, SEL _cmd, id vm, id ringSpec, id launcherSet) {
     orig_configureCell(self, _cmd, vm, ringSpec, launcherSet);
+    sciUpdateCellIndicator(self);
+}
+
+static void (*orig_cellLayoutSubviews)(id self, SEL _cmd);
+static void new_cellLayoutSubviews(id self, SEL _cmd) {
+    orig_cellLayoutSubviews(self, _cmd);
     sciUpdateCellIndicator(self);
 }
 
@@ -289,6 +393,15 @@ static void new_configureCell(id self, SEL _cmd, id vm, id ringSpec, id launcher
         if (class_getInstanceMethod(cellClass, configSel))
             MSHookMessageEx(cellClass, configSel,
                             (IMP)new_configureCell, (IMP *)&orig_configureCell);
+
+        SEL layoutSel = @selector(layoutSubviews);
+        MSHookMessageEx(cellClass, layoutSel,
+                        (IMP)new_cellLayoutSubviews, (IMP *)&orig_cellLayoutSubviews);
+
+        SEL addAccSel = NSSelectorFromString(@"_addTappableAccessoryView:");
+        if (class_getInstanceMethod(cellClass, addAccSel))
+            MSHookMessageEx(cellClass, addAccSel,
+                            (IMP)new_addTappableAccessoryView, (IMP *)&orig_addTappableAccessoryView);
     }
 
     Class removeMutationClass = NSClassFromString(@"IGDirectMessageOutgoingUpdateRemoveMessagesMutationProcessor");
