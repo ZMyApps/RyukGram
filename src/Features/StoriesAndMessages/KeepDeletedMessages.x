@@ -1,18 +1,30 @@
 #import "../../Utils.h"
 #import "../../InstagramHeaders.h"
+#import "SCIExcludedThreads.h"
 #import <objc/runtime.h>
 #import <substrate.h>
 
-// ============ KEEP DELETED MESSAGES ============
-// Blocks remote unsends while allowing local deletes-for-you.
+// Keep-deleted messages.
+// Each iris delta carries a threadId; we stash it in TLS while orig runs so the
+// IGDirectMessageUpdate alloc hook can stamp the new update. At apply time we
+// neuter remote-unsend updates in-place by clearing _removeMessages_messageKeys,
+// letting IG run its apply call without actually removing anything.
 //
-// IGDirectMessageUpdate._removeMessages_reason: 0 = unsend, 2 = delete-for-you.
-// Delete-for-you fires reason=2 first, then a reason=0 follow-up. Remote
-// unsends only fire reason=0. We remember the message keys from reason=2
-// updates; a later reason=0 with matching keys is passed through (it's the
-// follow-up), anything else is treated as a remote unsend and blocked.
-// Tracked keys expire after 10s so a partial delete-for-you can't permanently
-// swallow future remote unsends.
+// _removeMessages_reason: 0 = unsend, 2 = delete-for-you. Delete-for-you fires
+// reason=2 then a reason=0 follow-up; we track the keys for 10s so the follow-up
+// passes through.
+
+static NSString * const kSCIDeltaTidTLSKey = @"SCI.currentDeltaTid";
+static const void *kSCIUpdateThreadIdKey = &kSCIUpdateThreadIdKey;
+
+static NSString *sciGetCurrentDeltaTid(void) {
+    return [NSThread currentThread].threadDictionary[kSCIDeltaTidTLSKey];
+}
+static void sciSetCurrentDeltaTid(NSString *tid) {
+    NSMutableDictionary *td = [NSThread currentThread].threadDictionary;
+    if (tid) td[kSCIDeltaTidTLSKey] = tid;
+    else     [td removeObjectForKey:kSCIDeltaTidTLSKey];
+}
 
 static BOOL sciKeepDeletedEnabled() {
     return [SCIUtils getBoolPref:@"keep_deleted_message"];
@@ -25,16 +37,13 @@ static BOOL sciIndicateUnsentEnabled() {
 static void sciUpdateCellIndicator(id cell);
 static BOOL sciLocalDeleteInProgress = NO;
 static NSMutableArray *sciPendingUpdates = nil;
-// Server message ID -> timestamp the reason=2 (delete-for-you) was observed.
 static NSMutableDictionary<NSString *, NSDate *> *sciDeleteForYouKeys = nil;
 static NSMutableSet *sciPreservedIds = nil;
-// Server message ID -> content class name for messages we recognize as
-// reaction/action-log bookkeeping (e.g. "X liked a message" thread entries).
-// Populated by hooking the data model class init. Used to skip preserving
-// these IDs when their remove arrives.
+// serverId -> message content class name; populated when messages are inserted
+// so we can recognize reaction/action-log records and never preserve them.
 static NSMutableDictionary<NSString *, NSString *> *sciMessageContentClasses = nil;
 #define SCI_CONTENT_CLASSES_MAX 4000
-#define SCI_PENDING_MAX 50
+#define SCI_PENDING_MAX 500
 
 #define SCI_PRESERVED_IDS_KEY @"SCIPreservedMsgIds"
 #define SCI_PRESERVED_MAX 200
@@ -70,14 +79,11 @@ static void sciTrackInsertedMessage(NSString *sid, NSString *className) {
     NSMutableDictionary *map = sciGetContentClasses();
     map[sid] = className;
     if (map.count > SCI_CONTENT_CLASSES_MAX) {
-        // Drop ~10% oldest by simply removing arbitrary keys
         NSArray *keys = [map allKeys];
         for (NSUInteger i = 0; i < keys.count / 10; i++) [map removeObjectForKey:keys[i]];
     }
 }
 
-// Returns YES if the message at this server ID is known to be reaction-related
-// (action log entry, reaction record, etc.) — i.e. should never be preserved.
 static BOOL sciIsReactionRelatedMessage(NSString *sid) {
     if (!sid.length) return NO;
     NSString *className = sciGetContentClasses()[sid];
@@ -88,12 +94,52 @@ static BOOL sciIsReactionRelatedMessage(NSString *sid) {
            [className containsString:@"actionLog"];
 }
 
+// ============ IRIS DELTA STAMPING ============
+
+static NSString *sciDeltaThreadId(id delta) {
+    @try {
+        id payload = [delta valueForKey:@"payload"];
+        if (!payload) return nil;
+        Ivar tdIvar = class_getInstanceVariable([payload class], "_threadDeltaPayload");
+        id threadDelta = tdIvar ? object_getIvar(payload, tdIvar) : nil;
+        if (!threadDelta) return nil;
+        return [threadDelta valueForKey:@"threadId"];
+    } @catch (__unused id e) { return nil; }
+}
+
+// Iterate per-delta so the alloc hook can attribute each new IGDirectMessageUpdate
+// to its source thread via TLS. Live delivery comes through here.
+static void (*orig_handleIrisDeltas)(id self, SEL _cmd, NSArray *deltas);
+static void new_handleIrisDeltas(id self, SEL _cmd, NSArray *deltas) {
+    if (!deltas || deltas.count == 0) { orig_handleIrisDeltas(self, _cmd, deltas); return; }
+    for (id delta in deltas) {
+        sciSetCurrentDeltaTid(sciDeltaThreadId(delta));
+        @try { orig_handleIrisDeltas(self, _cmd, @[delta]); } @catch (__unused id e) {}
+        sciSetCurrentDeltaTid(nil);
+    }
+}
+
+// Some internal IG paths bypass the top-level handler and call the per-thread
+// grouped variant directly. All deltas in one call belong to the same thread.
+static void (*orig_handleIrisDeltasGrouped)(id self, SEL _cmd, NSArray *deltas);
+static void new_handleIrisDeltasGrouped(id self, SEL _cmd, NSArray *deltas) {
+    if (!deltas || deltas.count == 0) { orig_handleIrisDeltasGrouped(self, _cmd, deltas); return; }
+    sciSetCurrentDeltaTid(sciDeltaThreadId(deltas.firstObject));
+    @try { orig_handleIrisDeltasGrouped(self, _cmd, deltas); } @catch (__unused id e) {}
+    sciSetCurrentDeltaTid(nil);
+}
+
 // ============ ALLOC TRACKING ============
 
 static id (*orig_msgUpdate_alloc)(id self, SEL _cmd);
 static id new_msgUpdate_alloc(id self, SEL _cmd) {
     id instance = orig_msgUpdate_alloc(self, _cmd);
-    if (sciKeepDeletedEnabled() && instance) {
+    if ([SCIUtils getBoolPref:@"keep_deleted_message"] && instance) {
+        NSString *tid = sciGetCurrentDeltaTid();
+        if (tid) {
+            objc_setAssociatedObject(instance, kSCIUpdateThreadIdKey, tid,
+                                     OBJC_ASSOCIATION_COPY_NONATOMIC);
+        }
         if (!sciPendingUpdates) sciPendingUpdates = [NSMutableArray array];
         @synchronized(sciPendingUpdates) {
             [sciPendingUpdates addObject:instance];
@@ -128,72 +174,93 @@ static void sciPruneStaleDeleteForYouKeys() {
     }
 }
 
-// Walks every pending IGDirectMessageUpdate, preserves the IDs of any reason=0
-// remove that isn't a delete-for-you follow-up, and returns the set of preserved
-// IDs. The caller decides whether to actually block + show a toast based on
-// whether those IDs match real (rendered) messages.
-static NSSet<NSString *> *sciConsumePendingPreserves() {
-    NSMutableSet<NSString *> *preserved = [NSMutableSet set];
-    if (!sciPendingUpdates) return preserved;
-    if (!sciDeleteForYouKeys) sciDeleteForYouKeys = [NSMutableDictionary dictionary];
+// Clear the remove-keys ivar in place. IG's later apply iterates an empty
+// list, so the cache-removal becomes a no-op without disturbing call ordering.
+static void sciNeuterRemoveUpdate(id update) {
+    @try {
+        Ivar ivar = class_getInstanceVariable([update class], "_removeMessages_messageKeys");
+        if (ivar) object_setIvar(update, ivar, nil);
+    } @catch (__unused id e) {}
+}
 
+// Classify a single update and append any real-unsend server ids to `preserved`.
+// Returns silently for inserts, delete-for-you initiators, follow-ups, and reactions.
+static void sciProcessOneUpdate(id update, NSMutableSet<NSString *> *preserved) {
+    @try {
+        Ivar removeIvar = class_getInstanceVariable([update class], "_removeMessages_messageKeys");
+        if (!removeIvar) return;
+        NSArray *keys = object_getIvar(update, removeIvar);
+        if (!keys || keys.count == 0) return;
+
+        long long reason = -1;
+        Ivar reasonIvar = class_getInstanceVariable([update class], "_removeMessages_reason");
+        if (reasonIvar) {
+            ptrdiff_t off = ivar_getOffset(reasonIvar);
+            reason = *(long long *)((char *)(__bridge void *)update + off);
+        }
+
+        // Delete-for-you initiator — remember keys for the follow-up.
+        if (reason == 2) {
+            NSDate *now = [NSDate date];
+            for (id key in keys) {
+                NSString *sid = sciExtractServerId(key);
+                if (sid) sciDeleteForYouKeys[sid] = now;
+            }
+            return;
+        }
+
+        if (reason != 0 || sciLocalDeleteInProgress) return;
+
+        // Delete-for-you follow-up: every key already tracked → let through.
+        BOOL allMatched = YES;
+        for (id key in keys) {
+            NSString *sid = sciExtractServerId(key);
+            if (!sid || !sciDeleteForYouKeys[sid]) { allMatched = NO; break; }
+        }
+        if (allMatched) {
+            for (id key in keys) {
+                NSString *sid = sciExtractServerId(key);
+                if (sid) [sciDeleteForYouKeys removeObjectForKey:sid];
+            }
+            return;
+        }
+
+        // Real remote unsend — preserve, skipping reaction/action-log records.
+        for (id key in keys) {
+            NSString *sid = sciExtractServerId(key);
+            if (!sid) continue;
+            if (sciIsReactionRelatedMessage(sid)) continue;
+            [sciGetPreservedIds() addObject:sid];
+            [preserved addObject:sid];
+        }
+    } @catch (__unused id e) {}
+}
+
+// For every pending update stamped with `tid`: classify it, preserve the ids
+// if it's a real unsend, and neuter the update so the upcoming apply runs but
+// doesn't remove anything. Excluded threads are dropped untouched.
+static NSSet<NSString *> *sciNeuterAndPreserveForThread(NSString *tid) {
+    NSMutableSet<NSString *> *preserved = [NSMutableSet set];
+    if (!sciPendingUpdates || tid.length == 0) return preserved;
+    if (!sciDeleteForYouKeys) sciDeleteForYouKeys = [NSMutableDictionary dictionary];
     sciPruneStaleDeleteForYouKeys();
 
+    BOOL excluded = [SCIExcludedThreads shouldKeepDeletedBeBlockedForThreadId:tid];
+
     @synchronized(sciPendingUpdates) {
-        for (id update in [sciPendingUpdates copy]) {
-            @try {
-                Ivar removeIvar = class_getInstanceVariable([update class], "_removeMessages_messageKeys");
-                if (!removeIvar) continue;
-                NSArray *keys = object_getIvar(update, removeIvar);
-                if (!keys || keys.count == 0) continue;
-
-                long long reason = -1;
-                Ivar reasonIvar = class_getInstanceVariable([update class], "_removeMessages_reason");
-                if (reasonIvar) {
-                    ptrdiff_t off = ivar_getOffset(reasonIvar);
-                    reason = *(long long *)((char *)(__bridge void *)update + off);
-                }
-
-                // Delete-for-you initiator — remember keys for the follow-up.
-                if (reason == 2) {
-                    NSDate *now = [NSDate date];
-                    for (id key in keys) {
-                        NSString *sid = sciExtractServerId(key);
-                        if (sid) sciDeleteForYouKeys[sid] = now;
-                    }
-                    continue;
-                }
-
-                if (reason != 0 || sciLocalDeleteInProgress) continue;
-
-                // If every key matches a recent delete-for-you, drop the
-                // tracking entries and let it through (it's the follow-up).
-                BOOL allMatched = YES;
-                for (id key in keys) {
-                    NSString *sid = sciExtractServerId(key);
-                    if (!sid || !sciDeleteForYouKeys[sid]) { allMatched = NO; break; }
-                }
-                if (allMatched) {
-                    for (id key in keys) {
-                        NSString *sid = sciExtractServerId(key);
-                        if (sid) [sciDeleteForYouKeys removeObjectForKey:sid];
-                    }
-                    continue;
-                }
-
-                // Real remove — preserve only keys whose content class isn't a
-                // known reaction / action-log entry. Reaction events also fire
-                // reason=0 removes for the action-log record they create.
-                for (id key in keys) {
-                    NSString *sid = sciExtractServerId(key);
-                    if (!sid) continue;
-                    if (sciIsReactionRelatedMessage(sid)) continue;
-                    [sciGetPreservedIds() addObject:sid];
-                    [preserved addObject:sid];
-                }
-            } @catch(id e) {}
+        NSMutableArray *remaining = [NSMutableArray array];
+        for (id update in sciPendingUpdates) {
+            NSString *stamp = objc_getAssociatedObject(update, kSCIUpdateThreadIdKey);
+            if (![stamp isEqualToString:tid]) {
+                [remaining addObject:update];
+                continue;
+            }
+            if (excluded) continue;
+            NSUInteger before = preserved.count;
+            sciProcessOneUpdate(update, preserved);
+            if (preserved.count > before) sciNeuterRemoveUpdate(update);
         }
-        [sciPendingUpdates removeAllObjects];
+        [sciPendingUpdates setArray:remaining];
     }
     if (preserved.count > 0) sciSavePreservedIds();
     return preserved;
@@ -208,12 +275,25 @@ static void new_applyUpdates(id self, SEL _cmd, id updates, id completion, id us
         return;
     }
 
-    NSSet<NSString *> *preserved = sciConsumePendingPreserves();
+    // Neuter remote-unsend updates for the threads in this batch, then hand
+    // off to IG. Apply call sequencing is preserved exactly as IG expects.
+    NSMutableSet<NSString *> *preserved = [NSMutableSet set];
+    if ([updates isKindOfClass:[NSArray class]]) {
+        for (id tu in (NSArray *)updates) {
+            NSString *tid = nil;
+            @try { tid = [tu valueForKey:@"threadId"]; } @catch (__unused id e) {}
+            if (tid.length == 0) continue;
+            NSSet *p = sciNeuterAndPreserveForThread(tid);
+            if (p.count > 0) [preserved unionSet:p];
+        }
+    }
+
+    // Hand off to IG — every update applies, neutered ones become no-ops.
+    orig_applyUpdates(self, _cmd, updates, completion, userAccess);
 
     if (preserved.count > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            // Refresh visible cells so newly preserved messages show the
-            // "Unsent" indicator immediately without waiting for a scroll.
+            // Refresh visible cells so the "Unsent" indicator shows immediately.
             Class cellClass = NSClassFromString(@"IGDirectMessageCell");
             if (cellClass) {
                 UIWindow *window = [UIApplication sharedApplication].keyWindow;
@@ -230,7 +310,6 @@ static void new_applyUpdates(id self, SEL _cmd, id updates, id completion, id us
                 }
             }
 
-            // Top-of-screen toast notifying the user that an unsend was caught.
             if ([SCIUtils getBoolPref:@"unsent_message_toast"]) {
                 UIView *hostView = [UIApplication sharedApplication].keyWindow;
                 if (hostView) {
@@ -273,9 +352,7 @@ static void new_applyUpdates(id self, SEL _cmd, id updates, id completion, id us
                 }
             }
         });
-        return;
     }
-    orig_applyUpdates(self, _cmd, updates, completion, userAccess);
 }
 
 // ============ LOCAL DELETE TRACKING ============
@@ -470,6 +547,21 @@ static id new_actionLogFullInit(id self, SEL _cmd,
         SEL sel = NSSelectorFromString(@"_applyThreadUpdates:completion:userAccess:");
         if (class_getInstanceMethod(cacheClass, sel))
             MSHookMessageEx(cacheClass, sel, (IMP)new_applyUpdates, (IMP *)&orig_applyUpdates);
+    }
+
+    Class irisClass = NSClassFromString(@"IGDirectRealtimeIrisDeltaHandler");
+    if (irisClass) {
+        SEL sel1 = NSSelectorFromString(@"handleIrisDeltas:");
+        if (class_getInstanceMethod(irisClass, sel1))
+            MSHookMessageEx(irisClass, sel1,
+                            (IMP)new_handleIrisDeltas,
+                            (IMP *)&orig_handleIrisDeltas);
+
+        SEL sel2 = NSSelectorFromString(@"_handleIrisDeltasGroupedByThread:");
+        if (class_getInstanceMethod(irisClass, sel2))
+            MSHookMessageEx(irisClass, sel2,
+                            (IMP)new_handleIrisDeltasGrouped,
+                            (IMP *)&orig_handleIrisDeltasGrouped);
     }
 
     Class cellClass = NSClassFromString(@"IGDirectMessageCell");

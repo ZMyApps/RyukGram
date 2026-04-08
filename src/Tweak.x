@@ -58,7 +58,9 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"advance_on_mark_seen": @(NO),
         @"indicate_unsent_messages": @(NO),
         @"unsent_message_toast": @(NO),
-        @"warn_refresh_clears_preserved": @(NO)
+        @"warn_refresh_clears_preserved": @(NO),
+        @"enable_chat_exclusions": @(YES),
+        @"exclusions_default_keep_deleted": @(NO)
     };
     [[NSUserDefaults standardUserDefaults] registerDefaults:sciDefaults];
     

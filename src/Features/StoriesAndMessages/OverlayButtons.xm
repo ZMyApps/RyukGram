@@ -1,5 +1,6 @@
 // Download + mark seen buttons on story/DM visual message overlay
 #import "StoryHelpers.h"
+#import "SCIExcludedThreads.h"
 
 extern "C" BOOL sciSeenBypassActive;
 extern "C" BOOL sciAdvanceBypassActive;
@@ -125,7 +126,10 @@ static void sciDownloadDMVisualMessage(UIViewController *dmVC) {
     }
 
     // mark seen button (stories: mark as seen, DMs: mark as viewed + dismiss)
-    if ([SCIUtils getBoolPref:@"no_seen_receipt"] && ![self viewWithTag:1339]) {
+    // Skip for DM visual messages inside an excluded thread — the button
+    // would be a no-op there since we don't block visual seen anyway.
+    if ([SCIUtils getBoolPref:@"no_seen_receipt"] && ![self viewWithTag:1339]
+        && ![SCIExcludedThreads isActiveThreadExcluded]) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.tag = 1339;
         UIImageSymbolConfiguration *cfg = [UIImageSymbolConfiguration configurationWithPointSize:18 weight:UIImageSymbolWeightSemibold];

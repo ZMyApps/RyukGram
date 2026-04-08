@@ -112,36 +112,55 @@ static id new_prismMenuView_init3(id self, SEL _cmd, NSArray *elements, id heade
                 return;
             }
 
-            // Move downloaded file to named temp path
-            NSString *mediaId = sciDAF(serverAudio, @selector(mediaId)) ?: @"voice_message";
-            NSString *mp4Path = [NSTemporaryDirectory() stringByAppendingPathComponent:
-                [NSString stringWithFormat:@"tmp_%@.mp4", mediaId]];
-            NSURL *mp4URL = [NSURL fileURLWithPath:mp4Path];
-            [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
-            [[NSFileManager defaultManager] moveItemAtURL:tempURL toURL:mp4URL error:nil];
+            // Always try to convert to .m4a via AVFoundation. If that fails (e.g. Ogg/Opus
+            // from PC/web users — iOS has no decoder), fall back to keeping the original
+            // extension from the URL so the share sheet still treats it as audio.
+            NSString *urlExt = [[playbackURL.path pathExtension] lowercaseString];
+            if (urlExt.length == 0) urlExt = @"m4a";
 
-            // Convert mp4 container to m4a (AAC audio only)
+            NSString *mediaId = sciDAF(serverAudio, @selector(mediaId)) ?: @"voice_message";
+            NSString *srcPath = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                [NSString stringWithFormat:@"tmp_%@.%@", mediaId, urlExt]];
+            NSURL *srcURL = [NSURL fileURLWithPath:srcPath];
+            [[NSFileManager defaultManager] removeItemAtURL:srcURL error:nil];
+            [[NSFileManager defaultManager] moveItemAtURL:tempURL toURL:srcURL error:nil];
+
+            void (^present)(NSURL *) = ^(NSURL *url) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [pill setText:@"Done!"];
+                    [pill dismissAfterDelay:0.5];
+                    [SCIUtils showShareVC:url];
+                });
+            };
+
             NSString *m4aPath = [NSTemporaryDirectory() stringByAppendingPathComponent:
                 [NSString stringWithFormat:@"audio_%@.m4a", mediaId]];
             NSURL *m4aURL = [NSURL fileURLWithPath:m4aPath];
             [[NSFileManager defaultManager] removeItemAtURL:m4aURL error:nil];
 
-            AVAsset *asset = [AVAsset assetWithURL:mp4URL];
+            AVAsset *asset = [AVAsset assetWithURL:srcURL];
             AVAssetExportSession *exp = [AVAssetExportSession
                 exportSessionWithAsset:asset presetName:AVAssetExportPresetAppleM4A];
             exp.outputURL = m4aURL;
             exp.outputFileType = AVFileTypeAppleM4A;
 
             [exp exportAsynchronouslyWithCompletionHandler:^{
-                [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
-
-                NSURL *finalURL = (exp.status == AVAssetExportSessionStatusCompleted) ? m4aURL : mp4URL;
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [pill setText:@"Done!"];
-                    [pill dismissAfterDelay:0.5];
-                    [SCIUtils showShareVC:finalURL];
-                });
+                if (exp.status == AVAssetExportSessionStatusCompleted) {
+                    [[NSFileManager defaultManager] removeItemAtURL:srcURL error:nil];
+                    present(m4aURL);
+                    return;
+                }
+                // Conversion failed — keep the original file with its real extension.
+                [[NSFileManager defaultManager] removeItemAtURL:m4aURL error:nil];
+                NSString *outPath = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                    [NSString stringWithFormat:@"audio_%@.%@", mediaId, urlExt]];
+                NSURL *outURL = [NSURL fileURLWithPath:outPath];
+                [[NSFileManager defaultManager] removeItemAtURL:outURL error:nil];
+                if (![[NSFileManager defaultManager] moveItemAtURL:srcURL toURL:outURL error:nil]) {
+                    present(srcURL);
+                    return;
+                }
+                present(outURL);
             }];
         }];
         [task resume];

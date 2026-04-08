@@ -1,21 +1,16 @@
 #import "../../Utils.h"
+#import "SCIExcludedThreads.h"
 
 %hook IGDirectVisualMessage
 - (NSInteger)viewMode {
     NSInteger mode = %orig;
-
-    // * Modes *
-    // 0 - View Once
-    // 1 - Replayable
-
-    if ([SCIUtils getBoolPref:@"disable_view_once_limitations"]) {
-        if (mode == 0) {
-            mode = 1;
-
-            NSLog(@"[SCInsta] Modifying visual message from read-once to replayable");
-        }
+    // 0 = view once, 1 = replayable. Force view-once behavior to leak through
+    // when the active thread is excluded so the message expires normally.
+    if ([SCIUtils getBoolPref:@"disable_view_once_limitations"]
+        && mode == 0
+        && ![SCIExcludedThreads isActiveThreadExcluded]) {
+        return 1;
     }
-    
     return mode;
 }
 %end

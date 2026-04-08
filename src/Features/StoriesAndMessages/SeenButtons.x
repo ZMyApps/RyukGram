@@ -1,9 +1,16 @@
 #import "../../InstagramHeaders.h"
 #import "../../Tweak.h"
 #import "../../Utils.h"
+#import "SCIExcludedThreads.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <substrate.h>
+
+// Returns the threadId for an IGDirectThreadViewController, or nil.
+static NSString *sciThreadIdForVC(id vc) {
+    if (!vc) return nil;
+    @try { return [vc valueForKey:@"threadId"]; } @catch (__unused id e) { return nil; }
+}
 
 
 // Seen buttons (in DMs)
@@ -19,10 +26,12 @@ static BOOL sciIsSeenToggleMode() {
 }
 
 static BOOL sciAutoInteractEnabled() {
+    if ([SCIExcludedThreads isActiveThreadExcluded]) return NO;
     return [SCIUtils getBoolPref:@"remove_lastseen"] && [SCIUtils getBoolPref:@"seen_auto_on_interact"];
 }
 
 BOOL sciAutoTypingEnabled() {
+    if ([SCIExcludedThreads isActiveThreadExcluded]) return NO;
     return [SCIUtils getBoolPref:@"remove_lastseen"] && [SCIUtils getBoolPref:@"seen_auto_on_typing"];
 }
 
@@ -72,14 +81,20 @@ static void new_setHasSent(id self, SEL _cmd, BOOL sent) {
         }]
     ] mutableCopy];
 
-    if ([SCIUtils getBoolPref:@"remove_lastseen"]) {
+    // setRightBarButtonItems: runs before viewDidAppear: fires, so the global
+    // active thread id isn't reliable here — read it directly from the VC.
+    UIViewController *navNearestVC = [SCIUtils nearestViewControllerForView:self];
+    NSString *navThreadId = sciThreadIdForVC(navNearestVC);
+    BOOL navExcluded = navThreadId && [SCIExcludedThreads isThreadIdExcluded:navThreadId];
+
+    if ([SCIUtils getBoolPref:@"remove_lastseen"] && !navExcluded) {
         UIBarButtonItem *seenButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"checkmark.message"] style:UIBarButtonItemStylePlain target:self action:@selector(seenButtonHandler:)];
         if (sciIsSeenToggleMode())
             [seenButton setTintColor:dmSeenToggleEnabled ? SCIUtils.SCIColor_Primary : UIColor.labelColor];
         [new_items addObject:seenButton];
     }
 
-    if ([SCIUtils getBoolPref:@"unlimited_replay"]) {
+    if ([SCIUtils getBoolPref:@"unlimited_replay"] && !navExcluded) {
         UIBarButtonItem *dmVisualMsgsViewedButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"photo.badge.checkmark"] style:UIBarButtonItemStylePlain target:self action:@selector(dmVisualMsgsViewedButtonHandler:)];
         [new_items addObject:dmVisualMsgsViewedButton];
         [dmVisualMsgsViewedButton setTintColor:dmVisualMsgsViewedButtonEnabled ? SCIUtils.SCIColor_Primary : UIColor.labelColor];
@@ -131,6 +146,7 @@ static void new_setHasSent(id self, SEL _cmd, BOOL sent) {
 %hook IGDirectThreadViewListAdapterDataSource
 - (BOOL)shouldUpdateLastSeenMessage {
     if ([SCIUtils getBoolPref:@"remove_lastseen"]) {
+        if ([SCIExcludedThreads isActiveThreadExcluded]) return %orig; // excluded → behave normally
         if (sciIsSeenToggleMode() && dmSeenToggleEnabled) return %orig;
         if (sciSeenAutoBypass) return %orig;
         return false;
@@ -143,11 +159,13 @@ static void new_setHasSent(id self, SEL _cmd, BOOL sent) {
 
 %hook IGDirectVisualMessageViewerEventHandler
 - (void)visualMessageViewerController:(id)arg1 didBeginPlaybackForVisualMessage:(id)arg2 atIndex:(NSInteger)arg3 {
-    if ([SCIUtils getBoolPref:@"unlimited_replay"] && !dmVisualMsgsViewedButtonEnabled) return;
+    if ([SCIUtils getBoolPref:@"unlimited_replay"] && !dmVisualMsgsViewedButtonEnabled
+        && ![SCIExcludedThreads isActiveThreadExcluded]) return;
     %orig;
 }
 - (void)visualMessageViewerController:(id)arg1 didEndPlaybackForVisualMessage:(id)arg2 atIndex:(NSInteger)arg3 mediaCurrentTime:(CGFloat)arg4 forNavType:(NSInteger)arg5 {
-    if ([SCIUtils getBoolPref:@"unlimited_replay"] && !dmVisualMsgsViewedButtonEnabled) return;
+    if ([SCIUtils getBoolPref:@"unlimited_replay"] && !dmVisualMsgsViewedButtonEnabled
+        && ![SCIExcludedThreads isActiveThreadExcluded]) return;
     %orig;
 }
 %end

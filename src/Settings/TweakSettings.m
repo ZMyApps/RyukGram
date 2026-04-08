@@ -1,5 +1,7 @@
 #import "TweakSettings.h"
 #import "SCISettingsBackup.h"
+#import "SCIExcludedChatsViewController.h"
+#import "../Features/StoriesAndMessages/SCIExcludedThreads.h"
 
 @implementation SCITweakSettings
 
@@ -196,6 +198,30 @@
                                                 ],
                                                 [SCISetting switchCellWithTitle:@"Disable typing status" subtitle:@"Prevents the typing indicator from being shown to others when you're typing in DMs" defaultsKey:@"disable_typing_status"],
                                                 [SCISetting switchCellWithTitle:@"Hide reels blend button" subtitle:@"Hides the button in DMs to open a reels blend" defaultsKey:@"hide_reels_blend"],
+                                            ]
+                                        },
+                                        @{
+                                            @"header": @"Excluded chats",
+                                            @"footer": @"Excluded chats and groups behave normally — read-receipt blocking, manual seen button, auto-seen on send/typing are all skipped for them. Long-press a chat in the inbox to add or remove it.",
+                                            @"rows": @[
+                                                [SCISetting switchCellWithTitle:@"Enable chat exclusions" subtitle:@"Master toggle. When off, the inbox menu item disappears and exclusions are ignored" defaultsKey:@"enable_chat_exclusions"],
+                                                [SCISetting switchCellWithTitle:@"Default: also exclude keep-deleted" subtitle:@"Excluded chats also bypass keep-deleted-messages by default. Each chat can override this in the list" defaultsKey:@"exclusions_default_keep_deleted"],
+                                                [SCISetting buttonCellWithTitle:[NSString stringWithFormat:@"Manage list (%lu)", (unsigned long)[SCIExcludedThreads count]]
+                                                                       subtitle:@"Search, sort, swipe to remove or toggle keep-deleted"
+                                                                           icon:[SCISymbol symbolWithName:@"list.bullet.rectangle"]
+                                                                         action:^(void) {
+                                                    UIWindow *win = nil;
+                                                    for (UIWindow *w in [UIApplication sharedApplication].windows) {
+                                                        if (w.isKeyWindow) { win = w; break; }
+                                                    }
+                                                    UIViewController *top = win.rootViewController;
+                                                    while (top.presentedViewController) top = top.presentedViewController;
+                                                    if ([top isKindOfClass:[UINavigationController class]]) {
+                                                        [(UINavigationController *)top pushViewController:[SCIExcludedChatsViewController new] animated:YES];
+                                                    } else if (top.navigationController) {
+                                                        [top.navigationController pushViewController:[SCIExcludedChatsViewController new] animated:YES];
+                                                    }
+                                                }],
                                             ]
                                         },
                                         @{
