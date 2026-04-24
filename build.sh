@@ -103,11 +103,30 @@ inject_bundle_into_deb() {
 
 # Build zxPluginsInject.dylib -> packages/zxPluginsInject.dylib
 build_zxpi_dylib() {
-    ./wrapper/build-zxpi.sh >/dev/null
-    [ -f packages/zxPluginsInject.dylib ] || {
+    local MOD_DIR="modules/zxPluginsInject"
+    local DYLIB_OUT="$MOD_DIR/.theos/obj/zxPluginsInject.dylib"
+
+    if [ -z "${THEOS:-}" ]; then
+        if [ -d "$HOME/theos" ]; then
+            export THEOS="$HOME/theos"
+        else
+            echo -e '\033[1m\033[0;31mTHEOS not set and ~/theos not found\033[0m' >&2
+            exit 1
+        fi
+    fi
+
+    ( cd "$MOD_DIR" && make FINALPACKAGE=1 >/dev/null )
+
+    [ -f "$DYLIB_OUT" ] || {
         echo -e '\033[1m\033[0;31mzxPluginsInject.dylib build failed\033[0m' >&2
         exit 1
     }
+
+    mkdir -p packages
+    cp "$DYLIB_OUT" packages/zxPluginsInject.dylib
+    # Match the @rpath LC that ipapatch writes into target binaries.
+    install_name_tool -id "@rpath/zxPluginsInject.dylib" \
+        packages/zxPluginsInject.dylib 2>/dev/null || true
 }
 
 # LC-inject zxPluginsInject.dylib into main exec + every .appex in the IPA.
