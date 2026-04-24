@@ -2,6 +2,7 @@
 #import "SCIFFmpeg.h"
 #import "Utils.h"
 #import "InstagramHeaders.h"
+#import "ActionButton/SCIMediaActions.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 #import <objc/message.h>
@@ -105,7 +106,11 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) NSArray<SCIDashRepresentation *> *videoReps;
 @property (nonatomic, strong) SCIDashRepresentation *audioRep;
-@property (nonatomic, strong) NSURL *standardURL; // progressive 720p
+@property (nonatomic, strong) NSURL *standardURL;
+@property (nonatomic, strong) id mediaRef;
+@property (nonatomic, assign) DownloadAction saveAction;
+@property (nonatomic, assign) BOOL hasAudio;
+@property (nonatomic, strong) NSURL *photoURL;
 @property (nonatomic, copy) void (^onPickStandard)(void);
 @property (nonatomic, copy) void (^onPickHD)(SCIDashRepresentation *video, SCIDashRepresentation *audio);
 @end
@@ -168,26 +173,52 @@
 - (void)dismiss { [self dismissViewControllerAnimated:YES completion:nil]; }
 
 // MARK: - Table
+// Sections: Standard, HD, optional Audio, optional Extras (photo). Audio
+// appears before Extras when both are present.
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tv { return 2; }
+- (BOOL)_hasExtrasSection { return self.photoURL != nil; }
+- (BOOL)_hasAudioSection  { return self.audioRep.url != nil; }
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tv {
+    NSInteger n = 2;
+    if ([self _hasExtrasSection]) n++;
+    if ([self _hasAudioSection])  n++;
+    return n;
+}
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)section {
-    return section == 0 ? 1 : (NSInteger)self.videoReps.count;
+    if (section == 0) return 1;
+    if (section == 1) return (NSInteger)self.videoReps.count;
+    return 1;
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)section {
-    return section == 0 ? @"Standard" : @"HD";
+    if (section == 0) return @"Standard";
+    if (section == 1) return @"HD";
+    if (section == 2 && [self _hasAudioSection]) return SCILocalized(@"Audio");
+    return SCILocalized(@"Extras");
+}
+
+- (UIImage *)_playIconSilent:(BOOL)silent {
+    UIImageSymbolConfiguration *cfg = [UIImageSymbolConfiguration configurationWithPointSize:18 weight:UIImageSymbolWeightMedium];
+    NSString *name = silent ? @"play.slash.fill" : @"play.fill";
+    return [UIImage systemImageNamed:name withConfiguration:cfg];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
     _SCIQualityCell *cell = [tv dequeueReusableCellWithIdentifier:@"q" forIndexPath:ip];
     [cell setLoading:NO];
 
+    BOOL silent = !self.hasAudio;
+
     if (ip.section == 0) {
         cell.titleLabel.text = SCILocalized(@"Standard");
         cell.titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightSemibold];
-        cell.subtitleLabel.text = SCILocalized(@"720p • progressive • fastest");
+        cell.subtitleLabel.text = silent
+            ? SCILocalized(@"720p • progressive • silent")
+            : SCILocalized(@"720p • progressive • fastest");
         cell.playButton.hidden = (self.standardURL == nil);
         cell.menuButton.hidden = (self.standardURL == nil);
+        [cell.playButton setImage:[self _playIconSilent:silent] forState:UIControlStateNormal];
         cell.accessoryType = UITableViewCellAccessoryNone;
 
         cell.playButton.tag = -1;
@@ -195,11 +226,12 @@
         [cell.playButton addTarget:self action:@selector(playStandardPreview:) forControlEvents:UIControlEventTouchUpInside];
 
         cell.menuButton.menu = [self menuForStandard];
-    } else {
+    } else if (ip.section == 1) {
         SCIDashRepresentation *rep = self.videoReps[ip.row];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.playButton.hidden = NO;
         cell.menuButton.hidden = NO;
+        [cell.playButton setImage:[self _playIconSilent:silent] forState:UIControlStateNormal];
 
         NSString *label = rep.qualityLabel ?: @"";
         if (rep.height > 0) {
@@ -222,6 +254,7 @@
             NSString *codec = [[rep.codecs componentsSeparatedByString:@"."] firstObject] ?: rep.codecs;
             [parts addObject:codec];
         }
+        if (silent) [parts addObject:SCILocalized(@"silent")];
         cell.subtitleLabel.text = [parts componentsJoinedByString:@" • "];
 
         cell.playButton.tag = ip.row;
@@ -229,6 +262,35 @@
         [cell.playButton addTarget:self action:@selector(playPreview:) forControlEvents:UIControlEventTouchUpInside];
 
         cell.menuButton.menu = [self menuForRow:ip.row videoRep:rep];
+    } else {
+        BOOL isAudio = (ip.section == 2 && [self _hasAudioSection]);
+        BOOL isPhoto = !isAudio;
+
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.playButton.hidden = NO;
+        cell.menuButton.hidden = YES;
+        UIImageSymbolConfiguration *cfg = [UIImageSymbolConfiguration configurationWithPointSize:18 weight:UIImageSymbolWeightMedium];
+
+        if (isPhoto) {
+            cell.titleLabel.text = SCILocalized(@"Photo");
+            cell.titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightSemibold];
+            cell.subtitleLabel.text = SCILocalized(@"Raw image (no audio, no video)");
+            [cell.playButton setImage:[UIImage systemImageNamed:@"photo" withConfiguration:cfg] forState:UIControlStateNormal];
+        } else if (isAudio) {
+            cell.titleLabel.text = SCILocalized(@"Audio only");
+            cell.titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightSemibold];
+            NSString *codec = self.audioRep.codecs.length
+                ? [[self.audioRep.codecs componentsSeparatedByString:@"."] firstObject]
+                : @"m4a";
+            NSString *bw = self.audioRep.bandwidth > 0
+                ? [NSString stringWithFormat:@"%ld Kbps", (long)(self.audioRep.bandwidth / 1000)]
+                : @"";
+            cell.subtitleLabel.text = [@[codec, bw] componentsJoinedByString:@" • "];
+            [cell.playButton setImage:[UIImage systemImageNamed:@"music.note" withConfiguration:cfg] forState:UIControlStateNormal];
+        }
+
+        cell.playButton.tag = -2;
+        [cell.playButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     }
     return cell;
 }
@@ -298,9 +360,16 @@
     [self dismissViewControllerAnimated:YES completion:^{
         if (ip.section == 0) {
             if (self.onPickStandard) self.onPickStandard();
-        } else {
+        } else if (ip.section == 1) {
             SCIDashRepresentation *rep = self.videoReps[ip.row];
             if (self.onPickHD) self.onPickHD(rep, self.audioRep);
+        } else {
+            BOOL isAudio = (ip.section == 2 && [self _hasAudioSection]);
+            if (isAudio) {
+                [SCIMediaActions downloadAudioOnlyForMedia:self.mediaRef action:self.saveAction];
+            } else if (self.photoURL) {
+                [SCIMediaActions downloadPhotoOnlyForMedia:self.mediaRef action:self.saveAction];
+            }
         }
     }];
 }
@@ -400,6 +469,7 @@
 
 + (BOOL)pickQualityForMedia:(id)media
                    fromView:(UIView *)sourceView
+                     action:(DownloadAction)action
                      picked:(void(^)(SCIDashRepresentation *video, SCIDashRepresentation *audio))picked
                    fallback:(void(^)(void))fallback {
     if (!media) { if (fallback) fallback(); return NO; }
@@ -427,6 +497,8 @@
         [self showSheetWithVideoReps:videoReps
                             audioRep:audioRep
                          standardURL:standardURL
+                               media:media
+                              action:action
                               picked:picked
                             fallback:fallback];
     } else {
@@ -443,6 +515,8 @@
 + (void)showSheetWithVideoReps:(NSArray<SCIDashRepresentation *> *)videoReps
                       audioRep:(SCIDashRepresentation *)audioRep
                    standardURL:(NSURL *)standardURL
+                         media:(id)media
+                        action:(DownloadAction)action
                         picked:(void(^)(SCIDashRepresentation *video, SCIDashRepresentation *audio))picked
                       fallback:(void(^)(void))fallback {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -450,6 +524,11 @@
         vc.videoReps = videoReps;
         vc.audioRep = audioRep;
         vc.standardURL = standardURL;
+        vc.mediaRef = media;
+        vc.saveAction = action;
+        // DASH truth: audio exists iff the manifest parsed an audio rep.
+        vc.hasAudio = (audioRep.url != nil);
+        vc.photoURL = [SCIUtils getPhotoUrlForMedia:(IGMedia *)media];
         vc.onPickStandard = fallback;
         vc.onPickHD = picked;
 

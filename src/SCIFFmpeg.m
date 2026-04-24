@@ -1,4 +1,5 @@
 #import "SCIFFmpeg.h"
+#import "ActionButton/SCIMediaActions.h"
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -396,12 +397,15 @@ static void sciLoadFFmpegKit(void) {
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *tmpDir = NSTemporaryDirectory();
+        // Intermediates stay UUID-named; the muxed output uses the stem.
         NSString *videoPath = [tmpDir stringByAppendingPathComponent:
                                [NSString stringWithFormat:@"sci_video_%@.mp4", [[NSUUID UUID] UUIDString]]];
         NSString *audioPath = [tmpDir stringByAppendingPathComponent:
                                [NSString stringWithFormat:@"sci_audio_%@.m4a", [[NSUUID UUID] UUIDString]]];
+        NSString *outStem = [SCIMediaActions currentFilenameStem]
+            ?: [NSString stringWithFormat:@"sci_muxed_%@", [[NSUUID UUID] UUIDString]];
         NSString *outputPath = [tmpDir stringByAppendingPathComponent:
-                                [NSString stringWithFormat:@"sci_muxed_%@.mp4", [[NSUUID UUID] UUIDString]]];
+                                [NSString stringWithFormat:@"%@.mp4", outStem]];
 
         NSError *(^cancelledError)(void) = ^NSError *{
             return [NSError errorWithDomain:@"SCIFFmpeg" code:NSUserCancelledError

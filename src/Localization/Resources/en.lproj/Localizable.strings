@@ -55,6 +55,7 @@
  *  - Keys and values are both quoted; every line ends with a semicolon.
  */
 
+
 //////////////////////////////////////////////////////////////////////////////
 //               CHROME — TOP BAR, LANGUAGE PICKER, FIRST-RUN               //
 // Shown on the root Settings screen: title, search bar, the globe language //
@@ -65,11 +66,11 @@
 "settings.firstrun.message" = "In the future: Hold down on the three lines at the top right of your profile page, to re-open RyukGram settings.";
 "settings.firstrun.ok" = "I understand!";
 "settings.firstrun.title" = "RyukGram Settings Info";
+"settings.language.english_only" = "RyukGram currently ships with English only. Other languages are wired up and waiting for translations — help translate into your language by following the short guide in the README.";
+"settings.language.help_translate" = "Help translate";
+"settings.language.ok" = "OK";
 "settings.language.system" = "System default";
 "settings.language.title" = "Language";
-"settings.language.english_only" = "RyukGram currently ships with English only. Other languages are wired up and waiting for translations — help translate into your language by following the short guide in the README.";
-"settings.language.ok" = "OK";
-"settings.language.help_translate" = "Help translate";
 "settings.results.many" = "%lu results";
 "settings.results.none" = "No results";
 "settings.results.one" = "%lu result";
@@ -83,6 +84,8 @@
 
 "Adds a copy option to the comment long-press menu" = "Adds a copy option to the comment long-press menu";
 "Adds a download option for GIF comments" = "Adds a download option for GIF comments";
+"Anonymous live viewing" = "Anonymous live viewing";
+"Blocks the viewer-count heartbeat so the broadcaster doesn't see you — you also won't see the viewer count" = "Blocks the viewer-count heartbeat so the broadcaster doesn't see you — you also won't see the viewer count";
 "Browser" = "Browser";
 "Comments" = "Comments";
 "Copy comment text" = "Copy comment text";
@@ -103,13 +106,14 @@
 "Experimental features" = "Experimental features";
 "Focus/distractions" = "Focus/distractions";
 "General" = "General";
-"Hide Meta AI" = "Hide Meta AI";
 "Hide ads" = "Hide ads";
 "Hide explore posts grid" = "Hide explore posts grid";
 "Hide friends map" = "Hide friends map";
+"Hide Meta AI" = "Hide Meta AI";
 "Hide metrics" = "Hide metrics";
 "Hide notes tray" = "Hide notes tray";
 "Hide trending searches" = "Hide trending searches";
+"Hide UI on capture" = "Hide UI on capture";
 "Hides all suggested users for you to follow, outside your feed" = "Hides all suggested users for you to follow, outside your feed";
 "Hides like/comment/share counts on posts and reels" = "Hides like/comment/share counts on posts and reels";
 "Hides the friends map icon in the notes tray" = "Hides the friends map icon in the notes tray";
@@ -119,23 +123,30 @@
 "Hides the suggested broadcast channels in direct messages" = "Hides the suggested broadcast channels in direct messages";
 "Hides the trending searches under the explore search bar" = "Hides the trending searches under the explore search bar";
 "Hold down on the Instagram logo to change the app icon" = "Hold down on the Instagram logo to change the app icon";
+"Live" = "Live";
 "Long press on the eyedropper tool in stories to customize the text color more precisely" = "Long press on the eyedropper tool in stories to customize the text color more precisely";
+"Long-press the heart button in a live to hide or show the comments" = "Long-press the heart button in a live to hide or show the comments";
+"Long-press the search tab to open a copied Instagram link" = "Long-press the search tab to open a copied Instagram link";
 "No suggested chats" = "No suggested chats";
 "No suggested users" = "No suggested users";
 "Notes" = "Notes";
+"Open app icon picker" = "Open app icon picker";
+"Open link from clipboard" = "Open link from clipboard";
 "Open links in external browser" = "Open links in external browser";
 "Opens links in Safari instead of Instagram's in-app browser" = "Opens links in Safari instead of Instagram's in-app browser";
-"Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs" = "Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs";
+"Privacy" = "Privacy";
+"Redacts RyukGram buttons from screenshots, screen recordings, and mirroring" = "Redacts RyukGram buttons from screenshots, screen recordings, and mirroring";
 "Removes all ads from the Instagram app" = "Removes all ads from the Instagram app";
 "Removes igsh, utm_source, and other tracking parameters from shared links" = "Removes igsh, utm_source, and other tracking parameters from shared links";
-"Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker." = "Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker.";
+"Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs" = "Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs";
 "Replace domain in shared links" = "Replace domain in shared links";
+"Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker." = "Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker.";
 "Rewrites copied/shared links to use an embed-friendly domain for previews in Discord, Telegram, etc." = "Rewrites copied/shared links to use an embed-friendly domain for previews in Discord, Telegram, etc.";
 "Search bars will no longer save your recent searches" = "Search bars will no longer save your recent searches";
 "Sharing" = "Sharing";
 "Strip tracking from links" = "Strip tracking from links";
 "Strip tracking params" = "Strip tracking params";
-"These features rely on hidden Instagram flags and may not work on all accounts or versions.\nExperimental flags research by @euoradan (Radan)." = "These features rely on hidden Instagram flags and may not work on all accounts or versions.\nExperimental flags research by @euoradan (Radan).";
+"Toggle live comments" = "Toggle live comments";
 "Use detailed color picker" = "Use detailed color picker";
 
 //////////////////////////////////////////////////////////////////////////////
@@ -230,9 +241,6 @@
 "Adds a RyukGram action button above the reel sidebar with view-cover/download/share/copy/expand/repost entries. Tap opens the menu by default; change the tap behavior below." = "Adds a RyukGram action button above the reel sidebar with view-cover/download/share/copy/expand/repost entries. Tap opens the menu by default; change the tap behavior below.";
 "Always show progress scrubber" = "Always show progress scrubber";
 "Auto-scroll reels" = "Auto-scroll reels";
-"IG default: native behavior. RyukGram: re-advances after swiping back." = "IG default: native behavior. RyukGram: re-advances after swiping back.";
-"IG default" = "IG default";
-"RyukGram" = "RyukGram";
 "Change what happens when you tap on a reel" = "Change what happens when you tap on a reel";
 "Confirm reel refresh" = "Confirm reel refresh";
 "Disable auto-unmuting reels" = "Disable auto-unmuting reels";
@@ -244,6 +252,8 @@
 "Hides the repost button on the reels sidebar" = "Hides the repost button on the reels sidebar";
 "Hides the top navigation bar when watching reels" = "Hides the top navigation bar when watching reels";
 "Hiding" = "Hiding";
+"IG default" = "IG default";
+"IG default: native behavior. RyukGram: re-advances after swiping back." = "IG default: native behavior. RyukGram: re-advances after swiping back.";
 "Limits" = "Limits";
 "Limits the amount of reels available to scroll at any given time, and prevents refreshing" = "Limits the amount of reels available to scroll at any given time, and prevents refreshing";
 "Only loads %@ %@" = "Only loads %@ %@";
@@ -251,11 +261,14 @@
 "Prevent doom scrolling" = "Prevent doom scrolling";
 "Prevents reels from being scrolled to the next video" = "Prevents reels from being scrolled to the next video";
 "Prevents reels from unmuting when the volume/silent button is pressed" = "Prevents reels from unmuting when the volume/silent button is pressed";
+"RyukGram" = "RyukGram";
 "Shows an alert when you trigger a reels refresh" = "Shows an alert when you trigger a reels refresh";
 "Shows buttons to reveal and auto-fill the password on locked reels" = "Shows buttons to reveal and auto-fill the password on locked reels";
 "Tap Controls" = "Tap Controls";
+"Tap to mute on photo reels" = "Tap to mute on photo reels";
 "Tapping the Reels tab while on reels does nothing" = "Tapping the Reels tab while on reels does nothing";
 "Unlock password-locked reels" = "Unlock password-locked reels";
+"When pause mode is on, tap on photo reels toggles audio instead of the native pause gesture" = "When pause mode is on, tap on photo reels toggles audio instead of the native pause gesture";
 
 //////////////////////////////////////////////////////////////////////////////
 //                                 PROFILE                                  //
@@ -265,14 +278,25 @@
 "Adds a button next to the burger menu on profiles to copy username, name or bio" = "Adds a button next to the burger menu on profiles to copy username, name or bio";
 "Adds a view option to the highlight long-press menu to open the cover in full-screen" = "Adds a view option to the highlight long-press menu to open the cover in full-screen";
 "Copy note on long press" = "Copy note on long press";
+"Fake follower count" = "Fake follower count";
+"Fake following count" = "Fake following count";
+"Fake post count" = "Fake post count";
+"Fake profile stats" = "Fake profile stats";
+"Fake verified badge" = "Fake verified badge";
 "Follow indicator" = "Follow indicator";
+"Follower count" = "Follower count";
+"Following count" = "Following count";
 "Long press a profile picture to open it in full-screen with zoom, share, and save" = "Long press a profile picture to open it in full-screen with zoom, share, and save";
 "Long press the note bubble on a profile to copy the text" = "Long press the note bubble on a profile to copy the text";
 "Long press to download directly (ignored when zoom is on)" = "Long press to download directly (ignored when zoom is on)";
 "Long-press gestures on profile elements — kept separate from the per-feature action buttons." = "Long-press gestures on profile elements — kept separate from the per-feature action buttons.";
+"Only affects your own profile header. Other users see the real numbers." = "Only affects your own profile header. Other users see the real numbers.";
+"Post count" = "Post count";
 "Profile copy button" = "Profile copy button";
 "Save profile picture" = "Save profile picture";
+"Show a checkmark next to your name on your own profile" = "Show a checkmark next to your name on your own profile";
 "Shows whether the profile user follows you" = "Shows whether the profile user follows you";
+"Tap to set" = "Tap to set";
 "View highlight cover" = "View highlight cover";
 "Zoom profile photo" = "Zoom profile photo";
 
@@ -328,16 +352,25 @@
 "Mark seen on story reply" = "Mark seen on story reply";
 "Marks a story as seen the moment you tap the heart, even with seen blocking on" = "Marks a story as seen the moment you tap the heart, even with seen blocking on";
 "Marks a story as seen when you send a reply or emoji reaction, even with seen blocking on" = "Marks a story as seen when you send a reply or emoji reaction, even with seen blocking on";
+"Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server" = "Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server";
 "Master toggle. When off, the list is ignored" = "Master toggle. When off, the list is ignored";
 "Other" = "Other";
 "Playback" = "Playback";
-"Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server" = "Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server";
 "Quick list button in stories" = "Quick list button in stories";
 "Search, sort, swipe to remove" = "Search, sort, swipe to remove";
 "Seen receipts" = "Seen receipts";
 "Sending a reply or emoji reaction automatically advances to the next story" = "Sending a reply or emoji reaction automatically advances to the next story";
 "Show mentioned users in eye button and story menu" = "Show mentioned users in eye button and story menu";
 "Shows an eye button on stories to add/remove users from the list. Off = use the 3-dot menu or long-press only" = "Shows an eye button on stories to add/remove users from the list. Off = use the 3-dot menu or long-press only";
+"Stickers" = "Stickers";
+"Peek at poll/quiz/slider results before interacting — you can still tap to vote normally. Force Quiz brings the legacy Quiz sticker back into the story composer tray." = "Peek at poll/quiz/slider results before interacting — you can still tap to vote normally. Force Quiz brings the legacy Quiz sticker back into the story composer tray.";
+"Peek at poll/quiz/slider results on reels before interacting — you can still tap to vote normally." = "Peek at poll/quiz/slider results on reels before interacting — you can still tap to vote normally.";
+"Force Quiz sticker in tray" = "Force Quiz sticker in tray";
+"Adds Quiz back to the story sticker picker" = "Adds Quiz back to the story sticker picker";
+"Show quiz answer" = "Show quiz answer";
+"Circle the correct option on quiz stickers, or the leading option on polls" = "Circle the correct option on quiz stickers, or the leading option on polls";
+"Show poll vote counts" = "Show poll vote counts";
+"Show vote tallies on poll options and slider count/average before you vote" = "Show vote tallies on poll options and slider count/average before you vote";
 "Stop story auto-advance" = "Stop story auto-advance";
 "Stories" = "Stories";
 "Stories won't auto-skip to the next one when the timer ends. Tap to advance manually" = "Stories won't auto-skip to the next one when the timer ends. Tap to advance manually";
@@ -382,7 +415,7 @@
 "Copy text on hold" = "Copy text on hold";
 "Custom emojis and background/text colors" = "Custom emojis and background/text colors";
 "Custom note themes" = "Custom note themes";
-"Disable disappearing mode swipe" = "Disable disappearing mode swipe";
+"Disable vanish mode swipe" = "Disable vanish mode swipe";
 "Disable screenshot detection" = "Disable screenshot detection";
 "Disable typing status" = "Disable typing status";
 "Disable view-once limitations" = "Disable view-once limitations";
@@ -403,7 +436,7 @@
 "Note actions" = "Note actions";
 "Preserve messages that others unsend" = "Preserve messages that others unsend";
 "Preserves messages that others unsend" = "Preserves messages that others unsend";
-"Prevents accidental swipe-up activation of disappearing mode" = "Prevents accidental swipe-up activation of disappearing mode";
+"Prevents accidental swipe-up activation of vanish mode" = "Prevents accidental swipe-up activation of vanish mode";
 "Quick list button in chats" = "Quick list button in chats";
 "Removes the audio call button from DM thread header" = "Removes the audio call button from DM thread header";
 "Removes the screenshot-prevention features for visual messages in DMs" = "Removes the screenshot-prevention features for visual messages in DMs";
@@ -418,7 +451,6 @@
 "Shows an \"Unsent\" label on preserved messages" = "Shows an \"Unsent\" label on preserved messages";
 "Unlimited replay of visual messages" = "Unlimited replay of visual messages";
 "Unsent message notification" = "Unsent message notification";
-"Visual messages" = "Visual messages";
 "Voice messages" = "Voice messages";
 "Warn before clearing on refresh" = "Warn before clearing on refresh";
 "Which chats get read-receipt blocking" = "Which chats get read-receipt blocking";
@@ -437,11 +469,13 @@
 // Settings → Navigation tab                                                //
 //////////////////////////////////////////////////////////////////////////////
 
+"Also hide the bottom tab bar — only the inbox is visible" = "Also hide the bottom tab bar — only the inbox is visible";
 "Hide create tab" = "Hide create tab";
 "Hide explore tab" = "Hide explore tab";
 "Hide feed tab" = "Hide feed tab";
 "Hide messages tab" = "Hide messages tab";
 "Hide reels tab" = "Hide reels tab";
+"Hide tab bar" = "Hide tab bar";
 "Hides every tab except DM inbox + profile and forces launch into the inbox. Settings shortcut moves to long-press on the inbox tab." = "Hides every tab except DM inbox + profile and forces launch into the inbox. Settings shortcut moves to long-press on the inbox tab.";
 "Hides the create tab on the bottom navigation bar" = "Hides the create tab on the bottom navigation bar";
 "Hides the direct messages tab on the bottom navigation bar" = "Hides the direct messages tab on the bottom navigation bar";
@@ -466,7 +500,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 "Confirm actions" = "Confirm actions";
-"Confirm call" = "Confirm call";
+"Confirm video call" = "Confirm video call";
+"Confirm voice call" = "Confirm voice call";
 "Confirm changing theme" = "Confirm changing theme";
 "Confirm follow" = "Confirm follow";
 "Confirm follow requests" = "Confirm follow requests";
@@ -474,24 +509,26 @@
 "Confirm like: Reels" = "Confirm like: Reels";
 "Confirm posting comment" = "Confirm posting comment";
 "Confirm repost" = "Confirm repost";
-"Confirm shh mode" = "Confirm shh mode";
-"Confirm sticker interaction" = "Confirm sticker interaction";
+"Confirm vanish mode" = "Confirm vanish mode";
+"Confirm sticker interaction (stories)" = "Confirm sticker interaction (stories)";
+"Confirm sticker interaction (highlights)" = "Confirm sticker interaction (highlights)";
 "Confirm story emoji reaction" = "Confirm story emoji reaction";
 "Confirm story like" = "Confirm story like";
 "Confirm unfollow" = "Confirm unfollow";
-"Shows an alert before sending an emoji reaction on a story" = "Shows an alert before sending an emoji reaction on a story";
-"Shows an alert when you click the like button on posts to confirm the like" = "Shows an alert when you click the like button on posts to confirm the like";
-"Shows an alert when you click the like button on stories to confirm the like" = "Shows an alert when you click the like button on stories to confirm the like";
 "Confirm voice messages" = "Confirm voice messages";
+"Shows an alert before sending an emoji reaction on a story" = "Shows an alert before sending an emoji reaction on a story";
 "Shows an alert to confirm before sending a voice message" = "Shows an alert to confirm before sending a voice message";
-"Shows an alert to confirm before toggling disappearing messages" = "Shows an alert to confirm before toggling disappearing messages";
+"Shows an alert to confirm before toggling vanish mode" = "Shows an alert to confirm before toggling vanish mode";
 "Shows an alert when you accept/decline a follow request" = "Shows an alert when you accept/decline a follow request";
 "Shows an alert when you change a chat theme to confirm" = "Shows an alert when you change a chat theme to confirm";
-"Shows an alert when you click a sticker on someone's story to confirm the action" = "Shows an alert when you click a sticker on someone's story to confirm the action";
-"Shows an alert when you click the audio/video call button to confirm before calling" = "Shows an alert when you click the audio/video call button to confirm before calling";
+"Shows an alert when you tap a sticker on someone's story" = "Shows an alert when you tap a sticker on someone's story";
+"Shows an alert when you tap a sticker inside a highlight" = "Shows an alert when you tap a sticker inside a highlight";
+"Shows an alert when you click the video call button to confirm before calling" = "Shows an alert when you click the video call button to confirm before calling";
+"Shows an alert when you click the voice call button to confirm before calling" = "Shows an alert when you click the voice call button to confirm before calling";
 "Shows an alert when you click the follow button to confirm the follow" = "Shows an alert when you click the follow button to confirm the follow";
-"Shows an alert when you click the like button on posts or stories to confirm the like" = "Shows an alert when you click the like button on posts or stories to confirm the like";
+"Shows an alert when you click the like button on posts to confirm the like" = "Shows an alert when you click the like button on posts to confirm the like";
 "Shows an alert when you click the like button on reels to confirm the like" = "Shows an alert when you click the like button on reels to confirm the like";
+"Shows an alert when you click the like button on stories to confirm the like" = "Shows an alert when you click the like button on stories to confirm the like";
 "Shows an alert when you click the post comment button to confirm" = "Shows an alert when you click the post comment button to confirm";
 "Shows an alert when you click the repost button to confirm before resposting" = "Shows an alert when you click the repost button to confirm before resposting";
 "Shows an alert when you click the unfollow button to confirm" = "Shows an alert when you click the unfollow button to confirm";
@@ -502,22 +539,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 "Backup & Restore" = "Backup & Restore";
-"Export settings" = "Export settings";
-"Export your RyukGram settings to a JSON file and import them later. Importing resets all settings to defaults before applying the imported values, and shows a preview before anything changes." = "Export your RyukGram settings to a JSON file and import them later. Importing resets all settings to defaults before applying the imported values, and shows a preview before anything changes.";
-"Import settings" = "Import settings";
-"Load settings from a JSON file" = "Load settings from a JSON file";
-"Reset to defaults" = "Reset to defaults";
-"Revert every RyukGram preference" = "Revert every RyukGram preference";
-"Save settings as a JSON file" = "Save settings as a JSON file";
-
-//////////////////////////////////////////////////////////////////////////////
-//                               EXPERIMENTAL                               //
-// Settings → Experimental tab                                              //
-//////////////////////////////////////////////////////////////////////////////
-
-"Experimental" = "Experimental";
-"These features are unstable and cause the Instagram app to crash unexpectedly.\n\nUse at your own risk!" = "These features are unstable and cause the Instagram app to crash unexpectedly.\n\nUse at your own risk!";
-"Warning" = "Warning";
 
 //////////////////////////////////////////////////////////////////////////////
 //                                 ADVANCED                                 //
@@ -525,17 +546,76 @@
 //////////////////////////////////////////////////////////////////////////////
 
 "Advanced" = "Advanced";
+"Auto-clear cache" = "Auto-clear cache";
 "Automatically opens settings when the app launches" = "Automatically opens settings when the app launches";
+"Cache" = "Cache";
+"Cache cleared" = "Cache cleared";
+"Calculating cache size…" = "Calculating cache size…";
+"Clear" = "Clear";
+"Clear cache" = "Clear cache";
+"Clear cache (%@)" = "Clear cache (%@)";
+"Clear cache?" = "Clear cache?";
+"Clearing cache…" = "Clearing cache…";
+"Clearing still scans on demand." = "Clearing still scans on demand.";
+"Daily" = "Daily";
 "Disable safe mode" = "Disable safe mode";
 "Enable tweak settings quick-access" = "Enable tweak settings quick-access";
+"Free %@ of Instagram cache. A restart is recommended." = "Free %@ of Instagram cache. A restart is recommended.";
+"Freed %@. Restart to apply." = "Freed %@. Restart to apply.";
 "Hold on the home tab to open RyukGram settings" = "Hold on the home tab to open RyukGram settings";
 "Instagram" = "Instagram";
+"Monthly" = "Monthly";
+"Nothing to clear" = "Nothing to clear";
+"Off skips the size scan when Advanced opens." = "Off skips the size scan when Advanced opens.";
 "Pause playback when opening settings" = "Pause playback when opening settings";
 "Pauses any playing video/audio when settings opens" = "Pauses any playing video/audio when settings opens";
 "Prevents Instagram from resetting settings after crashes (at your own risk)" = "Prevents Instagram from resetting settings after crashes (at your own risk)";
+"Remove Instagram's cached images, videos, and temporary files." = "Remove Instagram's cached images, videos, and temporary files.";
 "Reset onboarding state" = "Reset onboarding state";
-"Settings" = "Settings";
+"Run a silent cache clear on launch when the interval has elapsed." = "Run a silent cache clear on launch when the interval has elapsed.";
+"Show cache size" = "Show cache size";
 "Show tweak settings on app launch" = "Show tweak settings on app launch";
+"Weekly" = "Weekly";
+
+//////////////////////////////////////////////////////////////////////////////
+//                         ADVANCED EXPERIMENTAL                            //
+// Settings → Advanced → Advanced experimental features                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"Actions" = "Actions";
+"Advanced experimental features" = "Advanced experimental features";
+"All experimental toggles will be turned off. Instagram will restart." = "All experimental toggles will be turned off. Instagram will restart.";
+"Direct Notes — Audio reply" = "Direct Notes — Audio reply";
+"Direct Notes — Avatar reply" = "Direct Notes — Avatar reply";
+"Direct Notes — Friend Map" = "Direct Notes — Friend Map";
+"Direct Notes — GIFs & stickers reply" = "Direct Notes — GIFs & stickers reply";
+"Direct Notes — Photo reply" = "Direct Notes — Photo reply";
+"Disabled after repeated crashes." = "Disabled after repeated crashes.";
+"Enables GIF/sticker replies" = "Enables GIF/sticker replies";
+"Enables photo replies" = "Enables photo replies";
+"Enables the audio-note reply type" = "Enables the audio-note reply type";
+"Enables the avatar reply type" = "Enables the avatar reply type";
+"Experimental flags reset" = "Experimental flags reset";
+"Flip what you want on, then tap Apply to restart. Some flags may not work on every account or IG version. Flags auto-reset if IG crashes on launch 3 times." = "Flip what you want on, then tap Apply to restart. Some flags may not work on every account or IG version. Flags auto-reset if IG crashes on launch 3 times.";
+"Forces Prism-gated experiments on" = "Forces Prism-gated experiments on";
+"Forces the Homecoming home surface / nav on" = "Forces the Homecoming home surface / nav on";
+"Forces the QuickSnap / Instants surface on in feed, inbox, stories, and notes tray" = "Forces the QuickSnap / Instants surface on in feed, inbox, stories, and notes tray";
+"Got it" = "Got it";
+"Heads up" = "Heads up";
+"Hidden Instagram experiments" = "Hidden Instagram experiments";
+"Hidden Instagram experiments (in Advanced)" = "Hidden Instagram experiments (in Advanced)";
+"Homecoming" = "Homecoming";
+"Notes & QuickSnap" = "Notes & QuickSnap";
+"Prism design system" = "Prism design system";
+"QuickSnap (Instants)" = "QuickSnap (Instants)";
+"Reset all experimental flags" = "Reset all experimental flags";
+"Reset experimental flags?" = "Reset experimental flags?";
+"Restart Instagram to apply changes" = "Restart Instagram to apply changes";
+"Shows the friend map entry in Direct Notes" = "Shows the friend map entry in Direct Notes";
+"Surfaces" = "Surfaces";
+"These toggles flip hidden Instagram experiments on. Some features may not work on every account or IG version. If IG keeps crashing on launch, the flags auto-reset after 3 failed starts." = "These toggles flip hidden Instagram experiments on. Some features may not work on every account or IG version. If IG keeps crashing on launch, the flags auto-reset after 3 failed starts.";
+"Toggle hidden Instagram experiments. Some may not work on every account or IG version." = "Toggle hidden Instagram experiments. Some may not work on every account or IG version.";
+"Turn every experimental toggle off" = "Turn every experimental toggle off";
 
 //////////////////////////////////////////////////////////////////////////////
 //                                  DEBUG                                   //
@@ -544,24 +624,38 @@
 
 "Button Cell" = "Button Cell";
 "Change the value on the right" = "Change the value on the right";
+"Could not delete: %@" = "Could not delete: %@";
 "Debug" = "Debug";
+"Delete an imported override and fall back to the shipped strings" = "Delete an imported override and fall back to the shipped strings";
+"Deleted %@ override. Restart to apply." = "Deleted %@ override. Restart to apply.";
 "Enable FLEX gesture" = "Enable FLEX gesture";
+"Export English strings" = "Export English strings";
 "Hold 5 fingers on the screen to open FLEX" = "Hold 5 fingers on the screen to open FLEX";
 "I have %@%@" = "I have %@%@";
+"Import a .strings file for a language" = "Import a .strings file for a language";
+"Import a .strings file to update a translation. Pick a language, select the file, restart." = "Import a .strings file to update a translation. Pick a language, select the file, restart.";
 "Link Cell" = "Link Cell";
+"Localization" = "Localization";
 "Menu Cell" = "Menu Cell";
+"Navigation Cell" = "Navigation Cell";
+"No imported localization files to reset." = "No imported localization files to reset.";
+"No overrides" = "No overrides";
 "Open FLEX on app focus" = "Open FLEX on app focus";
 "Open FLEX on app launch" = "Open FLEX on app launch";
 "Opens FLEX when the app is focused" = "Opens FLEX when the app is focused";
 "Opens FLEX when the app launches" = "Opens FLEX when the app launches";
+"Pick a language to delete the imported file" = "Pick a language to delete the imported file";
+"Reset localization" = "Reset localization";
+"Share the base English .strings file for translating" = "Share the base English .strings file for translating";
 "Static Cell" = "Static Cell";
 "Stepper cell" = "Stepper cell";
 "Switch Cell" = "Switch Cell";
 "Switch Cell (Restart)" = "Switch Cell (Restart)";
 "Tap the switch" = "Tap the switch";
+"These features rely on hidden Instagram flags and may not work on all accounts or versions." = "These features rely on hidden Instagram flags and may not work on all accounts or versions.";
+"Update localization file" = "Update localization file";
 "Using icon" = "Using icon";
 "Using image" = "Using image";
-"_ Example" = "_ Example";
 
 //////////////////////////////////////////////////////////////////////////////
 //                        DOWNLOADS & MEDIA ACTIONS                         //
@@ -593,16 +687,16 @@
 "Failed to save" = "Failed to save";
 "HD download complete" = "HD download complete";
 "Mute audio" = "Mute audio";
-"No URLs" = "No URLs";
-"No URLs found" = "No URLs found";
 "No caption on this post" = "No caption on this post";
 "No carousel children" = "No carousel children";
 "No cover image" = "No cover image";
 "No files downloaded" = "No files downloaded";
 "No media" = "No media";
-"No media URL" = "No media URL";
 "No media to expand" = "No media to expand";
 "No media to show" = "No media to show";
+"No media URL" = "No media URL";
+"No URLs" = "No URLs";
+"No URLs found" = "No URLs found";
 "No video URL" = "No video URL";
 "Not a carousel" = "Not a carousel";
 "Nothing to save" = "Nothing to save";
@@ -635,6 +729,7 @@
 "Add to block list" = "Add to block list";
 "Add to block list?" = "Add to block list?";
 "Added to block list" = "Added to block list";
+"Added to exclude list" = "Added to exclude list";
 "Audio not loaded yet. Play the message first and try again." = "Audio not loaded yet. Play the message first and try again.";
 "Audio sent" = "Audio sent";
 "Audio/Video from Files" = "Audio/Video from Files";
@@ -648,12 +743,14 @@
 "Could not get audio data. Try again after refreshing the chat." = "Could not get audio data. Try again after refreshing the chat.";
 "Could not get video URL" = "Could not get video URL";
 "Disable read receipts" = "Disable read receipts";
+"Disappearing media" = "Disappearing media";
 "Done!" = "Done!";
 "Download audio" = "Download audio";
 "Downloading audio..." = "Downloading audio...";
 "Enable read receipts" = "Enable read receipts";
 "Error: %@" = "Error: %@";
 "Exclude chat" = "Exclude chat";
+"Exclude from seen" = "Exclude from seen";
 "Exclude story seen" = "Exclude story seen";
 "Excluded" = "Excluded";
 "Extracting audio..." = "Extracting audio...";
@@ -661,6 +758,10 @@
 "File sending not supported" = "File sending not supported";
 "Follow" = "Follow";
 "Following" = "Following";
+"Inserts a button on disappearing media overlays" = "Inserts a button on disappearing media overlays";
+"Inserts a speaker button to mute/unmute disappearing media" = "Inserts a speaker button to mute/unmute disappearing media";
+"Inserts an eye button to mark the current disappearing media as viewed" = "Inserts an eye button to mark the current disappearing media as viewed";
+"Mark as viewed" = "Mark as viewed";
 "Mark messages as seen" = "Mark messages as seen";
 "Mark seen" = "Mark seen";
 "Marked as seen" = "Marked as seen";
@@ -669,6 +770,7 @@
 "Mentions" = "Mentions";
 "Message sender not found" = "Message sender not found";
 "Messages settings" = "Messages settings";
+"Audio URL not available" = "Audio URL not available";
 "Mute story audio" = "Mute story audio";
 "No audio URL found. Try again after refreshing the chat." = "No audio URL found. Try again after refreshing the chat.";
 "No mentions in this story" = "No mentions in this story";
@@ -684,26 +786,25 @@
 "Remove" = "Remove";
 "Remove from block list" = "Remove from block list";
 "Remove from block list?" = "Remove from block list?";
+"Remove from exclude list" = "Remove from exclude list";
 "Removed" = "Removed";
+"Removed from list" = "Removed from list";
 "Save GIF" = "Save GIF";
 "Selection too short (min 0.5s)" = "Selection too short (min 0.5s)";
-"Send Audio" = "Send Audio";
 "Send anyway" = "Send anyway";
+"Send Audio" = "Send Audio";
 "Send failed: %@" = "Send failed: %@";
 "Send service not found" = "Send service not found";
-"Share" = "Share";
+"Show audio toggle" = "Show audio toggle";
+"Show mark-as-viewed button" = "Show mark-as-viewed button";
 "Story read receipts disabled" = "Story read receipts disabled";
 "Story read receipts enabled" = "Story read receipts enabled";
-"Story seen receipts will be blocked for @%@." = "Story seen receipts will be blocked for @%@.";
 "This chat will resume normal read-receipt behavior." = "This chat will resume normal read-receipt behavior.";
 "Total: %@" = "Total: %@";
-"Un-exclude" = "Un-exclude";
 "Un-exclude chat" = "Un-exclude chat";
 "Un-exclude chat?" = "Un-exclude chat?";
 "Un-exclude story seen" = "Un-exclude story seen";
-"Un-exclude story seen?" = "Un-exclude story seen?";
 "Un-excluded" = "Un-excluded";
-"Unblock" = "Unblock";
 "Unblocked" = "Unblocked";
 "Unlimited replay enabled" = "Unlimited replay enabled";
 "Unmute story audio" = "Unmute story audio";
@@ -726,6 +827,9 @@
 "Add preset" = "Add preset";
 "Change location" = "Change location";
 "Click the Apply button after this to see the emoji" = "Click the Apply button after this to see the emoji";
+"Clipboard is not an Instagram URL" = "Clipboard is not an Instagram URL";
+"Comments hidden" = "Comments hidden";
+"Comments shown" = "Comments shown";
 "Copied text to clipboard" = "Copied text to clipboard";
 "Copy" = "Copy";
 "Copy all" = "Copy all";
@@ -736,18 +840,167 @@
 "Current: %@" = "Current: %@";
 "Disable" = "Disable";
 "Download GIF" = "Download GIF";
+"Dropped pin" = "Dropped pin";
 "Enable" = "Enable";
+"Enable Location Services for Instagram in Settings to use your current location." = "Enable Location Services for Instagram in Settings to use your current location.";
 "Enter Emoji Text" = "Enter Emoji Text";
 "Fake location" = "Fake location";
+"Location access denied" = "Location access denied";
+"Location Services off" = "Location Services off";
 "Name" = "Name";
 "Nothing to copy" = "Nothing to copy";
+"Open Settings" = "Open Settings";
+"Pick location" = "Pick location";
 "Save" = "Save";
 "Save preset" = "Save preset";
 "Saved locations" = "Saved locations";
 "Select color" = "Select color";
 "Set location" = "Set location";
 "Settings…" = "Settings…";
+"Turn Location Services on in Settings → Privacy to use your current location." = "Turn Location Services on in Settings → Privacy to use your current location.";
 "Type emoji..." = "Type emoji...";
+
+"Theme" = "Theme";
+"Appearance" = "Appearance";
+"Keyboard" = "Keyboard";
+"Force dark mode" = "Force dark mode";
+"Keep Instagram in dark appearance regardless of iOS system setting" = "Keep Instagram in dark appearance regardless of iOS system setting";
+"Full OLED" = "Full OLED";
+"Replace Instagram's dark grays with pure black across the entire app" = "Replace Instagram's dark grays with pure black across the entire app";
+"OLED chat theme" = "OLED chat theme";
+"Pure black DM thread background and incoming message bubbles" = "Pure black DM thread background and incoming message bubbles";
+"Keyboard theme" = "Keyboard theme";
+"Override the keyboard appearance when typing inside Instagram" = "Override the keyboard appearance when typing inside Instagram";
+"Dark uses the system dark keyboard. OLED forces the keyboard backdrop to pure black." = "Dark uses the system dark keyboard. OLED forces the keyboard backdrop to pure black.";
+"Dark" = "Dark";
+"OLED" = "OLED";
+"Apply & restart" = "Apply & restart";
+"Restart Instagram to apply your theme changes" = "Restart Instagram to apply your theme changes";
+"Theme changes only take effect after an app restart. Tap Apply below when you're done choosing." = "Theme changes only take effect after an app restart. Tap Apply below when you're done choosing.";
+
+//////////////////////////////////////////////////////////////////////////////
+//                            PROFILE ANALYZER                              //
+// Settings → Profile Analyzer                                              //
+//////////////////////////////////////////////////////////////////////////////
+
+"%lu followers · %lu following" = "%lu followers · %lu following";
+"%lu of %lu" = "%lu of %lu";
+"Analysis complete" = "Analysis complete";
+"Analysis failed" = "Analysis failed";
+"Another analysis is already running" = "Another analysis is already running";
+"Available after your next scan" = "Available after your next scan";
+"Cancelled" = "Cancelled";
+"Categories" = "Categories";
+"Couldn't fetch profile information" = "Couldn't fetch profile information";
+"Fetching followers (%lu/%ld)…" = "Fetching followers (%lu/%ld)…";
+"Fetching following (%lu/%ld)…" = "Fetching following (%lu/%ld)…";
+"Fetching profile info…" = "Fetching profile info…";
+"First scan: %@" = "First scan: %@";
+"Follower count exceeds %ld — analysis disabled to avoid rate limits." = "Follower count exceeds %ld — analysis disabled to avoid rate limits.";
+"Gained since last scan" = "Gained since last scan";
+"Last scan: %@" = "Last scan: %@";
+"Lost followers" = "Lost followers";
+"Mutual followers" = "Mutual followers";
+"Name: %@ → %@" = "Name: %@ → %@";
+"New followers" = "New followers";
+"No results" = "No results";
+"No active Instagram session found" = "No active Instagram session found";
+"No scan yet" = "No scan yet";
+"Not following you back" = "Not following you back";
+"OK" = "OK";
+"Private account" = "Private account";
+"Profile Analyzer" = "Profile Analyzer";
+"Profile picture changed" = "Profile picture changed";
+"Profile updates" = "Profile updates";
+"Removes cached snapshots for this account. You'll lose since-last-scan diffs." = "Removes cached snapshots for this account. You'll lose since-last-scan diffs.";
+"Request failed" = "Request failed";
+"Reset analyzer data?" = "Reset analyzer data?";
+"Run analysis" = "Run analysis";
+"Run your first analysis" = "Run your first analysis";
+"Search username or name" = "Search username or name";
+"Since last scan" = "Since last scan";
+"Starting…" = "Starting…";
+"They follow you, you don't follow back" = "They follow you, you don't follow back";
+"Too many followers" = "Too many followers";
+"Too many followers to analyze" = "Too many followers to analyze";
+"Unfollow" = "Unfollow";
+"Unfollow @%@?" = "Unfollow @%@?";
+"Unfollowed you since last scan" = "Unfollowed you since last scan";
+"Username, name or picture changes" = "Username, name or picture changes";
+"Username: @%@ → @%@" = "Username: @%@ → @%@";
+"We refuse to run when the follower count exceeds %ld to avoid Instagram rate limits." = "We refuse to run when the follower count exceeds %ld to avoid Instagram rate limits.";
+"You both follow each other" = "You both follow each other";
+"You don't follow back" = "You don't follow back";
+"You follow them, they don't follow back" = "You follow them, they don't follow back";
+"You started following" = "You started following";
+"You unfollowed" = "You unfollowed";
+
+"%@ %lu accounts? The first %ld will be processed to avoid rate limits." = "%@ %lu accounts? The first %ld will be processed to avoid rate limits.";
+"%@ %lu accounts? This runs sequentially with a short pause between each." = "%@ %lu accounts? This runs sequentially with a short pause between each.";
+"%lu account(s) · %lu snapshot(s) · tap to inspect" = "%lu account(s) · %lu snapshot(s) · tap to inspect";
+"%lu accounts followed" = "%lu accounts followed";
+"%lu accounts unfollowed" = "%lu accounts unfollowed";
+"%lu entries across %lu lists · tap to inspect" = "%lu entries across %lu lists · tap to inspect";
+"%lu preferences · tap to inspect" = "%lu preferences · tap to inspect";
+"(empty)" = "(empty)";
+"(no analyzer data)" = "(no analyzer data)";
+"(no lists)" = "(no lists)";
+"About Profile Analyzer" = "About Profile Analyzer";
+"All preferences (%lu)" = "All preferences (%lu)";
+"Apply imported data?" = "Apply imported data?";
+"Batch follow" = "Batch follow";
+"Batch follow finished" = "Batch follow finished";
+"Batch unfollow" = "Batch unfollow";
+"Batch unfollow finished" = "Batch unfollow finished";
+"Continue" = "Continue";
+"Current snapshot" = "Current snapshot";
+"Embed domains" = "Embed domains";
+"Excluded lists" = "Excluded lists";
+"Excluded story users" = "Excluded story users";
+"Existing values for the selected scope will be replaced. The app may need to restart for some changes to take effect." = "Existing values for the selected scope will be replaced. The app may need to restart for some changes to take effect.";
+"Export" = "Export";
+"File has no importable sections." = "File has no importable sections.";
+"File is not a valid RyukGram export." = "File is not a valid RyukGram export.";
+"Filter" = "Filter";
+"First scan: we collect your followers and following lists and save them locally." = "First scan: we collect your followers and following lists and save them locally.";
+"Follow %lu" = "Follow %lu";
+"Followers" = "Followers";
+"Following… %lu / %lu" = "Following… %lu / %lu";
+"Full name" = "Full name";
+"Heads up: this feature is in beta and hits Instagram's private API. Running it back-to-back or right after heavy follow/unfollow activity can trigger a short rate-limit. Use it sparingly and at your own risk." = "Heads up: this feature is in beta and hits Instagram's private API. Running it back-to-back or right after heavy follow/unfollow activity can trigger a short rate-limit. Use it sparingly and at your own risk.";
+"Import complete" = "Import complete";
+"Include" = "Include";
+"Included story users" = "Included story users";
+"Inspect the full payload" = "Inspect the full payload";
+"Keep scan history" = "Keep scan history";
+"Large accounts are blocked: analysis is disabled above 13,000 followers to avoid Instagram rate-limiting the whole app." = "Large accounts are blocked: analysis is disabled above 13,000 followers to avoid Instagram rate-limiting the whole app.";
+"Not verified only" = "Not verified only";
+"Nothing is uploaded — everything stays on this device and can be wiped from the trash icon." = "Nothing is uploaded — everything stays on this device and can be wiped from the trash icon.";
+"Nothing was applied." = "Nothing was applied.";
+"Posts" = "Posts";
+"Preferences" = "Preferences";
+"Previous snapshot" = "Previous snapshot";
+"Private only" = "Private only";
+"Profile Analyzer data" = "Profile Analyzer data";
+"Raw" = "Raw";
+"Raw JSON" = "Raw JSON";
+"Reset analyzer data" = "Reset analyzer data";
+"Reset complete" = "Reset complete";
+"Reset selected data?" = "Reset selected data?";
+"Second scan onward: each scan compares against the last, so we can show gained/lost followers, your own follow/unfollow moves, and profile updates." = "Second scan onward: each scan compares against the last, so we can show gained/lost followers, your own follow/unfollow moves, and profile updates.";
+"Select all" = "Select all";
+"Selected data will be cleared. Tap any row to see what's stored." = "Selected data will be cleared. Tap any row to see what's stored.";
+"Settings" = "Settings";
+"Sort" = "Sort";
+"This can't be undone." = "This can't be undone.";
+"Tick what to apply. Tap any row to inspect. Sections not in the file are disabled." = "Tick what to apply. Tap any row to inspect. Sections not in the file are disabled.";
+"Tick what to include. Tap any row to inspect its contents." = "Tick what to include. Tap any row to inspect its contents.";
+"Unfollow %lu" = "Unfollow %lu";
+"Unfollowing… %lu / %lu" = "Unfollowing… %lu / %lu";
+"Username A → Z" = "Username A → Z";
+"Username Z → A" = "Username Z → A";
+"Verified only" = "Verified only";
+"When on, scans compare against your first scan so new/lost followers and profile updates don't disappear between scans." = "When on, scans compare against your first scan so new/lost followers and profile updates don't disappear between scans.";
 
 //////////////////////////////////////////////////////////////////////////////
 //                         SETTINGS VIEWS & DIALOGS                         //
@@ -756,72 +1009,62 @@
 
 "Add chat" = "Add chat";
 "Add custom domain" = "Add custom domain";
+"Add preset…" = "Add preset…";
 "Add to list?" = "Add to list?";
 "Add user" = "Add user";
-"Could not resolve user ID" = "Could not resolve user ID";
-"Enter username" = "Enter username";
-"Enter username of the DM thread" = "Enter username of the DM thread";
-"No DM thread found with @%@" = "No DM thread found with @%@";
-"User '%@' not found" = "User '%@' not found";
-"Add preset…" = "Add preset…";
-"All RyukGram settings will be reset to defaults and the imported values applied. The app will need to restart for some changes to take effect." = "All RyukGram settings will be reset to defaults and the imported values applied. The app will need to restart for some changes to take effect.";
 "Apply" = "Apply";
-"Apply imported settings?" = "Apply imported settings?";
 "Apply to" = "Apply to";
 "Chats" = "Chats";
 "Could not read file." = "Could not read file.";
+"Could not resolve user ID" = "Could not resolve user ID";
 "Could not write temporary file." = "Could not write temporary file.";
 "Current location" = "Current location";
 "Custom" = "Custom";
 "Date Format" = "Date Format";
 "Delete" = "Delete";
-"Done editing" = "Done editing";
-"Edit values" = "Edit values";
 "Enable fake location" = "Enable fake location";
-"Every RyukGram preference will revert to its built-in default. This can't be undone." = "Every RyukGram preference will revert to its built-in default. This can't be undone.";
+"Enter username" = "Enter username";
+"Enter username of the DM thread" = "Enter username of the DM thread";
 "Excluded chats" = "Excluded chats";
 "Excluded users" = "Excluded users";
-"File is not a valid RyukGram settings export." = "File is not a valid RyukGram settings export.";
 "Follow default" = "Follow default";
 "Force OFF (allow unsends)" = "Force OFF (allow unsends)";
 "Force ON (preserve unsends)" = "Force ON (preserve unsends)";
-"Form view" = "Form view";
 "Format" = "Format";
 "Import failed" = "Import failed";
-"Import preview" = "Import preview";
 "Included chats" = "Included chats";
 "Included users" = "Included users";
-"KD: ON" = "KD: ON";
 "KD: default" = "KD: default";
+"KD: ON" = "KD: ON";
 "Keep-deleted" = "Keep-deleted";
 "Keep-deleted override" = "Keep-deleted override";
+"Name (A–Z)" = "Name (A–Z)";
+"No DM thread found with @%@" = "No DM thread found with @%@";
 "Off" = "Off";
-"On" = "On";
 "Presets" = "Presets";
-"Raw JSON view" = "Raw JSON view";
-"Remove Selected" = "Remove Selected";
+"Recently added" = "Recently added";
 "Remove from list" = "Remove from list";
+"Remove Selected" = "Remove Selected";
 "Reset" = "Reset";
-"Reset all settings?" = "Reset all settings?";
 "Saved presets are reusable. Tap a preset to make it the active location." = "Saved presets are reusable. Tap a preset to make it the active location.";
+"Search" = "Search";
 "Search address or place" = "Search address or place";
 "Search by name or username" = "Search by name or username";
 "Search by username or name" = "Search by username or name";
-"Search settings" = "Search settings";
 "Select" = "Select";
 "Select location on map" = "Select location on map";
 "Set current location" = "Set current location";
 "Set keep-deleted override" = "Set keep-deleted override";
 "Settings exported" = "Settings exported";
-"Settings imported" = "Settings imported";
+"Show map button" = "Show map button";
 "Show seconds" = "Show seconds";
 "Sort by" = "Sort by";
 "Story users" = "Story users";
 "Toggle each NSDate formatter IG uses. Different surfaces (feed, comments, stories, DMs) go through different methods — enable the ones you want the custom format applied to." = "Toggle each NSDate formatter IG uses. Different surfaces (feed, comments, stories, DMs) go through different methods — enable the ones you want the custom format applied to.";
 "Use this location" = "Use this location";
-"When on, all CoreLocation requests inside Instagram return the location below." = "When on, all CoreLocation requests inside Instagram return the location below.";
+"User '%@' not found" = "User '%@' not found";
+"Username (A–Z)" = "Username (A–Z)";
 "When on, all CoreLocation requests inside Instagram return the location below. Toggle the map button to show or hide the quick toggle on the Friends Map view." = "When on, all CoreLocation requests inside Instagram return the location below. Toggle the map button to show or hide the quick toggle on the Friends Map view.";
-"Show map button" = "Show map button";
 
 //////////////////////////////////////////////////////////////////////////////
 //                             REELS (FEATURES)                             //
@@ -857,6 +1100,7 @@
 
 "720p • progressive • fastest" = "720p • progressive • fastest";
 "Are you sure?" = "Are you sure?";
+"Bundle" = "Bundle";
 "Copy audio URL" = "Copy audio URL";
 "Copy quality info" = "Copy quality info";
 "Copy video URL" = "Copy video URL";
@@ -869,11 +1113,14 @@
 "Could not extract video url from reel" = "Could not extract video url from reel";
 "Could not extract video url from story" = "Could not extract video url from story";
 "Download Quality" = "Download Quality";
+"Extras" = "Extras";
 "FFmpegKit Debug" = "FFmpegKit Debug";
 "Later" = "Later";
 "No!" = "No!";
+"OK" = "OK";
 "Restart" = "Restart";
 "Restart required" = "Restart required";
+"username" = "username";
 "Yes" = "Yes";
 "You must restart the app to apply this change" = "You must restart the app to apply this change";
 
@@ -882,45 +1129,58 @@
 // Strings from the About / Credits footer of Settings.                     //
 //////////////////////////////////////////////////////////////////////////////
 
-"%@ — view source, report issues, see releases" = "%@ — view source, report issues, see releases";
+"%@ — GitHub & Telegram" = "%@ — GitHub & Telegram";
+"About" = "About";
+"Arabic translation" = "Arabic translation";
+"Chinese (Traditional) translation" = "Chinese (Traditional) translation";
 "Credits" = "Credits";
-"Developer" = "Developer";
+"Developers" = "Developers";
 "Donate to SoCuul" = "Donate to SoCuul";
+"installed" = "installed";
+"Korean translation" = "Korean translation";
+"latest" = "latest";
+"Links" = "Links";
+"No releases" = "No releases";
 "Original SCInsta developer" = "Original SCInsta developer";
-"Ryuk" = "Ryuk";
-"RyukGram %@\n\nInstagram v%@\n\nBased on SCInsta by SoCuul" = "RyukGram %@\n\nInstagram v%@\n\nBased on SCInsta by SoCuul";
-"RyukGram on GitHub" = "RyukGram on GitHub";
-"SoCuul" = "SoCuul";
+"Release notes" = "Release notes";
+"Releases" = "Releases";
+"Report an issue" = "Report an issue";
+"Russian translation" = "Russian translation";
+"RyukGram developer" = "RyukGram developer";
+"Join Telegram channel" = "Join Telegram channel";
+"Source code" = "Source code";
+"View on GitHub" = "View on GitHub";
+"Spanish translation" = "Spanish translation";
 "Support the original developer" = "Support the original developer";
-"View Repo" = "View Repo";
-"View the source code on GitHub" = "View the source code on GitHub";
+"Telegram channel" = "Telegram channel";
+"Testing and feature suggestions" = "Testing and feature suggestions";
+"Tweak settings" = "Tweak settings";
+"Version" = "Version";
+"Version, credits, and links" = "Version, credits, and links";
+"What's new in RyukGram" = "What's new in RyukGram";
 
 //////////////////////////////////////////////////////////////////////////////
 //                             HD DOWNLOADS                                 //
 // Enhanced / HD downloads settings (DASH + FFmpegKit encoding).            //
 //////////////////////////////////////////////////////////////////////////////
 
+"720p • progressive • silent" = "720p • progressive • silent";
+"Audio extract failed" = "Audio extract failed";
+"Audio only" = "Audio only";
+"Audio ready" = "Audio ready";
 "Download video at the highest available quality" = "Download video at the highest available quality";
 "Downloads HD video via DASH streams and encodes to H.264. Requires FFmpegKit." = "Downloads HD video via DASH streams and encodes to H.264. Requires FFmpegKit.";
 "Encoding speed" = "Encoding speed";
 "Enhanced downloads" = "Enhanced downloads";
-"FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable." = "FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable.";
 "Faster = lower quality" = "Faster = lower quality";
+"FFmpeg not available" = "FFmpeg not available";
+"FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable." = "FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable.";
+"No audio stream available" = "No audio stream available";
+"No audio track found" = "No audio track found";
+"Photo" = "Photo";
 "Photo quality" = "Photo quality";
+"Raw image (no audio, no video)" = "Raw image (no audio, no video)";
+"silent" = "silent";
 "Use highest resolution available" = "Use highest resolution available";
 "Video quality" = "Video quality";
 "Which quality to download" = "Which quality to download";
-
-//////////////////////////////////////////////////////////////////////////////
-//                           EXPERIMENTAL / DEBUG                           //
-// Placeholder rows only shown in the experimental settings sandbox.        //
-//////////////////////////////////////////////////////////////////////////////
-
-"Navigation Cell" = "Navigation Cell";
-"Localization" = "Localization";
-"Update localization file" = "Update localization file";
-"Import a .strings file for a language" = "Import a .strings file for a language";
-"Import a .strings file to update a translation. Pick a language, select the file, restart." = "Import a .strings file to update a translation. Pick a language, select the file, restart.";
-"Export English strings" = "Export English strings";
-"Share the base English .strings file for translating" = "Share the base English .strings file for translating";
-

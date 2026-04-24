@@ -157,7 +157,7 @@ void sciTriggerStoryMarkSeen(UIViewController *storyVC) {
     Class overlayCls = NSClassFromString(@"IGStoryFullscreenOverlayView");
     if (!overlayCls) overlayCls = NSClassFromString(@"IGStoryFullscreenOverlayMetalLayerView");
     if (!overlayCls) return;
-    SEL markSel = @selector(sciMarkSeenTapped:);
+    SEL markSel = @selector(sciStoryMarkSeenTapped:);
     NSMutableArray *stack = [NSMutableArray arrayWithObject:storyVC.view];
     while (stack.count) {
         UIView *v = stack.lastObject; [stack removeLastObject];

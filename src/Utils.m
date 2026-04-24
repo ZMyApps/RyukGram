@@ -32,55 +32,6 @@ static NSDictionary *sciRegisteredDefaultsRef = nil;
     return setting ? true : fallback;
 }
 
-+ (void)cleanCache {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSMutableArray<NSError *> *deletionErrors = [NSMutableArray array];
-
-    // Temp folder
-    // * disabled bc app crashed trying to delete certain files inside it
-    // todo: remove the above disclaimer if this new code doesn't cause crashing
-    NSArray *tempFolderContents = [fileManager contentsOfDirectoryAtURL:[NSURL fileURLWithPath:NSTemporaryDirectory()] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:nil];
-
-    for (NSURL *fileURL in tempFolderContents) {
-        NSError *cacheItemDeletionError;
-        [fileManager removeItemAtURL:fileURL error:&cacheItemDeletionError];
-
-        if (cacheItemDeletionError) [deletionErrors addObject:cacheItemDeletionError];
-    }
-
-    // Analytics folder
-    NSString *analyticsFolder = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"Application Support/com.burbn.instagram/analytics"];
-    NSArray *analyticsFolderContents = [fileManager contentsOfDirectoryAtURL:[[NSURL alloc] initFileURLWithPath:analyticsFolder] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:nil];
-
-    for (NSURL *fileURL in analyticsFolderContents) {
-        NSError *cacheItemDeletionError;
-        [fileManager removeItemAtURL:fileURL error:&cacheItemDeletionError];
-
-        if (cacheItemDeletionError) [deletionErrors addObject:cacheItemDeletionError];
-    }
-    
-    // Caches folder
-    NSString *cachesFolder = [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"Caches"];
-    NSArray *cachesFolderContents = [fileManager contentsOfDirectoryAtURL:[[NSURL alloc] initFileURLWithPath:cachesFolder] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:nil];
-    
-    for (NSURL *fileURL in cachesFolderContents) {
-        NSError *cacheItemDeletionError;
-        [fileManager removeItemAtURL:fileURL error:&cacheItemDeletionError];
-
-        if (cacheItemDeletionError) [deletionErrors addObject:cacheItemDeletionError];
-    }
-
-    // Log errors
-    if (deletionErrors.count > 1) {
-
-        for (NSError *error in deletionErrors) {
-            NSLog(@"[SCInsta] File Deletion Error: %@", error);
-        }
-
-    }
-
-}
-
 // Displaying View Controllers
 + (void)showQuickLookVC:(NSArray<id> *)items {
     UIViewController *topVC = topMostController();
@@ -192,45 +143,122 @@ static NSDictionary *sciRegisteredDefaultsRef = nil;
 }
 
 // Media
+
+// fieldCache fallback — reads the Pando-backed dict directly for when
+// IG's exposed property accessors break between versions.
+static id sciFieldCacheValue(id obj, NSString *key) {
+    if (!obj || !key.length) return nil;
+    Ivar iv = NULL;
+    for (Class c = [obj class]; c && !iv; c = class_getSuperclass(c))
+        iv = class_getInstanceVariable(c, "_fieldCache");
+    if (!iv) return nil;
+    @try {
+        NSDictionary *dict = object_getIvar(obj, iv);
+        if (![dict isKindOfClass:[NSDictionary class]]) return nil;
+        return dict[key];
+    } @catch (__unused id e) { return nil; }
+}
+
 + (NSURL *)getPhotoUrl:(IGPhoto *)photo {
     if (!photo) return nil;
-
-    // Get highest quality photo link
-    NSURL *photoUrl = [photo imageURLForWidth:100000.00];
-
-    return photoUrl;
+    @try {
+        if ([photo respondsToSelector:@selector(imageURLForWidth:)]) {
+            NSURL *url = [photo imageURLForWidth:100000.00];
+            if (url) return url;
+        }
+    } @catch (__unused NSException *e) {}
+    return nil;
 }
+
 + (NSURL *)getPhotoUrlForMedia:(IGMedia *)media {
     if (!media) return nil;
 
-    IGPhoto *photo = media.photo;
+    // fieldCache first — IGPhoto selectors crash on newer IG builds.
+    @try {
+        NSDictionary *imageVersions = sciFieldCacheValue(media, @"image_versions2");
+        NSArray *candidates = [imageVersions isKindOfClass:[NSDictionary class]] ? imageVersions[@"candidates"] : nil;
+        if ([candidates isKindOfClass:[NSArray class]] && candidates.count) {
+            NSDictionary *best = nil;
+            NSInteger bestW = -1;
+            for (id c in candidates) {
+                if (![c isKindOfClass:[NSDictionary class]]) continue;
+                NSInteger w = [[c objectForKey:@"width"] integerValue];
+                if (w > bestW) { bestW = w; best = c; }
+            }
+            NSString *urlStr = best[@"url"] ?: [[candidates firstObject] objectForKey:@"url"];
+            if ([urlStr isKindOfClass:[NSString class]] && urlStr.length) {
+                return [NSURL URLWithString:urlStr];
+            }
+        }
+    } @catch (__unused NSException *e) {}
 
-    return [SCIUtils getPhotoUrl:photo];
+    IGPhoto *photo = nil;
+    @try {
+        if ([media respondsToSelector:@selector(photo)]) photo = media.photo;
+    } @catch (__unused NSException *e) {}
+    if (photo) return [SCIUtils getPhotoUrl:photo];
+    return nil;
 }
+
 + (NSURL *)getVideoUrl:(IGVideo *)video {
     if (!video) return nil;
 
-    // The past (pre v398)
-    if ([video respondsToSelector:@selector(sortedVideoURLsBySize)]) {
-        NSArray<NSDictionary *> *sorted = [video sortedVideoURLsBySize];
-        NSString *urlString = sorted.firstObject[@"url"];
-        return urlString.length ? [NSURL URLWithString:urlString] : nil;
-    }
+    @try {
+        if ([video respondsToSelector:@selector(sortedVideoURLsBySize)]) {
+            NSArray<NSDictionary *> *sorted = [video sortedVideoURLsBySize];
+            NSString *urlString = [sorted.firstObject isKindOfClass:[NSDictionary class]] ? sorted.firstObject[@"url"] : nil;
+            if ([urlString isKindOfClass:[NSString class]] && urlString.length) return [NSURL URLWithString:urlString];
+        }
+    } @catch (__unused NSException *e) {}
 
-    // The present (post v398)
-    if ([video respondsToSelector:@selector(allVideoURLs)]) {
-        return [[video allVideoURLs] anyObject];
-    }
-
+    @try {
+        if ([video respondsToSelector:@selector(allVideoURLs)]) {
+            id set = [video allVideoURLs];
+            if ([set respondsToSelector:@selector(anyObject)]) {
+                id obj = [set anyObject];
+                if ([obj isKindOfClass:[NSURL class]]) {
+                    NSString *abs = nil;
+                    @try { abs = [(NSURL *)obj absoluteString]; } @catch (__unused NSException *e) {}
+                    if (abs.length && ([abs hasPrefix:@"http"] || [abs hasPrefix:@"file:"])) {
+                        return [NSURL URLWithString:abs];
+                    }
+                } else if ([obj isKindOfClass:[NSString class]]) {
+                    NSString *s = (NSString *)obj;
+                    if (s.length && ([s hasPrefix:@"http"] || [s hasPrefix:@"file:"])) return [NSURL URLWithString:s];
+                }
+            }
+        }
+    } @catch (__unused NSException *e) {}
     return nil;
 }
+
 + (NSURL *)getVideoUrlForMedia:(IGMedia *)media {
     if (!media) return nil;
 
-    IGVideo *video = media.video;
-    if (!video) return nil;
+    // fieldCache first — IGVideo selectors crash on newer IG builds.
+    @try {
+        NSArray *versions = sciFieldCacheValue(media, @"video_versions");
+        if ([versions isKindOfClass:[NSArray class]] && versions.count) {
+            NSDictionary *best = nil;
+            NSInteger bestType = -1;
+            for (id v in versions) {
+                if (![v isKindOfClass:[NSDictionary class]]) continue;
+                NSInteger type = [[v objectForKey:@"type"] integerValue];
+                if (type > bestType) { bestType = type; best = v; }
+            }
+            NSString *urlStr = best[@"url"] ?: [[versions firstObject] objectForKey:@"url"];
+            if ([urlStr isKindOfClass:[NSString class]] && urlStr.length) {
+                return [NSURL URLWithString:urlStr];
+            }
+        }
+    } @catch (__unused NSException *e) {}
 
-    return [SCIUtils getVideoUrl:video];
+    IGVideo *video = nil;
+    @try {
+        if ([media respondsToSelector:@selector(video)]) video = media.video;
+    } @catch (__unused NSException *e) {}
+    if (video) return [SCIUtils getVideoUrl:video];
+    return nil;
 }
 
 // View Controllers
@@ -378,9 +406,41 @@ static NSDictionary *sciRegisteredDefaultsRef = nil;
 + (void)setIvarForObj:(id)obj name:(const char *)name value:(id)value {
     Ivar ivar = class_getInstanceVariable(object_getClass(obj), name);
     if (!ivar) return;
-    
+
     object_setIvarWithStrongDefault(obj, ivar, value);
 }
 
++ (id)activeUserSession {
+    for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+        if (![scene isKindOfClass:[UIWindowScene class]]) continue;
+        for (UIWindow *w in ((UIWindowScene *)scene).windows) {
+            @try {
+                id s = [w valueForKey:@"userSession"];
+                if (s) return s;
+            } @catch (__unused id e) {}
+        }
+    }
+    return nil;
+}
+
++ (NSString *)pkFromIGUser:(id)user {
+    if (!user) return nil;
+    Ivar pkIvar = NULL;
+    for (Class c = [user class]; c && !pkIvar; c = class_getSuperclass(c)) {
+        pkIvar = class_getInstanceVariable(c, "_pk");
+    }
+    if (!pkIvar) return nil;
+    id pk = object_getIvar(user, pkIvar);
+    return pk ? [pk description] : nil;
+}
+
++ (NSString *)currentUserPK {
+    id session = [self activeUserSession];
+    if (!session) return nil;
+    @try {
+        id user = [session valueForKey:@"user"];
+        return [self pkFromIGUser:user];
+    } @catch (__unused id e) { return nil; }
+}
 
 @end

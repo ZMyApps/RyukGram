@@ -1,0 +1,1187 @@
+/*
+ *  RyukGram — Localizable.strings  (English source of truth)
+ *  -------------------------------------------------------------------------
+ *
+ *  Every user-facing string in RyukGram goes through the macro
+ *      SCILocalized(@"English text here")
+ *  in the Objective-C source. The argument is BOTH the lookup key and the
+ *  English fallback, so if a translation is missing the user still sees
+ *  clean English — nothing ever breaks.
+ *
+ *
+ *  HOW TO ADD A NEW LANGUAGE
+ *  -------------------------------------------------------------------------
+ *
+ *  1. Copy this file into a new folder named after the language code:
+ *         src/Localization/Resources/<code>.lproj/Localizable.strings
+ *     e.g.  ar.lproj  (Arabic)
+ *           es.lproj  (Spanish)
+ *           fr.lproj  (French)
+ *  2. Translate the RIGHT-hand side of every `"key" = "value";` line.
+ *     Do NOT touch the left-hand side — that is the lookup key and must
+ *     stay identical to the English version, otherwise the app will never
+ *     find your translation.
+ *  3. Keep every format specifier (%@, %lu, %d, %lld, %1$@, …) exactly
+ *     as-is, in the same order. If you need to reorder them, switch to
+ *     positional specifiers (%1$@ %2$lu).
+ *  4. Keep embedded quotes escaped with a backslash: \" — and newlines
+ *     as \n.
+ *  5. Open a pull request at https://github.com/faroukbmiled/RyukGram/pulls
+ *     so we can ship the language in the next release.
+ *
+ *
+ *  HOW TO ADD A NEW STRING IN CODE
+ *  -------------------------------------------------------------------------
+ *
+ *  Just wrap the English text with SCILocalized(...) in the .m / .x / .xm
+ *  file — the helper resolves to the English text automatically when no
+ *  translation exists. Then add the same English text as BOTH the key and
+ *  the value inside the matching section below, e.g.
+ *
+ *      "Download all items" = "Download all items";
+ *
+ *  Translators copy that line into their own .lproj and translate only the
+ *  right-hand side.
+ *
+ *
+ *  FILE FORMAT NOTES
+ *  -------------------------------------------------------------------------
+ *
+ *  - UTF-8, LF line endings.
+ *  - Slash-star block comments and double-slash line comments both work.
+ *  - DO NOT nest one slash-star block comment inside another — the
+ *    parser will close the outer block at the first inner close marker
+ *    and every lookup in the file will silently fail.
+ *  - Keys and values are both quoted; every line ends with a semicolon.
+ */
+
+
+//////////////////////////////////////////////////////////////////////////////
+//               CHROME — TOP BAR, LANGUAGE PICKER, FIRST-RUN               //
+// Shown on the root Settings screen: title, search bar, the globe language //
+// menu, and the one-time welcome alert. These use dotted keys (settings.*) //
+// and are hand-authored rather than extracted from English source.         //
+//////////////////////////////////////////////////////////////////////////////
+
+"settings.firstrun.message" = "未來：在個人頁面右上角的三條線上長按，即可重新開啟 RyukGram 設定。";
+"settings.firstrun.ok" = "我了解了！";
+"settings.firstrun.title" = "RyukGram 設定資訊";
+"settings.language.english_only" = "RyukGram 目前僅內建英文。其他語言已接好接線等待翻譯 — 請依 README 的簡短指南協助翻譯。";
+"settings.language.help_translate" = "協助翻譯";
+"settings.language.ok" = "確定";
+"settings.language.system" = "系統預設";
+"settings.language.title" = "語言";
+"settings.results.many" = "%lu 筆結果";
+"settings.results.none" = "無結果";
+"settings.results.one" = "%lu 筆結果";
+"settings.search.placeholder" = "搜尋設定";
+"settings.title" = "RyukGram 設定";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                 GENERAL                                  //
+// Settings → General tab                                                   //
+//////////////////////////////////////////////////////////////////////////////
+
+"Adds a copy option to the comment long-press menu" = "在留言長按選單中新增複製選項";
+"Adds a download option for GIF comments" = "新增 GIF 留言下載選項";
+"Anonymous live viewing" = "匿名觀看直播";
+"Blocks the viewer-count heartbeat so the broadcaster doesn't see you — you also won't see the viewer count" = "封鎖觀眾數心跳，讓直播主看不到你 — 你也看不到觀眾數";
+"Browser" = "瀏覽器";
+"Comments" = "留言";
+"Copy comment text" = "複製留言文字";
+"Copy description" = "複製描述";
+"Copy description text fields by long-pressing on them" = "長按描述文字欄位即可複製";
+"Date format" = "日期格式";
+"Disable app haptics" = "關閉應用觸覺反饋";
+"Disables haptics/vibrations within the app" = "關閉應用內的觸覺/震動反饋";
+"Do not save recent searches" = "不儲存最近搜尋紀錄";
+"Download GIF comments" = "下載 GIF 留言";
+"Embed domain" = "嵌入網域";
+"Embed domain: %@" = "嵌入網域：%@";
+"Enable liquid glass buttons" = "啟用液態玻璃按鈕";
+"Enable liquid glass surfaces" = "啟用液態玻璃介面";
+"Enable teen app icons" = "啟用青少年應用程式圖示";
+"Enables experimental liquid glass buttons" = "啟用實驗性液態玻璃按鈕";
+"Enables liquid glass tab bar, floating navigation, and other UI elements" = "啟用液態玻璃標籤列、浮動導航及其他介面元素";
+"Experimental features" = "實驗性功能";
+"Focus/distractions" = "專注／分心";
+"General" = "一般";
+"Hide ads" = "隱藏廣告";
+"Hide explore posts grid" = "隱藏探索貼文網格";
+"Hide friends map" = "隱藏好友地圖";
+"Hide Meta AI" = "隱藏 Meta AI";
+"Hide metrics" = "隱藏指標";
+"Hide notes tray" = "隱藏筆記托盤";
+"Hide trending searches" = "隱藏熱門搜尋";
+"Hide UI on capture" = "錄影/截圖時隱藏 UI";
+"Hides all suggested users for you to follow, outside your feed" = "隱藏所有建議追蹤的用戶，位於動態牆外";
+"Hides like/comment/share counts on posts and reels" = "隱藏貼文和短片的喜歡／留言／分享數";
+"Hides the friends map icon in the notes tray" = "隱藏筆記托盤中的朋友地圖圖示";
+"Hides the grid of suggested posts on the explore/search tab" = "隱藏探索／搜尋分頁中的建議貼文網格";
+"Hides the meta ai buttons/functionality within the app" = "隱藏應用程式內的 Meta AI 按鈕／功能";
+"Hides the notes tray in the DM inbox" = "隱藏私訊收件匣中的筆記托盤";
+"Hides the suggested broadcast channels in direct messages" = "隱藏私訊中的建議廣播頻道";
+"Hides the trending searches under the explore search bar" = "隱藏探索搜尋列下方的熱門搜尋";
+"Hold down on the Instagram logo to change the app icon" = "長按 Instagram 標誌以更換應用程式圖示";
+"Live" = "直播";
+"Long press on the eyedropper tool in stories to customize the text color more precisely" = "在限時動態中長按吸管工具以更精確自訂文字顏色";
+"Long-press the heart button in a live to hide or show the comments" = "在直播中長按愛心按鈕以隱藏或顯示留言";
+"Long-press the search tab to open a copied Instagram link" = "長按搜尋分頁以開啟複製的 Instagram 連結";
+"No suggested chats" = "無建議聊天";
+"No suggested users" = "無建議用戶";
+"Notes" = "筆記";
+"Open app icon picker" = "開啟應用程式圖示選擇器";
+"Open link from clipboard" = "從剪貼簿開啟連結";
+"Open links in external browser" = "在外部瀏覽器開啟連結";
+"Opens links in Safari instead of Instagram's in-app browser" = "在 Safari 而非 Instagram 內建瀏覽器開啟連結";
+"Privacy" = "隱私";
+"Redacts RyukGram buttons from screenshots, screen recordings, and mirroring" = "從截圖、螢幕錄影及鏡像中隱藏 RyukGram 按鈕";
+"Removes all ads from the Instagram app" = "移除 Instagram 應用程式中的所有廣告";
+"Removes igsh, utm_source, and other tracking parameters from shared links" = "移除分享連結中的 igsh、utm_source 及其他追蹤參數";
+"Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs" = "移除 Instagram 追蹤包裝器（l.instagram.com）及 URL 中的 UTM／fbclid 參數";
+"Replace domain in shared links" = "替換分享連結中的網域";
+"Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker." = "將 IG 的相對時間戳記（\"3d ago\"）替換為自訂格式。可在選擇器中切換套用範圍。";
+"Rewrites copied/shared links to use an embed-friendly domain for previews in Discord, Telegram, etc." = "重寫複製／分享的連結，使用適合 Discord、Telegram 等預覽的嵌入友好網域";
+"Search bars will no longer save your recent searches" = "搜尋列將不再儲存您的近期搜尋紀錄";
+"Sharing" = "分享";
+"Strip tracking from links" = "移除連結中的追蹤";
+"Strip tracking params" = "移除追蹤參數";
+"Toggle live comments" = "切換直播留言";
+"Use detailed color picker" = "使用詳細色彩選擇器";
+
+//////////////////////////////////////////////////////////////////////////////
+//                               DATE FORMAT                                //
+// Settings → Date format tab                                               //
+//////////////////////////////////////////////////////////////////////////////
+
+"Alternate" = "替代";
+"Always ask" = "總是詢問";
+"Balanced" = "平衡";
+"Block all" = "全部封鎖";
+"Block selected" = "封鎖選取項目";
+"Button" = "按鈕";
+"Classic" = "經典";
+"Date format — %@" = "日期格式 — %@";
+"Default" = "預設";
+"Disabled" = "停用";
+"Download and share" = "下載並分享";
+"Download to Photos" = "下載至相簿";
+"Enabled" = "啟用";
+"Expand" = "展開";
+"Explore" = "探索";
+"Fast" = "快速";
+"Feed" = "動態消息";
+"High" = "高";
+"Inbox" = "收件箱";
+"Low" = "低";
+"Max" = "最大";
+"Medium" = "中等";
+"Mute/Unmute" = "靜音/取消靜音";
+"Open menu" = "打開選單";
+"Pause/Play" = "暫停/播放";
+"Profile" = "個人檔案";
+"Quality" = "畫質";
+"Reels" = "短片";
+"Requires restart" = "需要重新啟動";
+"Save to Photos" = "儲存到相簿";
+"Share sheet" = "分享表單";
+"Standard" = "標準";
+"Toggle" = "切換";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                   FEED                                   //
+// Settings → Feed tab                                                      //
+//////////////////////////////////////////////////////////////////////////////
+
+"Action button" = "動作按鈕";
+"Adds 'View profile picture' and 'View cover' to story tray long-press menus" = "在限時動態長按選單中新增「查看大頭貼」和「查看封面」";
+"Adds a RyukGram action button under each feed post with download/share/copy/expand/repost entries. Tap opens the menu by default; change the tap behavior below." = "在每則動態消息貼文下方新增 RyukGram 動作按鈕，包含下載／分享／複製／展開／轉貼選項。預設點擊會開啟選單；可於下方更改點擊行為。";
+"Controls when and how the feed refreshes. Background refresh occurs when returning to the app after ~10 minutes. Home button refresh occurs when tapping the Home tab while already on it." = "控制動態消息的刷新時間與方式。背景刷新會在約 10 分鐘後返回應用時執行。首頁按鈕刷新會在已在首頁標籤時點擊該標籤執行。";
+"Default tap action" = "預設點擊動作";
+"Disable background refresh" = "停用背景刷新";
+"Disable home button refresh" = "停用首頁按鈕刷新";
+"Disable home button scroll" = "停用首頁按鈕滾動";
+"Disable video autoplay" = "停用影片自動播放";
+"Hide" = "隱藏";
+"Hide entire feed" = "隱藏整個動態消息";
+"Hide repost button" = "隱藏轉貼按鈕";
+"Hide stories tray" = "隱藏限時動態列";
+"Hide suggested stories" = "隱藏建議的限時動態";
+"Hides suggested accounts" = "隱藏建議帳號";
+"Hides suggested reels" = "隱藏建議短片";
+"Hides suggested threads posts" = "隱藏建議的 Threads 貼文";
+"Hides the repost button on feed posts" = "隱藏動態消息貼文上的轉貼按鈕";
+"Hides the story tray at the top" = "隱藏頂部限時動態列";
+"Inserts a button row below like/comment/share on each post" = "在每則貼文的讚／留言／分享下方插入按鈕列";
+"Long press on media to expand in full-screen viewer" = "長按媒體以在全螢幕檢視器中展開";
+"Media" = "媒體";
+"Media zoom" = "媒體縮放";
+"No suggested for you" = "沒有為您推薦";
+"No suggested posts" = "沒有推薦的貼文";
+"No suggested reels" = "沒有推薦的短片";
+"No suggested threads" = "沒有推薦的串列";
+"Prevents feed from reloading when returning from background" = "防止從背景返回時重新載入動態消息";
+"Prevents videos from playing automatically" = "防止影片自動播放";
+"Refresh" = "重新整理";
+"Removes all content from your home feed" = "移除主頁動態中的所有內容";
+"Removes suggested accounts from the stories tray" = "從限時動態列移除推薦帳號";
+"Removes suggested posts" = "移除推薦貼文";
+"Scroll to top without refreshing when tapping Home" = "點擊首頁時捲動至頂端但不重新整理";
+"Show action button" = "顯示操作按鈕";
+"Stories tray" = "限時動態列";
+"Tapping Home does nothing when already on feed" = "已在動態頁時點擊首頁不執行任何操作";
+"Tray long-press actions" = "限時動態列長按操作";
+"What happens on a single tap. Long-press always opens the full menu" = "單擊時的動作。長按始終開啟完整選單";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                  REELS                                   //
+// Settings → Reels tab                                                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"Adds a RyukGram action button above the reel sidebar with view-cover/download/share/copy/expand/repost entries. Tap opens the menu by default; change the tap behavior below." = "在短片側邊欄上方新增 RyukGram 操作按鈕，包含觀看封面/下載/分享/複製/展開/轉貼項目。預設點擊開啟選單；可在下方更改點擊行為。";
+"Always show progress scrubber" = "始終顯示進度條";
+"Auto-scroll reels" = "自動捲動短片";
+"Change what happens when you tap on a reel" = "更改點擊短片時的動作";
+"Confirm reel refresh" = "確認短片重新整理";
+"Disable auto-unmuting reels" = "停用短片自動取消靜音";
+"Disable scrolling reels" = "停用短片捲動";
+"Disable tab button refresh" = "停用分頁按鈕重新整理";
+"Doom scrolling limit" = "限制無止盡捲動";
+"Forces the progress bar to appear on every reel" = "強制在每個短片上顯示進度條";
+"Hide reels header" = "隱藏短片標題列";
+"Hides the repost button on the reels sidebar" = "隱藏短片側邊欄的轉貼按鈕";
+"Hides the top navigation bar when watching reels" = "觀看短片時隱藏頂部導覽列";
+"Hiding" = "隱藏";
+"IG default" = "IG 預設";
+"IG default: native behavior. RyukGram: re-advances after swiping back." = "IG 預設：原生行為。RyukGram：在向後滑動後會重新前進。";
+"Limits" = "限制";
+"Limits the amount of reels available to scroll at any given time, and prevents refreshing" = "限制同時可捲動的短片數量，並防止重新整理";
+"Only loads %@ %@" = "只載入 %@ %@";
+"Places a button above the like/comment/share column on each reel" = "在每個短片的按讚/留言/分享欄上方放置一個按鈕";
+"Prevent doom scrolling" = "防止無止盡捲動";
+"Prevents reels from being scrolled to the next video" = "防止短片捲動至下一支影片";
+"Prevents reels from unmuting when the volume/silent button is pressed" = "按下音量/靜音按鈕時防止短片取消靜音";
+"RyukGram" = "RyukGram";
+"Shows an alert when you trigger a reels refresh" = "觸發短片重新整理時顯示警告";
+"Shows buttons to reveal and auto-fill the password on locked reels" = "顯示按鈕以揭露並自動填入鎖定短片的密碼";
+"Tap Controls" = "點擊控制";
+"Tap to mute on photo reels" = "點擊圖片短片以靜音";
+"Tapping the Reels tab while on reels does nothing" = "在短片頁面點擊短片標籤無反應";
+"Unlock password-locked reels" = "解鎖密碼保護的短片";
+"When pause mode is on, tap on photo reels toggles audio instead of the native pause gesture" = "啟用暫停模式時，點擊圖片短片會切換音訊，而非原生的暫停手勢";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                 PROFILE                                  //
+// Settings → Profile tab                                                   //
+//////////////////////////////////////////////////////////////////////////////
+
+"Adds a button next to the burger menu on profiles to copy username, name or bio" = "在個人檔案的漢堡選單旁新增按鈕，可複製用戶名、名稱或簡介";
+"Adds a view option to the highlight long-press menu to open the cover in full-screen" = "在精選長按選單新增檢視選項，可全螢幕開啟封面";
+"Copy note on long press" = "長按複製備註";
+"Fake follower count" = "偽造粉絲數";
+"Fake following count" = "偽造追蹤數";
+"Fake post count" = "偽造貼文數";
+"Fake profile stats" = "偽造個人檔案數據";
+"Fake verified badge" = "偽造認證徽章";
+"Follow indicator" = "追蹤指示器";
+"Follower count" = "粉絲數";
+"Following count" = "追蹤數";
+"Long press a profile picture to open it in full-screen with zoom, share, and save" = "長按個人檔案圖片可全螢幕開啟，並支援縮放、分享與儲存";
+"Long press the note bubble on a profile to copy the text" = "長按個人檔案上的備註氣泡以複製文字";
+"Long press to download directly (ignored when zoom is on)" = "長按直接下載（啟用縮放時忽略）";
+"Long-press gestures on profile elements — kept separate from the per-feature action buttons." = "個人檔案元素的長按手勢 — 與每項功能的操作按鈕分開維護。";
+"Only affects your own profile header. Other users see the real numbers." = "僅影響你自己的個人檔案頁首。其他用戶看到的是真實數字。";
+"Post count" = "貼文數";
+"Profile copy button" = "個人檔案複製按鈕";
+"Save profile picture" = "儲存個人檔案圖片";
+"Show a checkmark next to your name on your own profile" = "在你自己的個人檔案名稱旁顯示打勾符號";
+"Shows whether the profile user follows you" = "顯示該用戶是否追蹤你";
+"Tap to set" = "點擊以設定";
+"View highlight cover" = "檢視精選封面";
+"Zoom profile photo" = "縮放個人檔案照片";
+
+//////////////////////////////////////////////////////////////////////////////
+//                            SAVING & DOWNLOADS                            //
+// Settings → Saving tab                                                    //
+//////////////////////////////////////////////////////////////////////////////
+
+"Confirm before download" = "下載前確認";
+"Deprecated. The RyukGram action button (configured per feature in Feed/Reels/Stories) is the new way to download media. Enable this master toggle only if you prefer the old multi-finger long-press directly on the media." = "已棄用。RyukGram 動作按鈕（在動態/短片/限時動態中依功能設定）是下載媒體的新方式。僅當你偏好舊版多指長按直接下載媒體時，才啟用此主開關。";
+"Downloads" = "下載";
+"Downloads with %@ %@" = "下載 %@ %@";
+"Enable long-press gesture" = "啟用長按手勢";
+"Finger count for long-press" = "長按所需手指數";
+"Legacy long-press gesture" = "舊版長按手勢";
+"Long-press hold time" = "長按持續時間";
+"Master toggle for the deprecated gesture workflow (off by default)" = "已棄用手勢流程的主開關（預設關閉）";
+"Press finger(s) for %@ %@" = "按壓 %@ %@ 手指";
+"Route saves into a dedicated album in Photos instead of the camera roll root" = "將儲存路徑導向專用相簿，而非相機膠卷根目錄";
+"Save action" = "儲存動作";
+"Save to RyukGram album" = "儲存至 RyukGram 相簿";
+"Saving" = "儲存中";
+"Show a confirmation dialog before starting a download" = "開始下載前顯示確認對話框";
+"What happens after the gesture downloads" = "手勢下載後的動作";
+"When \"Save to RyukGram album\" is on, downloads and share-sheet \"Save to Photos\" picks are routed into a dedicated \"RyukGram\" album in your Photos library." = "啟用 \"儲存至 RyukGram 相簿\" 時，下載及分享選單中的 \"儲存至照片\" 將導向你照片庫中的專用 \"RyukGram\" 相簿。";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                 STORIES                                  //
+// Settings → Stories tab                                                   //
+//////////////////////////////////////////////////////////////////////////////
+
+"Adds a RyukGram action button next to the eye button on stories with download/share/copy/expand/repost/view-mentions entries. Tap opens the menu by default; change the tap behavior below." = "在限時動態的觀看按鈕旁新增 RyukGram 動作按鈕，包含下載/分享/複製/展開/轉發/查看提及等選項。預設點擊開啟選單；可在下方更改點擊行為。";
+"Adds a speaker button to the story overlay to unmute/mute audio. Also available in the 3-dot menu" = "在限時動態覆蓋層新增喇叭按鈕，可靜音/取消靜音音訊。此功能亦可在三點選單中使用";
+"Advance on story like" = "按讚後自動切換限時動態";
+"Advance on story reply" = "回覆後自動切換限時動態";
+"Advance when marking as seen" = "標記為已看後自動切換限時動態";
+"Audio" = "音訊";
+"Block all: all stories blocked — listed users are exceptions.\nBlock selected: only listed users are blocked — everything else is normal.\nBoth lists are saved independently." = "全部封鎖：封鎖所有限時動態 — 列表用戶為例外。\n選擇封鎖：僅封鎖列表用戶 — 其他正常。\n兩個列表獨立儲存。";
+"Blocking mode" = "封鎖模式";
+"Button = single-tap mark seen. Toggle = tap toggles story read receipts on/off (eye fills blue when on)" = "按鈕 = 單擊標記已查看。切換 = 點擊切換故事已讀回條開/關（開啟時眼睛填滿藍色）";
+"Disable instants creation" = "停用即時創建";
+"Disable story seen receipt" = "停用故事已讀回條";
+"Enable story user list" = "啟用故事用戶列表";
+"Hides the functionality to create/send instants" = "隱藏創建/發送即時訊息的功能";
+"Hides the notification for others when you view their story" = "隱藏你查看他人故事時的通知";
+"Inserts a button next to the seen/eye button on story overlays" = "在故事覆蓋層的已查看/眼睛按鈕旁插入一個按鈕";
+"Keep stories visually seen locally" = "在本機保留限時動態為已觀看";
+"Liking a story automatically advances to the next one after a short delay" = "喜歡故事後短暫延遲自動跳到下一則";
+"Manage list" = "管理列表";
+"Manage list (%lu)" = "管理列表 (%lu)";
+"Manual seen button mode" = "手動已查看按鈕模式";
+"Mark seen on story like" = "喜歡故事時標記為已查看";
+"Mark seen on story reply" = "回覆故事時標記為已查看";
+"Marks a story as seen the moment you tap the heart, even with seen blocking on" = "點擊愛心時即標記故事為已查看，即使啟用已查看封鎖";
+"Marks a story as seen when you send a reply or emoji reaction, even with seen blocking on" = "發送回覆或表情反應時標記故事為已查看，即使啟用已查看封鎖";
+"Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server" = "在本機標記限時動態為已觀看（灰圈），同時仍封鎖伺服器端的已讀回條";
+"Master toggle. When off, the list is ignored" = "主開關。關閉時忽略列表";
+"Other" = "其他";
+"Playback" = "播放";
+"Quick list button in stories" = "故事中的快速列表按鈕";
+"Search, sort, swipe to remove" = "搜尋、排序、滑動移除";
+"Seen receipts" = "已讀回條";
+"Sending a reply or emoji reaction automatically advances to the next story" = "發送回覆或表情反應後自動跳到下一則故事";
+"Show mentioned users in eye button and story menu" = "在眼睛按鈕和故事選單中顯示被提及的用戶";
+"Shows an eye button on stories to add/remove users from the list. Off = use the 3-dot menu or long-press only" = "在故事上顯示眼睛按鈕以新增/移除用戶。關閉 = 僅使用三點選單或長按";
+"Stickers" = "貼圖";
+"Peek at poll/quiz/slider results before interacting — you can still tap to vote normally. Force Quiz brings the legacy Quiz sticker back into the story composer tray." = "在互動前預覽投票／測驗／滑桿結果 — 仍可照常點擊投票。「強制測驗」會將舊版測驗貼圖加回限動製作工具列。";
+"Peek at poll/quiz/slider results on reels before interacting — you can still tap to vote normally." = "在 Reels 互動前預覽投票／測驗／滑桿結果 — 仍可照常點擊投票。";
+"Force Quiz sticker in tray" = "強制顯示測驗貼圖";
+"Adds Quiz back to the story sticker picker" = "將測驗加回限動貼圖選擇器";
+"Show quiz answer" = "顯示測驗答案";
+"Circle the correct option on quiz stickers, or the leading option on polls" = "圈選測驗貼圖中的正確選項，或投票中得票最多的選項";
+"Show poll vote counts" = "顯示投票計數";
+"Show vote tallies on poll options and slider count/average before you vote" = "在投票前顯示投票選項的票數以及滑桿的平均／計數";
+"Stop story auto-advance" = "停止故事自動跳轉";
+"Stories" = "故事";
+"Stories won't auto-skip to the next one when the timer ends. Tap to advance manually" = "故事計時結束時不會自動跳到下一則。點擊手動前進";
+"Story audio toggle" = "故事音訊切換";
+"Story user list" = "故事用戶列表";
+"Tapping the eye button to mark a story as seen advances to the next story automatically" = "點擊眼睛按鈕標記故事為已查看後自動跳到下一則故事";
+"View story mentions" = "查看故事提及";
+"Which stories get seen-receipt blocking" = "哪些故事會封鎖已讀回條";
+
+//////////////////////////////////////////////////////////////////////////////
+//                         MESSAGES — READ RECEIPTS                         //
+// Settings → Read receipts tab                                             //
+//////////////////////////////////////////////////////////////////////////////
+
+"Adds a button to DM threads to mark messages as seen" = "在私訊串中新增標記訊息為已查看的按鈕";
+"Auto mark seen on interact" = "互動時自動標記為已查看";
+"Auto mark seen on typing" = "輸入時自動標記為已查看";
+"Control when messages are marked as seen" = "控制訊息何時標記為已查看";
+"How the seen button behaves" = "已查看按鈕的行為方式";
+"Manually mark messages as seen" = "手動標記訊息為已讀";
+"Marks messages as seen when you send any message" = "當你發送任何訊息時標記訊息為已讀";
+"Marks messages as seen when you start typing" = "當你開始輸入時標記訊息為已讀";
+"Read receipt mode" = "已讀回條模式";
+"Read receipts" = "已讀回條";
+
+//////////////////////////////////////////////////////////////////////////////
+//                         MESSAGES — KEEP DELETED                          //
+// Settings → Keep deleted messages tab                                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"Activity" = "活動";
+"Adds a 'Download' option to the long-press menu on voice messages to save them as M4A audio" = "在語音訊息的長按選單中新增「下載」選項，以儲存為 M4A 音訊檔";
+"Adds a 'Send File' option to the plus menu in DMs. Supported file types may be limited by Instagram" = "在私訊的加號選單中新增「傳送檔案」選項。支援的檔案類型可能受 Instagram 限制";
+"Adds an 'Audio File' option to the plus menu in DMs to send audio files as voice messages" = "在私訊的加號選單中新增「音訊檔案」選項，以語音訊息形式傳送音訊檔案";
+"Adds copy text, download GIF/audio to the note long-press menu" = "在備註的長按選單中新增複製文字、下載 GIF/音訊功能";
+"Block all: all chats blocked — listed chats are exceptions.\nBlock selected: only listed chats are blocked — everything else is normal.\nBoth lists are saved independently. Long-press a chat in the inbox to add or remove." = "全部封鎖：所有聊天封鎖 — 列出的聊天為例外。\n選擇封鎖：僅封鎖列出的聊天 — 其他皆正常。\n兩個列表獨立儲存。長按收件匣中的聊天以新增或移除。";
+"Block keep-deleted for excluded chats" = "對排除的聊天封鎖保留刪除訊息";
+"Block keep-deleted for unlisted chats" = "對未列出的聊天封鎖保留刪除訊息";
+"Chat list" = "聊天列表";
+"Confirmation dialog before clearing preserved messages" = "清除保留訊息前的確認對話框";
+"Copies note text directly on long press without opening the menu" = "長按直接複製備註文字，不開啟選單";
+"Copy text on hold" = "長按複製文字";
+"Custom emojis and background/text colors" = "自訂表情符號及背景/文字顏色";
+"Custom note themes" = "自訂備註主題";
+"Disable vanish mode swipe" = "停用 Vanish 模式滑動手勢";
+"Disable screenshot detection" = "停用截圖偵測";
+"Disable typing status" = "停用輸入狀態";
+"Disable view-once limitations" = "停用一次觀看限制";
+"Download voice messages" = "下載語音訊息";
+"Enable chat list" = "啟用聊天列表";
+"Enable note theming" = "啟用備註主題功能";
+"Enables the notes theme picker" = "啟用備註主題選擇器";
+"Files" = "檔案";
+"Full last active date" = "完整最後活躍日期";
+"Hide reels blend button" = "隱藏 Reels 混合按鈕";
+"Hide video call button" = "隱藏視訊通話按鈕";
+"Hide voice call button" = "隱藏語音通話按鈕";
+"Hides the blend button in DMs" = "在私訊中隱藏混合按鈕";
+"Hides typing indicator from others" = "隱藏他人輸入指示器";
+"Indicate unsent messages" = "標示未送出訊息";
+"Keep deleted messages" = "保留已刪除訊息";
+"Makes view-once messages behave like normal visual messages (loopable/pauseable)" = "讓一次觀看訊息行為如一般視覺訊息（可循環/暫停）";
+"Note actions" = "備註操作";
+"Preserve messages that others unsend" = "保留他人收回的訊息";
+"Preserves messages that others unsend" = "保留他人收回的訊息";
+"Prevents accidental swipe-up activation of vanish mode" = "防止誤觸上滑啟用 Vanish 模式";
+"Quick list button in chats" = "聊天中的快速列表按鈕";
+"Removes the audio call button from DM thread header" = "從私訊頁首移除語音通話按鈕";
+"Removes the screenshot-prevention features for visual messages in DMs" = "移除私訊中視覺訊息的截圖防護功能";
+"Removes the video call button from DM thread header" = "從私訊頁首移除視訊通話按鈕";
+"Replay visual messages without expiring. Toggle in the eye button menu, or as a standalone button when the eye button is disabled" = "重播視覺訊息且不會過期。可在眼睛按鈕選單切換，或當眼睛按鈕被禁用時作為獨立按鈕";
+"Search, sort, swipe to remove or toggle keep-deleted" = "搜尋、排序、滑動移除或切換保留已刪除";
+"Send audio as file" = "以檔案形式傳送音訊";
+"Send files (experimental)" = "傳送檔案（實驗性功能）";
+"Show full date instead of \"Active 2h ago\"" = "顯示完整日期，取代 \"Active 2h ago\"";
+"Shows a button in DM threads to add/remove chats from the list. Long-press for more options" = "在私訊頁顯示按鈕以新增/移除聊天至列表。長按可查看更多選項";
+"Shows a notification pill when a message is unsent" = "訊息撤回時顯示通知標籤";
+"Shows an \"Unsent\" label on preserved messages" = "在保留訊息上顯示 \"Unsent\" 標籤";
+"Unlimited replay of visual messages" = "視覺訊息無限重播";
+"Unsent message notification" = "訊息撤回通知";
+"Voice messages" = "語音訊息";
+"Warn before clearing on refresh" = "刷新時清除前先警告";
+"Which chats get read-receipt blocking" = "哪些聊天會被阻擋已讀回條";
+"⚠️ Pull-to-refresh in the DMs tab clears all preserved messages. Enable the warning below to get a confirmation dialog." = "⚠️ 私訊分頁下拉刷新會清除所有保留訊息。啟用以下警告可顯示確認對話框。";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                 MESSAGES                                 //
+// Settings → Messages tab                                                  //
+//////////////////////////////////////////////////////////////////////////////
+
+"Messages" = "訊息";
+"Threads" = "主題串";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                NAVIGATION                                //
+// Settings → Navigation tab                                                //
+//////////////////////////////////////////////////////////////////////////////
+
+"Also hide the bottom tab bar — only the inbox is visible" = "同時隱藏底部分頁列 — 僅顯示收件匣";
+"Hide create tab" = "隱藏建立分頁";
+"Hide explore tab" = "隱藏探索分頁";
+"Hide feed tab" = "隱藏動態分頁";
+"Hide messages tab" = "隱藏訊息分頁";
+"Hide reels tab" = "隱藏短片分頁";
+"Hide tab bar" = "隱藏分頁列";
+"Hides every tab except DM inbox + profile and forces launch into the inbox. Settings shortcut moves to long-press on the inbox tab." = "隱藏除私訊收件匣與個人檔案外的所有分頁，並強制啟動至收件匣。設定捷徑改為長按收件匣分頁。";
+"Hides the create tab on the bottom navigation bar" = "隱藏底部導覽列的建立分頁";
+"Hides the direct messages tab on the bottom navigation bar" = "隱藏底部導覽列的私訊分頁";
+"Hides the explore/search tab on the bottom navigation bar" = "隱藏底部導覽列的探索/搜尋分頁";
+"Hides the feed/home tab on the bottom navigation bar" = "隱藏底部導覽列的動態/首頁分頁";
+"Hides the reels tab on the bottom navigation bar" = "隱藏底部導覽列的短片分頁";
+"Hiding tabs" = "隱藏分頁";
+"Icon order" = "圖示排序";
+"Launch tab" = "啟動分頁";
+"Lets you swipe to switch between navigation bar tabs" = "允許滑動切換導覽列分頁";
+"Messages only" = "僅限訊息";
+"Messages-only mode" = "僅限訊息模式";
+"Navigation" = "導覽";
+"Swipe between tabs" = "在分頁間滑動";
+"Tab the app opens to. Ignored when Messages-only is on" = "應用程式開啟時的分頁。啟用僅限訊息時忽略此設定";
+"The order of the icons on the bottom navigation bar" = "底部導覽列圖示的順序";
+"Turn IG into a DM-only client" = "將 IG 變成僅限私訊的客戶端";
+
+//////////////////////////////////////////////////////////////////////////////
+//                             CONFIRM ACTIONS                              //
+// Settings → Confirm actions tab                                           //
+//////////////////////////////////////////////////////////////////////////////
+
+"Confirm actions" = "確認操作";
+"Confirm video call" = "確認視訊通話";
+"Confirm voice call" = "確認語音通話";
+"Confirm changing theme" = "確認更換主題";
+"Confirm follow" = "確認追蹤";
+"Confirm follow requests" = "確認追蹤請求";
+"Confirm like: Posts" = "確認按讚：貼文";
+"Confirm like: Reels" = "確認按讚：Reels";
+"Confirm posting comment" = "確認發佈留言";
+"Confirm repost" = "確認轉貼";
+"Confirm vanish mode" = "確認消失模式";
+"Confirm sticker interaction (stories)" = "確認貼圖互動（限時動態）";
+"Confirm sticker interaction (highlights)" = "確認貼圖互動（精選）";
+"Confirm story emoji reaction" = "確認限時動態表情反應";
+"Confirm story like" = "確認限時動態按讚";
+"Confirm unfollow" = "確認取消追蹤";
+"Confirm voice messages" = "確認語音訊息";
+"Shows an alert before sending an emoji reaction on a story" = "發送限時動態表情反應前顯示警告";
+"Shows an alert to confirm before sending a voice message" = "發送語音訊息前顯示確認提示";
+"Shows an alert to confirm before toggling vanish mode" = "切換消失模式前顯示確認提示";
+"Shows an alert when you accept/decline a follow request" = "接受/拒絕追蹤請求時顯示確認提示";
+"Shows an alert when you change a chat theme to confirm" = "更換聊天主題時顯示確認提示";
+"Shows an alert when you tap a sticker on someone's story" = "點擊他人限時動態貼圖時顯示確認提示";
+"Shows an alert when you tap a sticker inside a highlight" = "點擊精選中的貼圖時顯示確認提示";
+"Shows an alert when you click the video call button to confirm before calling" = "點擊視訊通話按鈕時顯示確認警告";
+"Shows an alert when you click the voice call button to confirm before calling" = "點擊語音通話按鈕時顯示確認警告";
+"Shows an alert when you click the follow button to confirm the follow" = "點擊追蹤按鈕時顯示確認提示";
+"Shows an alert when you click the like button on posts to confirm the like" = "點擊貼文按讚按鈕時顯示確認警告";
+"Shows an alert when you click the like button on reels to confirm the like" = "點擊 Reels 的按讚按鈕時顯示確認提示";
+"Shows an alert when you click the like button on stories to confirm the like" = "點擊限時動態按讚按鈕時顯示確認警告";
+"Shows an alert when you click the post comment button to confirm" = "點擊發佈留言按鈕時顯示確認提示";
+"Shows an alert when you click the repost button to confirm before resposting" = "點擊轉貼按鈕前顯示確認提示";
+"Shows an alert when you click the unfollow button to confirm" = "點擊取消追蹤按鈕時顯示確認提示";
+
+//////////////////////////////////////////////////////////////////////////////
+//                             BACKUP & RESTORE                             //
+// Settings → Backup & Restore tab                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+"Backup & Restore" = "備份與還原";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                 ADVANCED                                 //
+// Settings → Advanced tab                                                  //
+//////////////////////////////////////////////////////////////////////////////
+
+"Advanced" = "進階";
+"Auto-clear cache" = "自動清除快取";
+"Automatically opens settings when the app launches" = "啟動應用程式時自動開啟設定";
+"Cache" = "快取";
+"Cache cleared" = "快取已清除";
+"Calculating cache size…" = "計算快取大小中…";
+"Clear" = "清除";
+"Clear cache" = "清除快取";
+"Clear cache (%@)" = "清除快取 (%@)";
+"Clear cache?" = "要清除快取嗎？";
+"Clearing cache…" = "清除快取中…";
+"Clearing still scans on demand." = "關閉時仍會按需掃描。";
+"Daily" = "每日";
+"Disable safe mode" = "停用安全模式";
+"Enable tweak settings quick-access" = "啟用調整設定快速存取";
+"Free %@ of Instagram cache. A restart is recommended." = "釋放 %@ 的 Instagram 快取。建議重新啟動。";
+"Freed %@. Restart to apply." = "已釋放 %@。重新啟動以套用。";
+"Hold on the home tab to open RyukGram settings" = "長按主頁標籤以開啟 RyukGram 設定";
+"Instagram" = "Instagram";
+"Monthly" = "每月";
+"Nothing to clear" = "無可清除內容";
+"Off skips the size scan when Advanced opens." = "關閉時，開啟進階頁不會掃描大小。";
+"Pause playback when opening settings" = "開啟設定時暫停播放";
+"Pauses any playing video/audio when settings opens" = "設定開啟時暫停任何正在播放的影片/音訊";
+"Prevents Instagram from resetting settings after crashes (at your own risk)" = "防止 Instagram 崩潰後重置設定（風險自負）";
+"Remove Instagram's cached images, videos, and temporary files." = "移除 Instagram 的快取圖片、影片及暫存檔案。";
+"Reset onboarding state" = "重設引導狀態";
+"Run a silent cache clear on launch when the interval has elapsed." = "啟動時在達到間隔後靜默清除快取。";
+"Show cache size" = "顯示快取大小";
+"Show tweak settings on app launch" = "啟動應用程式時顯示調整設定";
+"Weekly" = "每週";
+
+//////////////////////////////////////////////////////////////////////////////
+//                         ADVANCED EXPERIMENTAL                            //
+// Settings → Advanced → Advanced experimental features                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"Actions" = "操作";
+"Advanced experimental features" = "進階實驗功能";
+"All experimental toggles will be turned off. Instagram will restart." = "所有實驗開關都會關閉，Instagram 將重新啟動。";
+"Direct Notes — Audio reply" = "Direct 記事 — 語音回覆";
+"Direct Notes — Avatar reply" = "Direct 記事 — Avatar 回覆";
+"Direct Notes — Friend Map" = "Direct 記事 — 朋友地圖";
+"Direct Notes — GIFs & stickers reply" = "Direct 記事 — GIF 與貼圖回覆";
+"Direct Notes — Photo reply" = "Direct 記事 — 照片回覆";
+"Disabled after repeated crashes." = "因多次閃退已停用。";
+"Enables GIF/sticker replies" = "啟用 GIF／貼圖回覆";
+"Enables photo replies" = "啟用照片回覆";
+"Enables the audio-note reply type" = "啟用語音記事回覆";
+"Enables the avatar reply type" = "啟用 Avatar 回覆";
+"Experimental flags reset" = "實驗旗標已重置";
+"Flip what you want on, then tap Apply to restart. Some flags may not work on every account or IG version. Flags auto-reset if IG crashes on launch 3 times." = "選擇要啟用的項目後點「套用」以重新啟動。部分功能可能無法在所有帳號或 IG 版本上運作。若 IG 連續 3 次啟動閃退，旗標會自動重置。";
+"Forces Prism-gated experiments on" = "強制啟用 Prism 相關實驗";
+"Forces the Homecoming home surface / nav on" = "強制啟用 Homecoming 首頁／導覽";
+"Forces the QuickSnap / Instants surface on in feed, inbox, stories, and notes tray" = "強制在動態、收件匣、限時動態與記事列顯示 QuickSnap／Instants";
+"Got it" = "了解";
+"Heads up" = "注意";
+"Hidden Instagram experiments" = "隱藏的 Instagram 實驗";
+"Hidden Instagram experiments (in Advanced)" = "隱藏的 Instagram 實驗（位於進階設定）";
+"Homecoming" = "Homecoming";
+"Notes & QuickSnap" = "記事與 QuickSnap";
+"Prism design system" = "Prism 設計系統";
+"QuickSnap (Instants)" = "QuickSnap（Instants）";
+"Reset all experimental flags" = "重置所有實驗旗標";
+"Reset experimental flags?" = "要重置實驗旗標嗎？";
+"Restart Instagram to apply changes" = "重新啟動 Instagram 以套用變更";
+"Shows the friend map entry in Direct Notes" = "在 Direct 記事顯示朋友地圖入口";
+"Surfaces" = "介面";
+"These toggles flip hidden Instagram experiments on. Some features may not work on every account or IG version. If IG keeps crashing on launch, the flags auto-reset after 3 failed starts." = "這些開關會啟用 Instagram 的隱藏實驗。部分功能可能無法在所有帳號或 IG 版本上運作。若 IG 連續 3 次啟動閃退，旗標會自動重置。";
+"Toggle hidden Instagram experiments. Some may not work on every account or IG version." = "啟用 Instagram 的隱藏實驗。部分可能無法在所有帳號或 IG 版本上運作。";
+"Turn every experimental toggle off" = "關閉所有實驗開關";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                  DEBUG                                   //
+// Settings → Debug tab                                                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"Button Cell" = "按鈕欄位";
+"Change the value on the right" = "更改右側數值";
+"Could not delete: %@" = "無法刪除：%@";
+"Debug" = "除錯";
+"Delete an imported override and fall back to the shipped strings" = "刪除匯入的覆寫檔並回退到內建字串";
+"Deleted %@ override. Restart to apply." = "已刪除 %@ 覆寫檔。重新啟動以套用。";
+"Enable FLEX gesture" = "啟用 FLEX 手勢";
+"Export English strings" = "匯出英文字串";
+"Hold 5 fingers on the screen to open FLEX" = "用五指按住螢幕以開啟 FLEX";
+"I have %@%@" = "我有 %@%@";
+"Import a .strings file for a language" = "為語言匯入 .strings 檔";
+"Import a .strings file to update a translation. Pick a language, select the file, restart." = "匯入 .strings 檔以更新翻譯。選擇語言、挑選檔案，然後重新啟動。";
+"Link Cell" = "連結欄位";
+"Localization" = "本地化";
+"Menu Cell" = "選單欄位";
+"Navigation Cell" = "導覽單元";
+"No imported localization files to reset." = "無可重設的匯入本地化檔案。";
+"No overrides" = "無覆寫";
+"Open FLEX on app focus" = "應用程式聚焦時開啟 FLEX";
+"Open FLEX on app launch" = "應用程式啟動時開啟 FLEX";
+"Opens FLEX when the app is focused" = "應用程式聚焦時開啟 FLEX";
+"Opens FLEX when the app launches" = "應用程式啟動時開啟 FLEX";
+"Pick a language to delete the imported file" = "選擇要刪除匯入檔的語言";
+"Reset localization" = "重設本地化";
+"Share the base English .strings file for translating" = "分享英文基準 .strings 檔以供翻譯";
+"Static Cell" = "靜態欄位";
+"Stepper cell" = "步進器欄位";
+"Switch Cell" = "切換欄位";
+"Switch Cell (Restart)" = "切換欄位（重新啟動）";
+"Tap the switch" = "點擊切換開關";
+"These features rely on hidden Instagram flags and may not work on all accounts or versions." = "這些功能依賴隱藏的 Instagram 標誌，可能不適用於所有帳號或版本。";
+"Update localization file" = "更新本地化檔案";
+"Using icon" = "使用圖示";
+"Using image" = "使用圖片";
+
+//////////////////////////////////////////////////////////////////////////////
+//                        DOWNLOADS & MEDIA ACTIONS                         //
+// Action button menus, download/share/copy toasts, quality picker pills.   //
+//////////////////////////////////////////////////////////////////////////////
+
+"%@ settings" = "%@ 設定";
+"Cancelled" = "已取消";
+"Copied %lu URLs" = "已複製 %lu 個網址";
+"Copied caption" = "已複製說明文字";
+"Copied download URL" = "已複製下載網址";
+"Copy all URLs" = "複製所有網址";
+"Copy caption" = "複製說明文字";
+"Copy download URL" = "複製下載網址";
+"Could not extract any URLs" = "無法擷取任何網址";
+"Could not extract media URL" = "無法擷取媒體網址";
+"Could not extract photo URL" = "無法擷取照片網址";
+"Could not extract video URL" = "無法擷取影片網址";
+"Done" = "完成";
+"Download all (%lu)" = "全部下載 (%lu)";
+"Download all stories and share?" = "下載所有限時動態並分享？";
+"Download all to Photos" = "全部下載到「照片」";
+"Download and share all" = "全部下載並分享";
+"Download and share?" = "下載並分享？";
+"Download failed" = "下載失敗";
+"Downloaded %lu items" = "已下載 %lu 項目";
+"Downloading %@..." = "正在下載 %@...";
+"Downloading..." = "正在下載...";
+"Failed to save" = "儲存失敗";
+"HD download complete" = "高清下載完成";
+"Mute audio" = "靜音音訊";
+"No caption on this post" = "此貼文無說明文字";
+"No carousel children" = "無輪播子項目";
+"No cover image" = "無封面圖片";
+"No files downloaded" = "無檔案下載";
+"No media" = "無媒體";
+"No media to expand" = "無媒體可展開";
+"No media to show" = "無媒體可顯示";
+"No media URL" = "無媒體網址";
+"No URLs" = "無網址";
+"No URLs found" = "找不到網址";
+"No video URL" = "無影片網址";
+"Not a carousel" = "非輪播貼文";
+"Nothing to save" = "無可儲存內容";
+"Nothing to share" = "無可分享內容";
+"Opening creator..." = "正在開啟創作者...";
+"Photo library access denied" = "照片庫存取被拒";
+"Photos access denied" = "照片存取被拒";
+"Preparing repost..." = "準備重新發布...";
+"Repost" = "重新發布";
+"Repost unavailable" = "無法重新發布";
+"Save all stories to Photos?" = "要將所有限時動態儲存到「照片」嗎？";
+"Save failed" = "儲存失敗";
+"Save to Photos?" = "要儲存到「照片」嗎？";
+"Saved %lu items" = "已儲存 %lu 項目";
+"Saved to Photos" = "已儲存至照片";
+"Saved to RyukGram" = "已儲存至 RyukGram";
+"Tap to cancel" = "點擊以取消";
+"Unmute audio" = "取消靜音";
+"View cover" = "查看封面";
+"View mentions" = "查看提及";
+
+//////////////////////////////////////////////////////////////////////////////
+//                      STORIES & MESSAGES (FEATURES)                       //
+// Buttons, menu entries, toasts and alerts shown while watching stories or //
+// inside DM threads.                                                       //
+//////////////////////////////////////////////////////////////////////////////
+
+"A message was unsent" = "訊息已撤回";
+"Add" = "新增";
+"Add to block list" = "加入封鎖名單";
+"Add to block list?" = "要加入封鎖名單嗎？";
+"Added to block list" = "已加入封鎖名單";
+"Added to exclude list" = "已加入排除清單";
+"Audio not loaded yet. Play the message first and try again." = "音訊尚未載入。請先播放訊息後再試。";
+"Audio sent" = "音訊已傳送";
+"Audio/Video from Files" = "來自檔案的音訊/影片";
+"Blocked" = "已封鎖";
+"Cancel" = "取消";
+"Clear preserved messages?" = "要清除保留的訊息嗎？";
+"Converting..." = "轉換中...";
+"Copy text" = "複製文字";
+"Could not find media" = "找不到媒體";
+"Could not find story media" = "找不到故事媒體";
+"Could not get audio data. Try again after refreshing the chat." = "無法取得音訊資料。請刷新聊天後再試。";
+"Could not get video URL" = "無法取得影片網址";
+"Disable read receipts" = "停用已讀回條";
+"Disappearing media" = "消失訊息媒體";
+"Done!" = "完成！";
+"Download audio" = "下載音訊";
+"Downloading audio..." = "音訊下載中...";
+"Enable read receipts" = "啟用已讀回條";
+"Error: %@" = "錯誤：%@";
+"Exclude chat" = "排除聊天";
+"Exclude from seen" = "排除已讀";
+"Exclude story seen" = "排除故事已讀";
+"Excluded" = "已排除";
+"Extracting audio..." = "擷取音訊中...";
+"Failed to encode GIF" = "GIF 編碼失敗";
+"File sending not supported" = "不支援檔案傳送";
+"Follow" = "追蹤";
+"Following" = "已追蹤";
+"Inserts a button on disappearing media overlays" = "在消失訊息媒體覆蓋層上插入按鈕";
+"Inserts a speaker button to mute/unmute disappearing media" = "插入喇叭按鈕以靜音/取消靜音消失訊息媒體";
+"Inserts an eye button to mark the current disappearing media as viewed" = "插入眼睛按鈕，將當前消失訊息媒體標記為已檢視";
+"Mark as viewed" = "標記為已檢視";
+"Mark messages as seen" = "標記訊息為已讀";
+"Mark seen" = "標記已讀";
+"Marked as seen" = "標記為已查看";
+"Marked as viewed" = "標記為已閱覽";
+"Marked messages as seen" = "標記訊息為已查看";
+"Mentions" = "提及";
+"Message sender not found" = "找不到訊息發送者";
+"Messages settings" = "訊息設定";
+"Audio URL not available" = "音訊網址無法取得";
+"Mute story audio" = "靜音故事音訊";
+"No audio URL found. Try again after refreshing the chat." = "找不到音訊 URL。請刷新聊天後再試。";
+"No mentions in this story" = "此故事中無提及";
+"No thread key" = "找不到討論串金鑰";
+"No voice send method found" = "找不到語音發送方式";
+"Note not found" = "找不到筆記";
+"Note text copied" = "筆記文字已複製";
+"Open GitHub" = "開啟 GitHub";
+"Read receipts disabled" = "已停用已讀回條";
+"Read receipts enabled" = "已啟用已讀回條";
+"Read receipts will be blocked for this chat." = "此聊天將封鎖已讀回條。";
+"Read receipts will no longer be blocked for this chat." = "此聊天將不再封鎖已讀回條。";
+"Remove" = "移除";
+"Remove from block list" = "從封鎖清單移除";
+"Remove from block list?" = "確定要從封鎖清單移除？";
+"Remove from exclude list" = "從排除清單移除";
+"Removed" = "已移除";
+"Removed from list" = "已從清單移除";
+"Save GIF" = "儲存 GIF";
+"Selection too short (min 0.5s)" = "選取太短（最短 0.5 秒）";
+"Send anyway" = "仍要傳送";
+"Send Audio" = "傳送音訊";
+"Send failed: %@" = "傳送失敗：%@";
+"Send service not found" = "找不到傳送服務";
+"Show audio toggle" = "顯示音訊切換";
+"Show mark-as-viewed button" = "顯示標記已檢視按鈕";
+"Story read receipts disabled" = "故事已讀回條已停用";
+"Story read receipts enabled" = "故事已讀回條已啟用";
+"This chat will resume normal read-receipt behavior." = "此聊天將恢復正常的已讀回條行為。";
+"Total: %@" = "總計：%@";
+"Un-exclude chat" = "取消排除聊天";
+"Un-exclude chat?" = "確定要取消排除聊天？";
+"Un-exclude story seen" = "取消排除故事已讀";
+"Un-excluded" = "已取消排除";
+"Unblocked" = "已解除封鎖";
+"Unlimited replay enabled" = "已啟用無限重播";
+"Unmute story audio" = "取消靜音故事音訊";
+"Unsent" = "未發送";
+"Upload Audio" = "上傳音訊";
+"VC not found" = "找不到 VC";
+"Video from Library" = "從資料庫選擇影片";
+"Visual messages will expire" = "視覺訊息將會過期";
+"Visual messages: expiring" = "視覺訊息：即將過期";
+"Visual messages: unlimited replay" = "視覺訊息：無限重播";
+"Will sync when leaving stories" = "離開故事時會同步";
+
+//////////////////////////////////////////////////////////////////////////////
+//                             GENERAL FEATURES                             //
+// Strings inside per-feature overlays: fake location, color picker, notes  //
+// customization, profile copy, etc.                                        //
+//////////////////////////////////////////////////////////////////////////////
+
+"Add location" = "新增位置";
+"Add preset" = "新增預設";
+"Change location" = "更改位置";
+"Click the Apply button after this to see the emoji" = "點擊套用按鈕後即可看到表情符號";
+"Clipboard is not an Instagram URL" = "剪貼簿內容不是 Instagram 網址";
+"Comments hidden" = "留言已隱藏";
+"Comments shown" = "留言已顯示";
+"Copied text to clipboard" = "文字已複製到剪貼簿";
+"Copy" = "複製";
+"Copy all" = "全部複製";
+"Copy bio" = "複製個人簡介";
+"Copy from profile" = "從個人檔案複製";
+"Copy name" = "複製名稱";
+"Could not find cover image" = "找不到封面圖片";
+"Current: %@" = "目前：%@";
+"Disable" = "停用";
+"Download GIF" = "下載 GIF";
+"Dropped pin" = "釘選位置";
+"Enable" = "啟用";
+"Enable Location Services for Instagram in Settings to use your current location." = "請在設定中為 Instagram 啟用定位服務以使用目前位置。";
+"Enter Emoji Text" = "輸入表情符號文字";
+"Fake location" = "假位置";
+"Location access denied" = "定位存取被拒";
+"Location Services off" = "定位服務已關閉";
+"Name" = "名稱";
+"Nothing to copy" = "無內容可複製";
+"Open Settings" = "開啟設定";
+"Pick location" = "選擇位置";
+"Save" = "儲存";
+"Save preset" = "儲存預設";
+"Saved locations" = "已儲存位置";
+"Select color" = "選擇顏色";
+"Set location" = "設定位置";
+"Settings…" = "設定…";
+"Turn Location Services on in Settings → Privacy to use your current location." = "請在設定 → 隱私中開啟定位服務以使用目前位置。";
+"Type emoji..." = "輸入表情符號…";
+
+"Theme" = "主題";
+"Appearance" = "外觀";
+"Keyboard" = "鍵盤";
+"Force dark mode" = "強制深色模式";
+"Keep Instagram in dark appearance regardless of iOS system setting" = "無論 iOS 系統設定為何，皆讓 Instagram 保持深色外觀";
+"Full OLED" = "完整 OLED";
+"Replace Instagram's dark grays with pure black across the entire app" = "將 Instagram 整個應用程式的深灰色替換為純黑";
+"OLED chat theme" = "OLED 聊天主題";
+"Pure black DM thread background and incoming message bubbles" = "純黑色私訊背景及收到訊息氣泡";
+"Keyboard theme" = "鍵盤主題";
+"Override the keyboard appearance when typing inside Instagram" = "在 Instagram 內打字時覆寫鍵盤外觀";
+"Dark uses the system dark keyboard. OLED forces the keyboard backdrop to pure black." = "深色使用系統深色鍵盤。OLED 強制鍵盤背景為純黑。";
+"Dark" = "深色";
+"OLED" = "OLED";
+"Apply & restart" = "套用並重新啟動";
+"Restart Instagram to apply your theme changes" = "重新啟動 Instagram 以套用主題變更";
+"Theme changes only take effect after an app restart. Tap Apply below when you're done choosing." = "主題變更僅在應用程式重新啟動後才會生效。選擇完成後點擊下方的「套用」。";
+
+//////////////////////////////////////////////////////////////////////////////
+//                            PROFILE ANALYZER                              //
+// Settings → Profile Analyzer                                              //
+//////////////////////////////////////////////////////////////////////////////
+
+"%lu followers · %lu following" = "%lu 粉絲 · %lu 追蹤中";
+"%lu of %lu" = "%lu / %lu";
+"Analysis complete" = "分析完成";
+"Analysis failed" = "分析失敗";
+"Another analysis is already running" = "已經有另一個分析正在執行";
+"Available after your next scan" = "將於下次掃描後提供";
+"Cancelled" = "已取消";
+"Couldn't fetch profile information" = "無法取得個人資料資訊";
+"Fetching followers (%lu/%ld)…" = "正在取得粉絲 (%lu/%ld)…";
+"Fetching following (%lu/%ld)…" = "正在取得追蹤中 (%lu/%ld)…";
+"Fetching profile info…" = "正在取得個人資料資訊…";
+"Categories" = "類別";
+"First scan: %@" = "首次掃描：%@";
+"Follower count exceeds %ld — analysis disabled to avoid rate limits." = "粉絲數超過 %ld — 已停用分析以避免速率限制。";
+"Gained since last scan" = "自上次掃描後增加";
+"Last scan: %@" = "上次掃描：%@";
+"Lost followers" = "失去的粉絲";
+"Mutual followers" = "互相追蹤";
+"Name: %@ → %@" = "名稱：%@ → %@";
+"New followers" = "新粉絲";
+"No results" = "無結果";
+"No active Instagram session found" = "找不到已登入的 Instagram 工作階段";
+"No scan yet" = "尚未掃描";
+"Not following you back" = "未回追你";
+"OK" = "OK";
+"Private account" = "私人帳號";
+"Profile Analyzer" = "個人檔案分析器";
+"Profile picture changed" = "大頭貼已變更";
+"Profile updates" = "個人檔案更新";
+"Removes cached snapshots for this account. You'll lose since-last-scan diffs." = "移除此帳號的快取快照。你將失去「自上次掃描後」的差異資料。";
+"Request failed" = "請求失敗";
+"Reset analyzer data?" = "要重設分析器資料嗎？";
+"Run analysis" = "執行分析";
+"Run your first analysis" = "執行首次分析";
+"Search username or name" = "搜尋使用者名稱或名稱";
+"Since last scan" = "自上次掃描後";
+"Starting…" = "開始中…";
+"They follow you, you don't follow back" = "對方追蹤你，你未回追";
+"Too many followers" = "粉絲過多";
+"Too many followers to analyze" = "粉絲數量過多，無法分析";
+"Unfollow" = "取消追蹤";
+"Unfollow @%@?" = "取消追蹤 @%@？";
+"Unfollowed you since last scan" = "自上次掃描後取消追蹤你";
+"Username, name or picture changes" = "使用者名稱、名稱或大頭貼變更";
+"Username: @%@ → @%@" = "使用者名稱：@%@ → @%@";
+"We refuse to run when the follower count exceeds %ld to avoid Instagram rate limits." = "粉絲數超過 %ld 時我們拒絕執行，以避免 Instagram 速率限制。";
+"You both follow each other" = "你們互相追蹤";
+"You don't follow back" = "你未回追";
+"You follow them, they don't follow back" = "你追蹤對方，對方未回追";
+"You started following" = "你開始追蹤";
+"You unfollowed" = "你已取消追蹤";
+
+"%@ %lu accounts? The first %ld will be processed to avoid rate limits." = "%@ %lu 個帳號？為避免速率限制，僅處理前 %ld 個。";
+"%@ %lu accounts? This runs sequentially with a short pause between each." = "%@ %lu 個帳號？此操作會依序執行，每個之間有短暫停頓。";
+"%lu account(s) · %lu snapshot(s) · tap to inspect" = "%lu 個帳號 · %lu 個快照 · 點擊以檢視";
+"%lu accounts followed" = "已追蹤 %lu 個帳號";
+"%lu accounts unfollowed" = "已取消追蹤 %lu 個帳號";
+"%lu entries across %lu lists · tap to inspect" = "%lu 筆項目，分佈於 %lu 個清單 · 點擊以檢視";
+"%lu preferences · tap to inspect" = "%lu 項偏好設定 · 點擊以檢視";
+"(empty)" = "(空)";
+"(no analyzer data)" = "(無分析器資料)";
+"(no lists)" = "(無清單)";
+"About Profile Analyzer" = "關於個人檔案分析器";
+"All preferences (%lu)" = "所有偏好設定 (%lu)";
+"Apply imported data?" = "要套用匯入的資料嗎？";
+"Batch follow" = "批次追蹤";
+"Batch follow finished" = "批次追蹤完成";
+"Batch unfollow" = "批次取消追蹤";
+"Batch unfollow finished" = "批次取消追蹤完成";
+"Continue" = "繼續";
+"Current snapshot" = "目前快照";
+"Embed domains" = "嵌入網域";
+"Excluded lists" = "排除清單";
+"Excluded story users" = "排除的限時動態用戶";
+"Existing values for the selected scope will be replaced. The app may need to restart for some changes to take effect." = "所選範圍的既有值將被覆寫。部分變更可能需重新啟動應用程式後才會生效。";
+"Export" = "匯出";
+"File has no importable sections." = "檔案中沒有可匯入的區段。";
+"File is not a valid RyukGram export." = "檔案不是有效的 RyukGram 匯出檔。";
+"Filter" = "篩選";
+"First scan: we collect your followers and following lists and save them locally." = "首次掃描：我們會收集你的粉絲及追蹤清單並儲存在本機。";
+"Follow %lu" = "追蹤 %lu";
+"Followers" = "粉絲";
+"Following… %lu / %lu" = "追蹤中… %lu / %lu";
+"Full name" = "全名";
+"Heads up: this feature is in beta and hits Instagram's private API. Running it back-to-back or right after heavy follow/unfollow activity can trigger a short rate-limit. Use it sparingly and at your own risk." = "注意：此功能為 Beta 版本，會呼叫 Instagram 的私有 API。連續執行或在大量追蹤/取消追蹤活動之後立即執行可能觸發短暫速率限制。請謹慎使用，風險自負。";
+"Import complete" = "匯入完成";
+"Include" = "包含";
+"Included story users" = "包含的限時動態用戶";
+"Inspect the full payload" = "檢視完整負載資料";
+"Keep scan history" = "保留掃描歷史";
+"Large accounts are blocked: analysis is disabled above 13,000 followers to avoid Instagram rate-limiting the whole app." = "大型帳號已被封鎖：粉絲數超過 13,000 時停用分析，以避免 Instagram 對整個應用程式施加速率限制。";
+"Nothing is uploaded — everything stays on this device and can be wiped from the trash icon." = "不會上傳任何資料 — 所有資料僅保留在此裝置，可透過垃圾桶圖示清除。";
+"Not verified only" = "僅限未認證";
+"Nothing was applied." = "未套用任何變更。";
+"Posts" = "貼文";
+"Preferences" = "偏好設定";
+"Previous snapshot" = "上一個快照";
+"Private only" = "僅限私人";
+"Profile Analyzer data" = "個人檔案分析器資料";
+"Raw" = "原始";
+"Raw JSON" = "原始 JSON";
+"Reset analyzer data" = "重設分析器資料";
+"Reset complete" = "重設完成";
+"Reset selected data?" = "要重設選取的資料嗎？";
+"Second scan onward: each scan compares against the last, so we can show gained/lost followers, your own follow/unfollow moves, and profile updates." = "第二次掃描起：每次掃描都會與上一次比較，以顯示增加/失去的粉絲、你自己的追蹤/取消追蹤動作，以及個人檔案更新。";
+"Select all" = "全選";
+"Selected data will be cleared. Tap any row to see what's stored." = "選取的資料將被清除。點擊任一列以檢視已儲存內容。";
+"Settings" = "設定";
+"Sort" = "排序";
+"This can't be undone." = "此操作無法復原。";
+"Tick what to apply. Tap any row to inspect. Sections not in the file are disabled." = "勾選要套用的項目。點擊任一列以檢視。檔案中未包含的區段將停用。";
+"Tick what to include. Tap any row to inspect its contents." = "勾選要包含的項目。點擊任一列以檢視其內容。";
+"Unfollow %lu" = "取消追蹤 %lu";
+"Unfollowing… %lu / %lu" = "取消追蹤中… %lu / %lu";
+"Username A → Z" = "使用者名稱 A → Z";
+"Username Z → A" = "使用者名稱 Z → A";
+"Verified only" = "僅限已認證";
+"When on, scans compare against your first scan so new/lost followers and profile updates don't disappear between scans." = "啟用時，掃描會與首次掃描比較，讓新增/失去的粉絲及個人檔案更新不會在掃描之間消失。";
+
+//////////////////////////////////////////////////////////////////////////////
+//                         SETTINGS VIEWS & DIALOGS                         //
+// Excluded-lists managers, backup/restore flows, in-picker labels.         //
+//////////////////////////////////////////////////////////////////////////////
+
+"Add chat" = "新增聊天";
+"Add custom domain" = "新增自訂網域";
+"Add preset…" = "新增預設…";
+"Add to list?" = "要加入清單嗎？";
+"Add user" = "新增使用者";
+"Apply" = "套用";
+"Apply to" = "套用至";
+"Chats" = "聊天";
+"Could not read file." = "無法讀取檔案。";
+"Could not resolve user ID" = "無法解析使用者 ID";
+"Could not write temporary file." = "無法寫入暫存檔案。";
+"Current location" = "目前位置";
+"Custom" = "自訂";
+"Date Format" = "日期格式";
+"Delete" = "刪除";
+"Enable fake location" = "啟用假位置";
+"Enter username" = "輸入使用者名稱";
+"Enter username of the DM thread" = "輸入私訊串的使用者名稱";
+"Excluded chats" = "排除的聊天";
+"Excluded users" = "排除的使用者";
+"Follow default" = "遵循預設";
+"Force OFF (allow unsends)" = "強制關閉（允許撤回）";
+"Force ON (preserve unsends)" = "強制開啟（保留撤回）";
+"Format" = "格式";
+"Import failed" = "匯入失敗";
+"Included chats" = "包含的聊天";
+"Included users" = "包含的使用者";
+"KD: default" = "KD：預設";
+"KD: ON" = "KD：開啟";
+"Keep-deleted" = "保留已刪除";
+"Keep-deleted override" = "保留已刪除覆寫";
+"Name (A–Z)" = "名稱 (A–Z)";
+"No DM thread found with @%@" = "找不到與 @%@ 的私訊串";
+"Off" = "關閉";
+"Presets" = "預設組合";
+"Recently added" = "最近新增";
+"Remove from list" = "從清單移除";
+"Remove Selected" = "移除選取項目";
+"Reset" = "重設";
+"Saved presets are reusable. Tap a preset to make it the active location." = "已儲存的預設可重複使用。點選預設以設為目前位置。";
+"Search" = "搜尋";
+"Search address or place" = "搜尋地址或地點";
+"Search by name or username" = "依名稱或使用者名稱搜尋";
+"Search by username or name" = "依使用者名稱或名稱搜尋";
+"Select" = "選擇";
+"Select location on map" = "在地圖上選擇位置";
+"Set current location" = "設定目前位置";
+"Set keep-deleted override" = "設定保留已刪除覆寫";
+"Settings exported" = "設定已匯出";
+"Show map button" = "顯示地圖按鈕";
+"Show seconds" = "顯示秒數";
+"Sort by" = "排序依據";
+"Story users" = "限時動態用戶";
+"Toggle each NSDate formatter IG uses. Different surfaces (feed, comments, stories, DMs) go through different methods — enable the ones you want the custom format applied to." = "切換 IG 使用的每個 NSDate 格式化器。不同介面（動態消息、留言、限時動態、私訊）使用不同方法 — 啟用您想套用自訂格式的項目。";
+"Use this location" = "使用此位置";
+"User '%@' not found" = "找不到使用者 '%@'";
+"Username (A–Z)" = "使用者名稱 (A–Z)";
+"When on, all CoreLocation requests inside Instagram return the location below. Toggle the map button to show or hide the quick toggle on the Friends Map view." = "啟用時，Instagram 內所有 CoreLocation 請求皆回傳以下位置。切換地圖按鈕可在朋友地圖檢視中顯示或隱藏快速切換。";
+
+//////////////////////////////////////////////////////////////////////////////
+//                             REELS (FEATURES)                             //
+// Strings from Reels.                                                      //
+//////////////////////////////////////////////////////////////////////////////
+
+"Copied!" = "已複製！";
+"No password found" = "找不到密碼";
+"No text field found" = "找不到文字欄位";
+"Password" = "密碼";
+"Refresh Reels?" = "重新整理 Reels？";
+
+//////////////////////////////////////////////////////////////////////////////
+//                            PROFILE (FEATURES)                            //
+// Strings from Profile.                                                    //
+//////////////////////////////////////////////////////////////////////////////
+
+"Doesn't follow you" = "未追蹤你";
+"Follows you" = "追蹤你";
+"Note copied" = "備註已複製";
+
+//////////////////////////////////////////////////////////////////////////////
+//                       CONFIRM DIALOGS (IN-FEATURE)                       //
+// Strings from Confirm dialogs.                                            //
+//////////////////////////////////////////////////////////////////////////////
+
+"Unfollow?" = "確定要取消追蹤？";
+
+//////////////////////////////////////////////////////////////////////////////
+//                                   MISC                                   //
+// Anything that didn't fit a named section. Usually short labels.          //
+//////////////////////////////////////////////////////////////////////////////
+
+"720p • progressive • fastest" = "720p • 漸進式 • 最快";
+"Are you sure?" = "你確定嗎？";
+"Bundle" = "Bundle";
+"Copy audio URL" = "複製音訊網址";
+"Copy quality info" = "複製品質資訊";
+"Copy video URL" = "複製影片網址";
+"Could not access reel media" = "無法存取 Reels 媒體";
+"Could not access reel photo" = "無法存取 Reels 照片";
+"Could not extract photo url from post" = "無法從貼文擷取照片網址";
+"Could not extract photo url from reel" = "無法從 Reels 擷取照片網址";
+"Could not extract photo url from story" = "無法從限時動態擷取照片網址";
+"Could not extract video url from post" = "無法從貼文擷取影片網址";
+"Could not extract video url from reel" = "無法從 Reels 擷取影片網址";
+"Could not extract video url from story" = "無法從限時動態擷取影片網址";
+"Download Quality" = "下載品質";
+"Extras" = "附加項目";
+"FFmpegKit Debug" = "FFmpegKit 除錯";
+"Later" = "稍後";
+"No!" = "不要！";
+"OK" = "OK";
+"Restart" = "重新啟動";
+"Restart required" = "需要重新啟動";
+"username" = "使用者名稱";
+"Yes" = "是";
+"You must restart the app to apply this change" = "您必須重新啟動應用程式以套用此變更";
+
+//////////////////////////////////////////////////////////////////////////////
+//                               ABOUT / CREDITS                            //
+// Strings from the About / Credits footer of Settings.                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"%@ — GitHub & Telegram" = "%@ — GitHub 與 Telegram";
+"About" = "關於";
+"Arabic translation" = "阿拉伯文翻譯";
+"Chinese (Traditional) translation" = "繁體中文翻譯";
+"Chinese (Traditional) translation" = "繁體中文翻譯";
+"Credits" = "製作團隊";
+"Developers" = "開發者";
+"Donate to SoCuul" = "捐款給 SoCuul";
+"installed" = "已安裝";
+"Korean translation" = "韓文翻譯";
+"latest" = "最新";
+"Links" = "連結";
+"No releases" = "無版本發行";
+"Original SCInsta developer" = "原 SCInsta 開發者";
+"Release notes" = "版本說明";
+"Releases" = "版本發行";
+"Report an issue" = "回報問題";
+"Russian translation" = "俄文翻譯";
+"RyukGram developer" = "RyukGram 開發者";
+"Join Telegram channel" = "加入 Telegram 頻道";
+"View on GitHub" = "在 GitHub 查看";
+"Source code" = "原始碼";
+"Spanish translation" = "西班牙文翻譯";
+"Support the original developer" = "支持原開發者";
+"Telegram channel" = "Telegram 頻道";
+"Testing and feature suggestions" = "測試與功能建議";
+"Tweak settings" = "Tweak 設定";
+"Version" = "版本";
+"Version, credits, and links" = "版本、製作團隊與連結";
+"What's new in RyukGram" = "RyukGram 有什麼新功能";
+
+//////////////////////////////////////////////////////////////////////////////
+//                             HD DOWNLOADS                                 //
+// Enhanced / HD downloads settings (DASH + FFmpegKit encoding).            //
+//////////////////////////////////////////////////////////////////////////////
+
+"720p • progressive • silent" = "720p • 漸進式 • 靜音";
+"Audio extract failed" = "音訊擷取失敗";
+"Audio only" = "僅音訊";
+"Audio ready" = "音訊就緒";
+"Download video at the highest available quality" = "下載最高可用品質的影片";
+"Downloads HD video via DASH streams and encodes to H.264. Requires FFmpegKit." = "透過 DASH 串流下載 HD 影片並編碼為 H.264。需要 FFmpegKit。";
+"Encoding speed" = "編碼速度";
+"Enhanced downloads" = "增強下載";
+"Faster = lower quality" = "速度越快 = 品質越低";
+"FFmpeg not available" = "FFmpeg 不可用";
+"FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable." = "FFmpegKit 不可用。請安裝側載的 IPA 或 _ffmpeg .deb 版本以啟用。";
+"No audio stream available" = "無可用音訊串流";
+"No audio track found" = "找不到音訊軌";
+"Photo" = "照片";
+"Photo quality" = "照片品質";
+"Raw image (no audio, no video)" = "原始圖片（無音訊、無影片）";
+"silent" = "靜音";
+"Use highest resolution available" = "使用最高可用解析度";
+"Video quality" = "影片品質";
+"Which quality to download" = "選擇下載的品質";

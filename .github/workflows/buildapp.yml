@@ -96,7 +96,10 @@ jobs:
                 pip install --force-reinstall https://github.com/asdfzxcvbn/pyzule-rw/archive/main.zip
 
                 cd main
-                # ipapatch disabled — upstream issues.
+                curl -Lo ipapatch https://github.com/asdfzxcvbn/ipapatch/releases/download/v2.1.3/ipapatch.macos-arm64
+                chmod +x ipapatch
+                export PATH=.:$PATH
+
                 ./build.sh sideload
                 ls -la packages
               env:

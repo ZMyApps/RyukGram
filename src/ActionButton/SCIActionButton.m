@@ -118,11 +118,16 @@ const void *kSCIDismissKey   = &kSCIDismissKey;
     id media = provider(sender);
     if (media == (id)kCFNull) return;
 
+    SCIActionContext tapCtx = (SCIActionContext)ctxNum.integerValue;
+    NSString *tapCtxLabel = [SCIMediaActions contextLabelForContext:tapCtx];
+
     if ([tap isEqualToString:@"expand"]) {
         [SCIMediaActions expandMedia:media fromView:sender caption:nil];
     } else if ([tap isEqualToString:@"download_share"]) {
+        [SCIMediaActions setCurrentFilenameStem:[SCIMediaActions filenameStemForMedia:media contextLabel:tapCtxLabel]];
         [SCIMediaActions downloadAndShareMedia:media];
     } else if ([tap isEqualToString:@"download_photos"]) {
+        [SCIMediaActions setCurrentFilenameStem:[SCIMediaActions filenameStemForMedia:media contextLabel:tapCtxLabel]];
         [SCIMediaActions downloadAndSaveMedia:media];
     } else if ([tap isEqualToString:@"copy_link"]) {
         [SCIMediaActions copyURLForMedia:media];

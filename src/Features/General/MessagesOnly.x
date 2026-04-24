@@ -2,10 +2,14 @@
 
 #import "../../Utils.h"
 #import "../../InstagramHeaders.h"
+#import "../../SCIChrome.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 
 static BOOL sciMsgOnly(void) { return [SCIUtils getBoolPref:@"messages_only"]; }
+static BOOL sciMsgOnlyHideTabBar(void) {
+    return sciMsgOnly() && [SCIUtils getBoolPref:@"messages_only_hide_tabbar"];
+}
 
 %hook IGTabBarController
 
@@ -27,6 +31,21 @@ static BOOL sciMsgOnly(void) { return [SCIUtils getBoolPref:@"messages_only"]; }
         SEL s = NSSelectorFromString(@"_directInboxButtonPressed");
         if ([self respondsToSelector:s])
             ((void(*)(id, SEL))objc_msgSend)(self, s);
+    }
+}
+
+- (void)viewDidLayoutSubviews {
+    %orig;
+    if (!sciMsgOnlyHideTabBar()) return;
+    Ivar tbIv = class_getInstanceVariable([self class], "_tabBar");
+    UIView *tabBar = tbIv ? object_getIvar(self, tbIv) : nil;
+    if (tabBar) {
+        tabBar.hidden = YES;
+        tabBar.alpha = 0.0;
+    }
+    UIViewController *selected = [self valueForKey:@"selectedViewController"];
+    if (selected.isViewLoaded) {
+        selected.view.frame = self.view.bounds;
     }
 }
 
@@ -62,4 +81,44 @@ static BOOL sciMsgOnly(void) { return [SCIUtils getBoolPref:@"messages_only"]; }
         ((void(*)(id, SEL, id))objc_msgSend)(self, @selector(sciSyncTabBarSelection:), @"profile");
 }
 
+%end
+
+// Floating settings button — long-press on tab bar is gone when it's hidden.
+static const void *kSCIMsgOnlyBtnKey = &kSCIMsgOnlyBtnKey;
+
+static void sciMsgOnlyInjectSettingsButton(UIViewController *vc) {
+    if (!sciMsgOnlyHideTabBar() || !vc || !vc.isViewLoaded) return;
+    if (objc_getAssociatedObject(vc, kSCIMsgOnlyBtnKey)) return;
+
+    SCIChromeButton *btn = [[SCIChromeButton alloc] initWithSymbol:@"gearshape"
+                                                         pointSize:18
+                                                          diameter:36];
+    btn.iconTint = [UIColor labelColor];
+    btn.bubbleColor = [UIColor clearColor];
+    btn.translatesAutoresizingMaskIntoConstraints = NO;
+    [btn addTarget:vc action:@selector(sciMsgOnlyOpenSettings)
+          forControlEvents:UIControlEventTouchUpInside];
+    [vc.view addSubview:btn];
+
+    UILayoutGuide *sa = vc.view.safeAreaLayoutGuide;
+    [NSLayoutConstraint activateConstraints:@[
+        [btn.leadingAnchor constraintEqualToAnchor:sa.leadingAnchor constant:12],
+        [btn.topAnchor constraintEqualToAnchor:sa.topAnchor constant:6],
+        [btn.widthAnchor constraintEqualToConstant:36],
+        [btn.heightAnchor constraintEqualToConstant:36],
+    ]];
+
+    objc_setAssociatedObject(vc, kSCIMsgOnlyBtnKey, btn, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+%hook IGDirectInboxViewController
+- (void)viewWillAppear:(BOOL)animated {
+    %orig;
+    sciMsgOnlyInjectSettingsButton((UIViewController *)self);
+}
+
+%new - (void)sciMsgOnlyOpenSettings {
+    UIViewController *vc = (UIViewController *)self;
+    [SCIUtils showSettingsVC:vc.view.window];
+}
 %end

@@ -33,8 +33,6 @@
 
 + (_Bool)liquidGlassEnabledBool:(_Bool)fallback;
 
-+ (void)cleanCache;
-
 // Displaying View Controllers
 + (void)showQuickLookVC:(NSArray<id> *)items;
 + (void)showShareVC:(id)item;
@@ -86,5 +84,13 @@
 // Ivars
 + (id)getIvarForObj:(id)obj name:(const char *)name;
 + (void)setIvarForObj:(id)obj name:(const char *)name value:(id)value;
+
+// Active IG user session (walks all connected scenes for the first window
+// with a non-nil `userSession`).
++ (id)activeUserSession;
+// PK string read from an IGUser object's `_pk` ivar (walks superclass chain).
++ (NSString *)pkFromIGUser:(id)user;
+// Current logged-in user's PK via the active session.
++ (NSString *)currentUserPK;
 
 @end

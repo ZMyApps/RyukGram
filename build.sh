@@ -28,6 +28,18 @@ copy_localization_into_bundle() {
     done
 }
 
+# Copy generic static assets (PNGs, etc.) into a RyukGram.bundle. Used for
+# bundled images the tweak loads via SCILocalizationBundle().
+# Arg 1: destination bundle directory (created if missing).
+copy_bundle_assets() {
+    local DEST="$1"
+    local SRC="src/BundleAssets"
+    [ -d "$SRC" ] || return 0
+    mkdir -p "$DEST"
+    find "$SRC" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.pdf' \) \
+        -exec cp {} "$DEST/" \;
+}
+
 # Collect all FFmpegKit frameworks for injection
 ffmpegkit_frameworks() {
     local fws=""
@@ -57,7 +69,7 @@ inject_bundle_into_deb() {
 
     local BUNDLE_DIR="$TMPDIR/${PREFIX}Library/Application Support/RyukGram.bundle"
     mkdir -p "$BUNDLE_DIR"
-    ( cd .. && copy_localization_into_bundle "$BUNDLE_DIR" )
+    ( cd .. && copy_localization_into_bundle "$BUNDLE_DIR" && copy_bundle_assets "$BUNDLE_DIR" )
 
     if [ -d "../modules/ffmpegkit/ffmpegkit.framework" ]; then
         for fw in ../modules/ffmpegkit/*.framework; do
@@ -89,6 +101,28 @@ inject_bundle_into_deb() {
     rm -rf "$TMPDIR"
 }
 
+# Build zxPluginsInject.dylib -> packages/zxPluginsInject.dylib
+build_zxpi_dylib() {
+    ./wrapper/build-zxpi.sh >/dev/null
+    [ -f packages/zxPluginsInject.dylib ] || {
+        echo -e '\033[1m\033[0;31mzxPluginsInject.dylib build failed\033[0m' >&2
+        exit 1
+    }
+}
+
+# LC-inject zxPluginsInject.dylib into main exec + every .appex in the IPA.
+# Arg 1: path to the IPA
+run_ipapatch() {
+    local IPA="$1"
+    if ! command -v ipapatch &> /dev/null; then
+        echo -e '\033[1m\033[0;31mipapatch not found. Install it from:\033[0m'
+        echo '  https://github.com/asdfzxcvbn/ipapatch/releases/latest'
+        exit 1
+    fi
+    echo -e '\033[1m\033[32mRunning ipapatch (zxPluginsInject LC injection)\033[0m'
+    ipapatch --input "$IPA" --inplace --noconfirm --dylib packages/zxPluginsInject.dylib
+}
+
 # Build just the dylib (for Feather/manual injection)
 if [ "$1" == "dylib" ];
 then
@@ -108,6 +142,7 @@ then
 
     # Ship localization bundle next to the dylib so Feather/manual installs work.
     copy_localization_into_bundle "packages/RyukGram.bundle"
+    copy_bundle_assets "packages/RyukGram.bundle"
 
     echo -e "\033[1m\033[32mDone!\033[0m\n\nDylib at: $(pwd)/packages/RyukGram.dylib\nBundle at: $(pwd)/packages/RyukGram.bundle"
 
@@ -194,12 +229,20 @@ then
             echo -e '\033[0;33mOr use ./build.sh dylib to build the dylib for Feather injection.\033[0m'
             exit 1
         fi
-        # ipapatch disabled — upstream issues.
+        if ! command -v ipapatch &> /dev/null; then
+            echo -e '\033[1m\033[0;31mipapatch not found. Install it from:\033[0m'
+            echo '  https://github.com/asdfzxcvbn/ipapatch/releases/latest'
+            exit 1
+        fi
     fi
 
     echo -e '\033[1m\033[32mBuilding RyukGram tweak for sideloading (as IPA)\033[0m'
 
     make $MAKEARGS
+
+    # Build zxPluginsInject.dylib so ipapatch can inject it after cyan
+    echo -e '\033[1m\033[32mBuilding zxPluginsInject.dylib\033[0m'
+    build_zxpi_dylib
 
     # Copy dylib to packages
     mkdir -p packages
@@ -216,6 +259,7 @@ then
     rm -rf "$BUNDLE_PATH"
     mkdir -p "$BUNDLE_PATH"
     copy_localization_into_bundle "$BUNDLE_PATH"
+    copy_bundle_assets "$BUNDLE_PATH"
     if [ -d "modules/ffmpegkit/ffmpegkit.framework" ]; then
         echo -e '\033[1m\033[32mBuilding RyukGram.bundle\033[0m'
         for fw in modules/ffmpegkit/*.framework; do
@@ -271,7 +315,7 @@ then
         rm -rf "$INJECT_TMP"
     fi
 
-    # ipapatch disabled — upstream issues.
+    run_ipapatch packages/RyukGram-sideloaded.ipa
 
     echo -e "\033[1m\033[32mDone, enjoy RyukGram!\033[0m\n\nYou can find the ipa file at: $(pwd)/packages"
 
@@ -365,15 +409,24 @@ then
         echo '  pip install --force-reinstall https://github.com/asdfzxcvbn/pyzule-rw/archive/main.zip'
         exit 1
     fi
+    if ! command -v ipapatch &> /dev/null; then
+        echo -e '\033[1m\033[0;31mipapatch not found. Install it from:\033[0m'
+        echo '  https://github.com/asdfzxcvbn/ipapatch/releases/latest'
+        exit 1
+    fi
 
     echo -e '\033[1m\033[32mBuilding RyukGram tweak for TrollStore (.tipa)\033[0m'
     make $MAKEARGS
     cp .theos/obj/debug/RyukGram.dylib packages/RyukGram.dylib
 
+    echo -e '\033[1m\033[32mBuilding zxPluginsInject.dylib\033[0m'
+    build_zxpi_dylib
+
     BUNDLE_PATH="packages/RyukGram.bundle"
     rm -rf "$BUNDLE_PATH"
     mkdir -p "$BUNDLE_PATH"
     copy_localization_into_bundle "$BUNDLE_PATH"
+    copy_bundle_assets "$BUNDLE_PATH"
     if [ -d "modules/ffmpegkit/ffmpegkit.framework" ]; then
         for fw in modules/ffmpegkit/*.framework; do
             cp -R "$fw" "$BUNDLE_PATH/"
@@ -423,6 +476,8 @@ then
         fi
         rm -rf "$INJECT_TMP"
     fi
+
+    run_ipapatch packages/RyukGram-trollstore.ipa
 
     mv packages/RyukGram-trollstore.ipa packages/RyukGram-trollstore.tipa
     echo -e "\033[1m\033[32mDone!\033[0m\n\nTIPA at: $(pwd)/packages/RyukGram-trollstore.tipa"

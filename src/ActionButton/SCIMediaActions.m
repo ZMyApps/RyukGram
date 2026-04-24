@@ -21,6 +21,57 @@ static SCIDownloadDelegate *sciActiveDownloadDelegate = nil;
 extern void sciToggleStoryAudio(void);
 extern BOOL sciIsStoryAudioEnabled(void);
 
+// MARK: - Filename naming
+
+static NSString *sciCurrentFilenameStem = nil;
+
+static NSString *sciSanitizeFilenameComponent(NSString *s) {
+    if (!s.length) return @"";
+    NSMutableCharacterSet *bad = [NSMutableCharacterSet alphanumericCharacterSet];
+    [bad addCharactersInString:@"._-"];
+    NSCharacterSet *drop = bad.invertedSet;
+    NSArray *parts = [s componentsSeparatedByCharactersInSet:drop];
+    NSString *out = [parts componentsJoinedByString:@""];
+    if (out.length > 30) out = [out substringToIndex:30];
+    return out;
+}
+
+// IGAPIStorableObject's backing dict.
+static NSDictionary *sciMediaFieldCache(id obj) {
+    if (!obj) return nil;
+    static Ivar fcIvar = NULL;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        Class c = NSClassFromString(@"IGAPIStorableObject");
+        if (c) fcIvar = class_getInstanceVariable(c, "_fieldCache");
+    });
+    if (!fcIvar) return nil;
+    id v = object_getIvar(obj, fcIvar);
+    return [v isKindOfClass:[NSDictionary class]] ? v : nil;
+}
+
+static NSString *sciUsernameForMedia(id media) {
+    if (!media) return nil;
+    @try {
+        id user = nil;
+        @try { user = [media valueForKey:@"user"]; } @catch (__unused id e) {}
+        if (!user) {
+            NSDictionary *fc = sciMediaFieldCache(media);
+            user = fc[@"user"];
+        }
+        if (!user) return nil;
+        NSString *u = nil;
+        @try { u = [user valueForKey:@"username"]; } @catch (__unused id e) {}
+        if (![u isKindOfClass:[NSString class]] || !u.length) {
+            NSDictionary *ufc = sciMediaFieldCache(user);
+            id v = ufc[@"username"];
+            if ([v isKindOfClass:[NSString class]]) u = v;
+            else if ([user isKindOfClass:[NSDictionary class]]) u = ((NSDictionary *)user)[@"username"];
+        }
+        return [u isKindOfClass:[NSString class]] ? u : nil;
+    } @catch (__unused id e) { return nil; }
+}
+
 // Match keys used in the settings-entry title map for openSettingsForContext:
 static NSString *sciSettingsTitleForContext(SCIActionContext ctx) {
     switch (ctx) {
@@ -73,6 +124,38 @@ static void sciConfirmThen(NSString *title, void(^block)(void)) {
 
 
 @implementation SCIMediaActions
+
++ (NSString *)contextLabelForContext:(SCIActionContext)ctx {
+    switch (ctx) {
+        case SCIActionContextFeed:    return @"feed";
+        case SCIActionContextReels:   return @"reels";
+        case SCIActionContextStories: return @"stories";
+    }
+    return @"media";
+}
+
++ (NSString *)filenameStemForMedia:(id)media contextLabel:(NSString *)ctxLabel {
+    @try {
+        NSString *user = sciSanitizeFilenameComponent(sciUsernameForMedia(media));
+        NSString *userPart = user.length ? [@"@" stringByAppendingString:user] : @"media";
+        NSString *ctxPart = sciSanitizeFilenameComponent(ctxLabel);
+        if (!ctxPart.length) ctxPart = @"media";
+        static NSDateFormatter *fmt = nil;
+        static dispatch_once_t once;
+        dispatch_once(&once, ^{
+            fmt = [NSDateFormatter new];
+            fmt.dateFormat = @"yyyyMMdd_HHmmss";
+            fmt.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        });
+        NSString *ts = [fmt stringFromDate:[NSDate date]];
+        return [NSString stringWithFormat:@"%@_%@_%@", userPart, ctxPart, ts];
+    } @catch (__unused id e) {
+        return [[NSUUID UUID] UUIDString];
+    }
+}
+
++ (NSString *)currentFilenameStem { return sciCurrentFilenameStem; }
++ (void)setCurrentFilenameStem:(NSString *)stem { sciCurrentFilenameStem = [stem copy]; }
 
 // MARK: - Media extraction
 
@@ -209,6 +292,96 @@ static void sciConfirmThen(NSString *title, void(^block)(void)) {
     return @[];
 }
 
++ (BOOL)mediaHasAudio:(id)media {
+    if (!media) return NO;
+    // fieldCache on media (old IG path).
+    id v = sciFieldCache(media, @"has_audio");
+    if ([v respondsToSelector:@selector(boolValue)] && [v boolValue]) return YES;
+
+    // IGVideo.isAudioDetected — positive signal only; NO often means "IG
+    // hasn't decoded the manifest yet" for stories, not actually silent.
+    @try {
+        id video = nil;
+        if ([media respondsToSelector:@selector(video)])
+            video = ((id(*)(id, SEL))objc_msgSend)(media, @selector(video));
+        if (video && [video respondsToSelector:@selector(isAudioDetected)]) {
+            if (((BOOL(*)(id, SEL))objc_msgSend)(video, @selector(isAudioDetected))) return YES;
+        }
+    } @catch (__unused id e) {}
+
+    // Stories often carry audio but don't surface it in fieldCache. If any
+    // of these music/audio hints are present, treat as audio-bearing.
+    for (NSString *key in @[@"music_metadata", @"story_music_stickers",
+                            @"is_story_image_with_music", @"story_sound_on",
+                            @"spotify_stickers", @"story_music_lyric_stickers"]) {
+        id val = sciFieldCache(media, key);
+        if (val && ![val isKindOfClass:[NSNull class]]) {
+            if ([val respondsToSelector:@selector(boolValue)] && [val boolValue]) return YES;
+            if ([val isKindOfClass:[NSArray class]] && [(NSArray *)val count]) return YES;
+            if ([val isKindOfClass:[NSDictionary class]] && [(NSDictionary *)val count]) return YES;
+        }
+    }
+
+    // Last resort: if a DASH manifest exists, assume audio is present.
+    return [SCIDashParser dashManifestForMedia:media].length > 0;
+}
+
++ (void)downloadPhotoOnlyForMedia:(id)media action:(DownloadAction)action {
+    NSURL *url = [self hdPhotoURLForMedia:media];
+    if (!url) url = [SCIUtils getPhotoUrlForMedia:(IGMedia *)media];
+    if (!url) url = [self fieldCachePhotoURLForMedia:media];
+    if (!url) { [SCIUtils showErrorHUDWithDescription:SCILocalized(@"Could not extract photo URL")]; return; }
+    NSString *ext = [[url lastPathComponent] pathExtension];
+    if (!ext.length) ext = @"jpg";
+    sciActiveDownloadDelegate = sciMakeDownloader(action, NO);
+    [sciActiveDownloadDelegate downloadFileWithURL:url fileExtension:ext hudLabel:nil];
+}
+
+// Photos library can't hold audio — save action falls back to share sheet.
++ (void)downloadAudioOnlyForMedia:(id)media action:(DownloadAction)action {
+    NSString *manifest = [SCIDashParser dashManifestForMedia:media];
+    if (!manifest.length) {
+        [SCIUtils showErrorHUDWithDescription:SCILocalized(@"No audio stream available")];
+        return;
+    }
+    NSArray *reps = [SCIDashParser parseManifest:manifest];
+    SCIDashRepresentation *audio = [SCIDashParser bestAudioFromRepresentations:reps];
+    if (!audio.url) {
+        [SCIUtils showErrorHUDWithDescription:SCILocalized(@"No audio track found")];
+        return;
+    }
+    if (![SCIFFmpeg isAvailable]) {
+        [SCIUtils showErrorHUDWithDescription:SCILocalized(@"FFmpeg not available")];
+        return;
+    }
+
+    SCIDownloadPillView *pill = [SCIDownloadPillView shared];
+    NSString *ticket = [pill beginTicketWithTitle:SCILocalized(@"Downloading audio...")
+                                         onCancel:^{ [SCIFFmpeg cancelAll]; }];
+
+    NSString *audioStem = [self currentFilenameStem] ?: [[NSUUID UUID] UUIDString];
+    NSString *outPath = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                         [NSString stringWithFormat:@"%@.m4a", audioStem]];
+    NSString *cmd = [NSString stringWithFormat:@"-i \"%@\" -vn -c:a copy -y \"%@\"",
+                     audio.url.absoluteString, outPath];
+    [SCIFFmpeg executeCommand:cmd completion:^(BOOL success, NSString *output) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!success) {
+                [pill finishTicket:ticket errorMessage:SCILocalized(@"Audio extract failed")];
+                return;
+            }
+            [pill finishTicket:ticket successMessage:SCILocalized(@"Audio ready")];
+            NSURL *fileURL = [NSURL fileURLWithPath:outPath];
+            switch (action) {
+                case quickLook: [SCIUtils showQuickLookVC:@[fileURL]]; break;
+                case share:
+                case saveToPhotos:
+                default: [SCIUtils showShareVC:fileURL]; break;
+            }
+        });
+    }];
+}
+
 + (NSURL *)bestURLForMedia:(id)media {
     if (!media) return nil;
 
@@ -328,6 +501,7 @@ static void sciConfirmThen(NSString *title, void(^block)(void)) {
     // Try enhanced HD path via reusable quality picker
     BOOL handled = [SCIQualityPicker pickQualityForMedia:media
         fromView:sourceView
+        action:action
         picked:^(SCIDashRepresentation *video, SCIDashRepresentation *audio) {
             [self downloadDASHVideo:video audio:audio action:action];
         }
@@ -621,13 +795,18 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
         NSMutableArray<NSURL *> *files = [NSMutableArray array];
         NSLock *lock = [NSLock new];
         __block NSUInteger completed = 0;
+        NSString *bulkStem = [self currentFilenameStem];
 
+        NSUInteger __idx = 0;
         for (NSURL *url in urls) {
             if (cancelled) break;
             dispatch_group_enter(group);
             NSString *ext = [[url lastPathComponent] pathExtension];
+            NSString *name = bulkStem
+                ? [NSString stringWithFormat:@"%@_%lu", bulkStem, (unsigned long)(++__idx)]
+                : [[NSUUID UUID] UUIDString];
             NSString *tmp = [NSTemporaryDirectory() stringByAppendingPathComponent:
-                             [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString],
+                             [NSString stringWithFormat:@"%@.%@", name,
                               ext.length ? ext : @"jpg"]];
             NSURLSessionDownloadTask *task = [[NSURLSession sharedSession]
                 downloadTaskWithURL:url completionHandler:^(NSURL *loc, NSURLResponse *resp, NSError *err) {
@@ -762,6 +941,12 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
                                       media:(id)media
                                    fromView:(UIView *)sourceView {
     NSMutableArray<SCIAction *> *out = [NSMutableArray array];
+
+    NSString *ctxLabel = [self contextLabelForContext:ctx];
+    // Stamp the filename stem before a download fires.
+    void (^stampStemForMedia)(id) = ^(id m) {
+        [SCIMediaActions setCurrentFilenameStem:[SCIMediaActions filenameStemForMedia:m contextLabel:ctxLabel]];
+    };
 
     // Resolve parent media for carousel detection + bulk actions.
     id parentMedia = media;
@@ -946,9 +1131,11 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
                 [SCIMediaActions copyAllURLsForMedia:bulkMedia];
             }],
             [SCIAction actionWithTitle:SCILocalized(@"Download and share all") icon:@"square.and.arrow.up.on.square" handler:^{
+                stampStemForMedia(bulkMedia);
                 [SCIMediaActions downloadAllAndShareMedia:bulkMedia];
             }],
             [SCIAction actionWithTitle:SCILocalized(@"Download all to Photos") icon:@"square.and.arrow.down.on.square" handler:^{
+                stampStemForMedia(bulkMedia);
                 [SCIMediaActions downloadAllAndSaveMedia:bulkMedia];
             }],
         ];
@@ -1068,6 +1255,7 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
                             if (u) [urls addObject:u];
                         }
                         if (!urls.count) return;
+                        stampStemForMedia(capturedMedias.firstObject);
                         [SCIMediaActions bulkDownloadURLs:urls title:SCILocalized(@"Download all stories and share?") done:^(NSArray<NSURL *> *files) {
                             if (!files.count) return;
                             UIViewController *top = topMostController();
@@ -1083,6 +1271,7 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
                             if (u) [urls addObject:u];
                         }
                         if (!urls.count) return;
+                        stampStemForMedia(capturedMedias.firstObject);
                         [SCIMediaActions bulkDownloadURLs:urls title:SCILocalized(@"Save all stories to Photos?") done:^(NSArray<NSURL *> *files) {
                             [SCIMediaActions bulkSaveFiles:files];
                         }];
@@ -1105,11 +1294,13 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
     [out addObject:[SCIAction actionWithTitle:SCILocalized(@"Download and share")
                                          icon:@"square.and.arrow.up"
                                       handler:^{
+        stampStemForMedia(media);
         [SCIMediaActions downloadAndShareMedia:media];
     }]];
     [out addObject:[SCIAction actionWithTitle:SCILocalized(@"Download to Photos")
                                          icon:@"square.and.arrow.down"
                                       handler:^{
+        stampStemForMedia(media);
         [SCIMediaActions downloadAndSaveMedia:media];
     }]];
 
@@ -1138,13 +1329,18 @@ static UIView *sciFindSubviewOfClass(UIView *root, NSString *className, int maxD
         NSMutableArray<NSURL *> *files = [NSMutableArray array];
         NSLock *lock = [NSLock new];
         __block NSUInteger completed = 0;
+        NSString *bulkStem2 = [self currentFilenameStem];
 
+        NSUInteger __idx2 = 0;
         for (NSURL *url in urls) {
             if (cancelled) break;
             dispatch_group_enter(group);
             NSString *ext = [[url lastPathComponent] pathExtension];
+            NSString *name = bulkStem2
+                ? [NSString stringWithFormat:@"%@_%lu", bulkStem2, (unsigned long)(++__idx2)]
+                : [[NSUUID UUID] UUIDString];
             NSString *tmp = [NSTemporaryDirectory() stringByAppendingPathComponent:
-                             [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString],
+                             [NSString stringWithFormat:@"%@.%@", name,
                               ext.length ? ext : @"jpg"]];
             NSURLSessionDownloadTask *task = [[NSURLSession sharedSession]
                 downloadTaskWithURL:url completionHandler:^(NSURL *loc, NSURLResponse *resp, NSError *err) {

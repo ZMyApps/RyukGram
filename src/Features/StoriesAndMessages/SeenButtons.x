@@ -1,6 +1,7 @@
 #import "../../InstagramHeaders.h"
 #import "../../Tweak.h"
 #import "../../Utils.h"
+#import "../../SCIChrome.h"
 #import "SCIExcludedThreads.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -309,11 +310,13 @@ static NSDictionary *sciEntryFromThreadVC(UIViewController *vc) {
     BOOL navInList = navThreadId && [SCIExcludedThreads isInList:navThreadId];
 
     if ([SCIUtils getBoolPref:@"remove_lastseen"] && !navExcluded) {
-        UIBarButtonItem *seenButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"eye"] style:UIBarButtonItemStylePlain target:self action:@selector(seenButtonHandler:)];
+        SCIChromeButton *inner = nil;
+        UIBarButtonItem *seenButton = SCIChromeBarButtonItem(@"eye", 18, self, @selector(seenButtonHandler:), &inner);
         seenButton.accessibilityIdentifier = @"sci-seen-btn";
-        if (sciIsSeenToggleMode())
-            [seenButton setTintColor:dmSeenToggleEnabled ? SCIUtils.SCIColor_Primary : UIColor.labelColor];
-        seenButton.menu = sciBuildThreadActionsMenu(self, navThreadId, self.window);
+        UIColor *tint = UIColor.labelColor;
+        if (sciIsSeenToggleMode()) tint = dmSeenToggleEnabled ? SCIUtils.SCIColor_Primary : UIColor.labelColor;
+        inner.iconTint = tint;
+        inner.menu = sciBuildThreadActionsMenu(self, navThreadId, self.window);
         [new_items addObject:seenButton];
     }
 
@@ -328,25 +331,23 @@ static NSDictionary *sciEntryFromThreadVC(UIViewController *vc) {
     BOOL showAddBtn = blockSelected && !navInList;
     if (showListButton && (showRemoveBtn || showAddBtn)) {
         SEL action = showRemoveBtn ? @selector(sciUnexcludeButtonHandler:) : @selector(sciAddToListHandler:);
-        UIBarButtonItem *listBtn = [[UIBarButtonItem alloc]
-            initWithImage:[UIImage systemImageNamed:showRemoveBtn ? @"eye.slash.fill" : @"eye.slash"]
-                    style:UIBarButtonItemStylePlain
-                   target:self
-                   action:action];
+        NSString *sym = showRemoveBtn ? @"eye.slash.fill" : @"eye.slash";
+        SCIChromeButton *inner = nil;
+        UIBarButtonItem *listBtn = SCIChromeBarButtonItem(sym, 18, self, action, &inner);
         listBtn.accessibilityIdentifier = @"sci-unex-btn";
-        listBtn.tintColor = showRemoveBtn ? SCIUtils.SCIColor_Primary : UIColor.labelColor;
-        listBtn.menu = sciBuildThreadActionsMenu(self, navThreadId, self.window);
+        inner.iconTint = showRemoveBtn ? SCIUtils.SCIColor_Primary : UIColor.labelColor;
+        inner.menu = sciBuildThreadActionsMenu(self, navThreadId, self.window);
         [new_items addObject:listBtn];
     }
 
     // Replay toggle: in eye menu when eye button exists, standalone button otherwise
     BOOL eyeButtonOn = [SCIUtils getBoolPref:@"remove_lastseen"];
     if ([SCIUtils getBoolPref:@"unlimited_replay"] && !navExcluded && !eyeButtonOn) {
-        UIBarButtonItem *replayBtn = [[UIBarButtonItem alloc]
-            initWithImage:[UIImage systemImageNamed:dmVisualMsgsViewedButtonEnabled ? @"photo.badge.checkmark" : @"photo.badge.checkmark.fill"]
-                    style:UIBarButtonItemStylePlain target:self action:@selector(sciReplayToggleHandler:)];
+        NSString *sym = dmVisualMsgsViewedButtonEnabled ? @"photo.badge.checkmark" : @"photo.badge.checkmark.fill";
+        SCIChromeButton *inner = nil;
+        UIBarButtonItem *replayBtn = SCIChromeBarButtonItem(sym, 18, self, @selector(sciReplayToggleHandler:), &inner);
         replayBtn.accessibilityIdentifier = @"sci-visual-btn";
-        replayBtn.tintColor = dmVisualMsgsViewedButtonEnabled ? UIColor.labelColor : SCIUtils.SCIColor_Primary;
+        inner.iconTint = dmVisualMsgsViewedButtonEnabled ? UIColor.labelColor : SCIUtils.SCIColor_Primary;
         [new_items addObject:replayBtn];
     }
 
@@ -355,10 +356,14 @@ static NSDictionary *sciEntryFromThreadVC(UIViewController *vc) {
 
 // ============ MESSAGES SEEN BUTTON ============
 
-%new - (void)seenButtonHandler:(UIBarButtonItem *)sender {
+%new - (void)seenButtonHandler:(id)sender {
+    UIBarButtonItem *barItem = [sender isKindOfClass:[UIBarButtonItem class]] ? (UIBarButtonItem *)sender : nil;
+    SCIChromeButton *inner = [sender isKindOfClass:[SCIChromeButton class]] ? (SCIChromeButton *)sender : SCIChromeButtonForBarItem(barItem);
     if (sciIsSeenToggleMode()) {
         dmSeenToggleEnabled = !dmSeenToggleEnabled;
-        [sender setTintColor:dmSeenToggleEnabled ? SCIUtils.SCIColor_Primary : UIColor.labelColor];
+        UIColor *tint = dmSeenToggleEnabled ? SCIUtils.SCIColor_Primary : UIColor.labelColor;
+        if (inner) inner.iconTint = tint;
+        else [barItem setTintColor:tint];
         if (dmSeenToggleEnabled) {
             UIViewController *nearestVC = [SCIUtils nearestViewControllerForView:self];
             if ([nearestVC isKindOfClass:%c(IGDirectThreadViewController)])
@@ -377,13 +382,19 @@ static NSDictionary *sciEntryFromThreadVC(UIViewController *vc) {
     // Rebuild menu so toggle text updates
     UIViewController *navNearestVC = [SCIUtils nearestViewControllerForView:self];
     NSString *tid = sciThreadIdForVC(navNearestVC);
-    sender.menu = sciBuildThreadActionsMenu(self, tid, ((UIView *)self).window);
+    UIMenu *rebuilt = sciBuildThreadActionsMenu(self, tid, ((UIView *)self).window);
+    if (inner) inner.menu = rebuilt;
+    else if (barItem) barItem.menu = rebuilt;
 }
 
-%new - (void)sciReplayToggleHandler:(UIBarButtonItem *)sender {
+%new - (void)sciReplayToggleHandler:(id)sender {
+    UIBarButtonItem *barItem = [sender isKindOfClass:[UIBarButtonItem class]] ? (UIBarButtonItem *)sender : nil;
+    SCIChromeButton *inner = [sender isKindOfClass:[SCIChromeButton class]] ? (SCIChromeButton *)sender : SCIChromeButtonForBarItem(barItem);
     dmVisualMsgsViewedButtonEnabled = !dmVisualMsgsViewedButtonEnabled;
-    sender.image = [UIImage systemImageNamed:dmVisualMsgsViewedButtonEnabled ? @"photo.badge.checkmark" : @"photo.badge.checkmark.fill"];
-    sender.tintColor = dmVisualMsgsViewedButtonEnabled ? UIColor.labelColor : SCIUtils.SCIColor_Primary;
+    NSString *sym = dmVisualMsgsViewedButtonEnabled ? @"photo.badge.checkmark" : @"photo.badge.checkmark.fill";
+    UIColor *tint = dmVisualMsgsViewedButtonEnabled ? UIColor.labelColor : SCIUtils.SCIColor_Primary;
+    if (inner) { inner.symbolName = sym; inner.iconTint = tint; }
+    else if (barItem) { barItem.image = [UIImage systemImageNamed:sym]; barItem.tintColor = tint; }
     [SCIUtils showToastForDuration:2.0 title:dmVisualMsgsViewedButtonEnabled
         ? SCILocalized(@"Visual messages will expire") : SCILocalized(@"Unlimited replay enabled")];
 }

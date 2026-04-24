@@ -1,13 +1,15 @@
 // Quick fake-location toggle injected into IG's Friends Map (DMs > Maps).
 
 #import "../../Utils.h"
+#import "../../SCIChrome.h"
 #import "../../Settings/SCIFakeLocationSettingsVC.h"
 #import "../../Settings/SCIFakeLocationPickerVC.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <substrate.h>
 
-static const NSInteger kSciMapBtnTag = 0x5C1F4B;
+static const NSInteger kSciMapBtnTag    = 0x5C1F4B;
+static const NSInteger kSciMapHitBtnTag = 0x5C1F4C;
 
 static UIViewController *sciTopMost(void) {
     UIWindow *win = nil;
@@ -179,6 +181,8 @@ static UIMenu *sciBuildMapMenu(void) {
 static void sciRemoveMapButton(UIView *mapView) {
     UIView *btn = [mapView viewWithTag:kSciMapBtnTag];
     if (btn) [btn removeFromSuperview];
+    UIView *hit = [mapView viewWithTag:kSciMapHitBtnTag];
+    if (hit) [hit removeFromSuperview];
 }
 
 static void sciAddMapButton(UIView *mapView) {
@@ -186,40 +190,55 @@ static void sciAddMapButton(UIView *mapView) {
     if (![SCIUtils getBoolPref:@"show_fake_location_map_button"]) { sciRemoveMapButton(mapView); return; }
     if ([mapView viewWithTag:kSciMapBtnTag]) return;
 
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn.tag = kSciMapBtnTag;
-    btn.translatesAutoresizingMaskIntoConstraints = NO;
-    btn.backgroundColor = [UIColor secondarySystemBackgroundColor];
-    btn.layer.cornerRadius = 24;
-    btn.layer.shadowColor = [UIColor blackColor].CGColor;
-    btn.layer.shadowOpacity = 0.18;
-    btn.layer.shadowRadius = 5;
-    btn.layer.shadowOffset = CGSizeMake(0, 2);
-    btn.showsMenuAsPrimaryAction = YES;
-    btn.menu = sciBuildMapMenu();
-
-    // Refresh menu on each press so toggle/preset state is current.
-    [btn addAction:[UIAction actionWithHandler:^(__unused UIAction *a) {
-        btn.menu = sciBuildMapMenu();
-    }] forControlEvents:UIControlEventMenuActionTriggered];
-
-    [mapView addSubview:btn];
+    // Visible chrome — static, never absorbed into the menu platter animation.
+    BOOL on = [SCIUtils getBoolPref:@"fake_location_enabled"];
+    SCIChromeButton *chrome = [[SCIChromeButton alloc] initWithSymbol:on ? @"location.fill" : @"location.slash"
+                                                            pointSize:18
+                                                             diameter:48];
+    chrome.tag = kSciMapBtnTag;
+    chrome.bubbleColor = [UIColor secondarySystemBackgroundColor];
+    chrome.iconTint = on ? [UIColor systemGreenColor] : [UIColor labelColor];
+    chrome.layer.shadowColor = [UIColor blackColor].CGColor;
+    chrome.layer.shadowOpacity = 0.18;
+    chrome.layer.shadowRadius = 5;
+    chrome.layer.shadowOffset = CGSizeMake(0, 2);
+    chrome.userInteractionEnabled = NO;
+    [mapView addSubview:chrome];
     [NSLayoutConstraint activateConstraints:@[
-        [btn.leadingAnchor constraintEqualToAnchor:mapView.leadingAnchor constant:16],
-        [btn.topAnchor constraintEqualToAnchor:mapView.safeAreaLayoutGuide.topAnchor constant:78],
-        [btn.widthAnchor constraintEqualToConstant:48],
-        [btn.heightAnchor constraintEqualToConstant:48],
+        [chrome.leadingAnchor constraintEqualToAnchor:mapView.leadingAnchor constant:16],
+        [chrome.topAnchor constraintEqualToAnchor:mapView.safeAreaLayoutGuide.topAnchor constant:78],
+        [chrome.widthAnchor constraintEqualToConstant:48],
+        [chrome.heightAnchor constraintEqualToConstant:48],
+    ]];
+
+    // Invisible hit target owns the menu; visible chrome below stays put
+    // when UIKit absorbs the hit into the menu platter on dismiss.
+    UIButton *hit = [UIButton buttonWithType:UIButtonTypeCustom];
+    hit.tag = kSciMapHitBtnTag;
+    hit.backgroundColor = [UIColor clearColor];
+    hit.translatesAutoresizingMaskIntoConstraints = NO;
+    hit.showsMenuAsPrimaryAction = YES;
+    hit.menu = sciBuildMapMenu();
+    [hit addAction:[UIAction actionWithHandler:^(__unused UIAction *a) {
+        hit.menu = sciBuildMapMenu();
+    }] forControlEvents:UIControlEventMenuActionTriggered];
+    [mapView addSubview:hit];
+    [NSLayoutConstraint activateConstraints:@[
+        [hit.leadingAnchor  constraintEqualToAnchor:chrome.leadingAnchor],
+        [hit.trailingAnchor constraintEqualToAnchor:chrome.trailingAnchor],
+        [hit.topAnchor      constraintEqualToAnchor:chrome.topAnchor],
+        [hit.bottomAnchor   constraintEqualToAnchor:chrome.bottomAnchor],
     ]];
 }
 
 static void sciRefreshMapButton(UIView *mapView) {
-    UIButton *btn = (UIButton *)[mapView viewWithTag:kSciMapBtnTag];
-    if (!btn) return;
+    SCIChromeButton *btn = (SCIChromeButton *)[mapView viewWithTag:kSciMapBtnTag];
+    if (![btn isKindOfClass:[SCIChromeButton class]]) return;
     BOOL on = [SCIUtils getBoolPref:@"fake_location_enabled"];
-    UIImageSymbolConfiguration *cfg = [UIImageSymbolConfiguration configurationWithPointSize:18 weight:UIImageSymbolWeightSemibold];
-    [btn setImage:[UIImage systemImageNamed:on ? @"location.fill" : @"location.slash" withConfiguration:cfg] forState:UIControlStateNormal];
-    btn.tintColor = on ? [UIColor systemGreenColor] : [UIColor labelColor];
-    btn.menu = sciBuildMapMenu();
+    btn.symbolName = on ? @"location.fill" : @"location.slash";
+    btn.iconTint = on ? [UIColor systemGreenColor] : [UIColor labelColor];
+    // Don't touch btn.menu here — reassigning mid-dismiss flickers the button.
+    // UIControlEventMenuActionTriggered rebuilds on next open.
 }
 
 static void (*orig_mapLayout)(UIView *, SEL);

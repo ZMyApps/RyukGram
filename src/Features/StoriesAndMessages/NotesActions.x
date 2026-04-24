@@ -97,8 +97,8 @@ static UIImage *sciGIFImageFromCell(UIView *cell) {
     return nil;
 }
 
-// Get audio URL from the cell's view model
-static NSURL *sciAudioURLFromCell(UIView *cell, id targetNote) {
+// Audio track from the note cell's view model. 426 added launcherSet.
+static id sciAudioTrackFromCell(UIView *cell) {
     if (!cell) return nil;
     Ivar vmIvar = class_getInstanceVariable([cell class], "viewModel");
     if (!vmIvar) vmIvar = class_getInstanceVariable([cell class], "_viewModel");
@@ -106,39 +106,46 @@ static NSURL *sciAudioURLFromCell(UIView *cell, id targetNote) {
     id vm = object_getIvar(cell, vmIvar);
     if (!vm) return nil;
 
-    SEL audioSel = NSSelectorFromString(@"audioTrackWithUserMap:");
-    if (![vm respondsToSelector:audioSel]) return nil;
-
+    SEL audioSel2 = NSSelectorFromString(@"audioTrackWithUserMap:launcherSet:");
+    SEL audioSel1 = NSSelectorFromString(@"audioTrackWithUserMap:");
     @try {
-        id track = ((id(*)(id,SEL,id))objc_msgSend)(vm, audioSel, nil);
-        if (!track) return nil;
-
-        // audioFileURL is an IGAsyncTask — try to resolve it
-        if ([track respondsToSelector:NSSelectorFromString(@"audioFileURL")]) {
-            id urlOrTask = [track valueForKey:@"audioFileURL"];
-            if ([urlOrTask isKindOfClass:[NSURL class]]) return urlOrTask;
-
-            // IGAsyncTask — try .result, .value, .get
-            for (NSString *prop in @[@"result", @"value", @"get", @"cachedResult"]) {
-                if ([urlOrTask respondsToSelector:NSSelectorFromString(prop)]) {
-                    @try {
-                        id resolved = [urlOrTask valueForKey:prop];
-                        if ([resolved isKindOfClass:[NSURL class]]) return resolved;
-                    } @catch (__unused id e) {}
-                }
-            }
-
-            SEL awaitSel = NSSelectorFromString(@"await");
-            if ([urlOrTask respondsToSelector:awaitSel]) {
-                @try {
-                    id resolved = ((id(*)(id,SEL))objc_msgSend)(urlOrTask, awaitSel);
-                    if ([resolved isKindOfClass:[NSURL class]]) return resolved;
-                } @catch (__unused id e) {}
-            }
+        if ([vm respondsToSelector:audioSel2]) {
+            id session = [SCIUtils activeUserSession];
+            id launcher = nil;
+            @try { launcher = session ? [session valueForKey:@"launcherSet"] : nil; } @catch (__unused id e) {}
+            return ((id(*)(id,SEL,id,id))objc_msgSend)(vm, audioSel2, nil, launcher);
         }
-
+        if ([vm respondsToSelector:audioSel1]) {
+            return ((id(*)(id,SEL,id))objc_msgSend)(vm, audioSel1, nil);
+        }
     } @catch (__unused id e) {}
     return nil;
+}
+
+// Pull URL from the track's IGAsyncTask — sync if cached, else async.
+static void sciResolveAudioURL(id track, void (^completion)(NSURL *)) {
+    if (!track || !completion) { if (completion) completion(nil); return; }
+    id task = nil;
+    @try {
+        if ([track respondsToSelector:@selector(audioFileURLTask)])
+            task = ((id(*)(id,SEL))objc_msgSend)(track, @selector(audioFileURLTask));
+    } @catch (__unused id e) {}
+    if (!task) { completion(nil); return; }
+
+    @try {
+        id res = [task valueForKey:@"result"];
+        if ([res isKindOfClass:[NSURL class]]) { completion(res); return; }
+    } @catch (__unused id e) {}
+
+    SEL onSuccess = NSSelectorFromString(@"onSuccess:");
+    if (![task respondsToSelector:onSuccess]) { completion(nil); return; }
+    void (^cb)(id) = ^(id resolved) {
+        NSURL *u = [resolved isKindOfClass:[NSURL class]] ? resolved : nil;
+        dispatch_async(dispatch_get_main_queue(), ^{ completion(u); });
+    };
+    @try {
+        ((void(*)(id,SEL,id))objc_msgSend)(task, onSuccess, cb);
+    } @catch (__unused id e) { completion(nil); }
 }
 
 static SCIDownloadDelegate *sciNoteDl = nil;
@@ -254,13 +261,18 @@ static void hook_present(UIViewController *self, SEL _cmd, UIViewController *vc,
             }]];
         }
 
-        // Audio (style=1): download from audioFileURL
-        NSURL *audioURL = sciAudioURLFromCell(cell, note);
-        if (audioURL) {
+        id audioTrack = sciAudioTrackFromCell(cell);
+        if (audioTrack) {
             [alert addAction:[UIAlertAction actionWithTitle:SCILocalized(@"Download audio")
                 style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
-                sciNoteDl = [[SCIDownloadDelegate alloc] initWithAction:share showProgress:NO];
-                [sciNoteDl downloadFileWithURL:audioURL fileExtension:@"m4a" hudLabel:nil];
+                sciResolveAudioURL(audioTrack, ^(NSURL *audioURL) {
+                    if (!audioURL) {
+                        [SCIUtils showErrorHUDWithDescription:SCILocalized(@"Audio URL not available")];
+                        return;
+                    }
+                    sciNoteDl = [[SCIDownloadDelegate alloc] initWithAction:share showProgress:NO];
+                    [sciNoteDl downloadFileWithURL:audioURL fileExtension:@"m4a" hudLabel:nil];
+                });
             }]];
         }
 

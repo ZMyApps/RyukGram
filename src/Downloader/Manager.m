@@ -1,4 +1,5 @@
 #import "Manager.h"
+#import "../ActionButton/SCIMediaActions.h"
 
 @implementation SCIDownloadManager
 
@@ -31,8 +32,6 @@
 
 // URLSession methods
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    NSLog(@"Task wrote %lld bytes of %lld bytes", bytesWritten, totalBytesExpectedToWrite);
-    
     float progress = (float)totalBytesWritten / (float)totalBytesExpectedToWrite;
 
     [self.delegate downloadDidProgress:progress];
@@ -46,8 +45,7 @@
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    NSLog(@"Task completed with error: %@", error);
-    
+    if (error) NSLog(@"[SCInsta] Download error: %@", error);
     [self.delegate downloadDidFinishWithError:error];
 }
 
@@ -56,7 +54,8 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSString *cacheDirectoryPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-    NSURL *newPath = [[NSURL fileURLWithPath:cacheDirectoryPath] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", NSUUID.UUID.UUIDString, self.fileExtension]];
+    NSString *stem = [SCIMediaActions currentFilenameStem] ?: NSUUID.UUID.UUIDString;
+    NSURL *newPath = [[NSURL fileURLWithPath:cacheDirectoryPath] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", stem, self.fileExtension]];
     
     NSLog(@"[SCInsta] Download Handler: Moving file from: %@ to: %@", oldPath.absoluteString, newPath.absoluteString);
 

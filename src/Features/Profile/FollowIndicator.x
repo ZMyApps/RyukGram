@@ -3,6 +3,7 @@
 
 #import "../../InstagramHeaders.h"
 #import "../../Utils.h"
+#import "../../SCIChrome.h"
 #import "../../Networking/SCIInstagramAPI.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -10,30 +11,6 @@
 // IGProfileViewController declared in InstagramHeaders.h
 
 static const NSInteger kFollowBadgeTag = 99788;
-
-static NSString *sciPKFromUser(id igUser) {
-    if (!igUser) return nil;
-    Ivar pkIvar = NULL;
-    for (Class c = [igUser class]; c && !pkIvar; c = class_getSuperclass(c))
-        pkIvar = class_getInstanceVariable(c, "_pk");
-    if (!pkIvar) return nil;
-    return [object_getIvar(igUser, pkIvar) description];
-}
-
-static NSString *sciCurrentUserPK(void) {
-    @try {
-        for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
-            if (![scene isKindOfClass:[UIWindowScene class]]) continue;
-            for (UIWindow *window in scene.windows) {
-                id session = [window valueForKey:@"userSession"];
-                if (!session) continue;
-                id su = [session valueForKey:@"user"];
-                if (su) return sciPKFromUser(su);
-            }
-        }
-    } @catch (NSException *e) {}
-    return nil;
-}
 
 // Cache follow status on the VC to avoid re-fetching
 static const char kFollowStatusKey;
@@ -64,26 +41,20 @@ static void sciRenderBadge(UIViewController *vc) {
     UIView *old = [statContainer viewWithTag:kFollowBadgeTag];
     if (old) [old removeFromSuperview];
 
-    UILabel *badge = [[UILabel alloc] init];
+    NSString *text = followedBy ? SCILocalized(@"Follows you") : SCILocalized(@"Doesn't follow you");
+    SCIChromeLabel *badge = [[SCIChromeLabel alloc] initWithText:text];
     badge.tag = kFollowBadgeTag;
-    badge.text = followedBy ? SCILocalized(@"Follows you") : SCILocalized(@"Doesn't follow you");
     badge.font = [UIFont systemFontOfSize:11 weight:UIFontWeightMedium];
     badge.textColor = followedBy
         ? [UIColor colorWithRed:0.3 green:0.75 blue:0.4 alpha:1.0]
         : [UIColor colorWithRed:0.85 green:0.3 blue:0.3 alpha:1.0];
-    [badge sizeToFit];
-
-    CGFloat x = 0;
-    for (UIView *sub in statContainer.subviews) {
-        if (!sub.isHidden && sub.frame.size.width > 0) {
-            x = sub.frame.origin.x;
-            break;
-        }
-    }
-
-    badge.frame = CGRectMake(x, statContainer.bounds.size.height - badge.frame.size.height - 2,
-                             badge.frame.size.width, badge.frame.size.height);
     [statContainer addSubview:badge];
+
+    // Pinned to the leading edge so it sits flush-left on any device + RTL.
+    [NSLayoutConstraint activateConstraints:@[
+        [badge.leadingAnchor constraintEqualToAnchor:statContainer.leadingAnchor],
+        [badge.bottomAnchor constraintEqualToAnchor:statContainer.bottomAnchor constant:-8],
+    ]];
 }
 
 %hook IGProfileViewController
@@ -103,8 +74,8 @@ static void sciRenderBadge(UIViewController *vc) {
     @try { igUser = [self valueForKey:@"user"]; } @catch (NSException *e) {}
     if (!igUser) return;
 
-    NSString *profilePK = sciPKFromUser(igUser);
-    NSString *myPK = sciCurrentUserPK();
+    NSString *profilePK = [SCIUtils pkFromIGUser:igUser];
+    NSString *myPK = [SCIUtils currentUserPK];
     if (!profilePK || !myPK || [profilePK isEqualToString:myPK]) return;
 
     __weak UIViewController *weakSelf = self;

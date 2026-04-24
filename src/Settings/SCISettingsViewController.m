@@ -1,5 +1,7 @@
 #import "SCISettingsViewController.h"
 #import "SCISearchBarStyler.h"
+#import "../Features/General/SCICacheManager.h"
+#import "../SCIImageCache.h"
 
 static char rowStaticRef[] = "row";
 
@@ -15,8 +17,6 @@ static char rowStaticRef[] = "row";
 
 @end
 
-///
-
 @implementation SCISettingsViewController
 
 - (instancetype)initWithTitle:(NSString *)title sections:(NSArray *)sections reduceMargin:(BOOL)reduceMargin {
@@ -25,9 +25,9 @@ static char rowStaticRef[] = "row";
     if (self) {
         self.title = title;
         self.reduceMargin = reduceMargin;
-        self.isRoot = reduceMargin; // root call uses reduceMargin=YES
-        
-        // Exclude development cells from release builds
+        self.isRoot = reduceMargin;
+
+        // Hide dev-only sections in non-dev builds.
         NSMutableArray *mutableSections = [sections mutableCopy];
         
         [mutableSections enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSDictionary *section, NSUInteger index, BOOL *stop) {
@@ -96,6 +96,20 @@ static char rowStaticRef[] = "row";
         langItem.menu = [self sciBuildLanguageMenu];
         self.navigationItem.rightBarButtonItem = langItem;
     }
+
+    // Pushed Advanced VC reloads the Clear cache row when size lands.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(sciCacheSizeDidUpdate)
+                                                 name:SCICacheSizeDidUpdateNotification
+                                               object:nil];
+}
+
+- (void)sciCacheSizeDidUpdate {
+    [self.tableView reloadData];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)sciShowLanguageInfo {
@@ -288,7 +302,16 @@ static char rowStaticRef[] = "row";
     
     cellContentConfig.text = row.dynamicTitle ? row.dynamicTitle() : row.title;
 
-    // While searching, show the breadcrumb path instead of the row subtitle.
+    // Value1-style static row: trailing label on the right. Subtitle still
+    // renders below the title when both are set.
+    if (row.valueText.length && ![self isSearching]) {
+        UILabel *value = [UILabel new];
+        value.text = row.valueText;
+        value.font = [UIFont systemFontOfSize:16];
+        value.textColor = [UIColor secondaryLabelColor];
+        [value sizeToFit];
+        cell.accessoryView = value;
+    }
     NSString *displaySubtitle = [self isSearching] && searchBreadcrumb.length ? searchBreadcrumb : row.subtitle;
     if (displaySubtitle.length) {
         cellContentConfig.secondaryText = displaySubtitle;
@@ -304,8 +327,20 @@ static char rowStaticRef[] = "row";
     // Image url
     if (row.imageUrl != nil) {
         [self loadImageFromURL:row.imageUrl atIndexPath:indexPath forTableView:tableView];
-        
+
         cellContentConfig.imageToTextPadding = 14;
+    }
+
+    if (row.bundleImageName) {
+        UIImage *img = [UIImage imageNamed:row.bundleImageName
+                                  inBundle:SCILocalizationBundle()
+             compatibleWithTraitCollection:nil];
+        if (img) {
+            cellContentConfig.image = img;
+            cellContentConfig.imageProperties.maximumSize = CGSizeMake(45, 45);
+            cellContentConfig.imageProperties.cornerRadius = 10;
+            cellContentConfig.imageToTextPadding = 14;
+        }
     }
     
     switch (row.type) {
@@ -402,7 +437,11 @@ static char rowStaticRef[] = "row";
             break;
         }
     }
-    
+
+    if (row.titleColor) {
+        cellContentConfig.textProperties.color = row.titleColor;
+    }
+
     cell.contentConfiguration = cellContentConfig;
 
     return cell;
@@ -544,27 +583,16 @@ static char rowStaticRef[] = "row";
 - (void)loadImageFromURL:(NSURL *)url atIndexPath:(NSIndexPath *)indexPath forTableView:(UITableView *)tableView
 {
     if (!url) return;
-
-    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url
-                                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
-    {
-        if (!data || error) return;
-
-        UIImage *image = [UIImage imageWithData:data];
+    [SCIImageCache loadImageFromURL:url completion:^(UIImage *image) {
         if (!image) return;
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            if (!cell) return;
-
-            UIListContentConfiguration *config = (UIListContentConfiguration *)cell.contentConfiguration;
-            config.image = image;
-            config.imageProperties.maximumSize = CGSizeMake(45, 45);
-            cell.contentConfiguration = config;
-        });
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        if (!cell) return;
+        UIListContentConfiguration *config = (UIListContentConfiguration *)cell.contentConfiguration;
+        config.image = image;
+        config.imageProperties.maximumSize = CGSizeMake(45, 45);
+        config.imageProperties.cornerRadius = 22.5;
+        cell.contentConfiguration = config;
     }];
-
-    [task resume];
 }
 
 @end

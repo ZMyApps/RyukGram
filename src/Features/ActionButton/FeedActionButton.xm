@@ -4,6 +4,7 @@
 
 #import "../../InstagramHeaders.h"
 #import "../../Utils.h"
+#import "../../SCIChrome.h"
 #import "../../ActionButton/SCIActionButton.h"
 #import "../../ActionButton/SCIMediaActions.h"
 #import <objc/runtime.h>
@@ -212,16 +213,13 @@ static IGMedia *sciFeedMediaFromButton(UIView *button) {
 
     if (![SCIUtils getBoolPref:@"feed_action_button"]) return;
 
-    UIButton *btn = (UIButton *)[self viewWithTag:kFeedActionBtnTag];
+    SCIChromeButton *btn = (SCIChromeButton *)[self viewWithTag:kFeedActionBtnTag];
+    if (![btn isKindOfClass:[SCIChromeButton class]]) btn = nil;
     if (!btn) {
-        btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn = [[SCIChromeButton alloc] initWithSymbol:@"ellipsis.circle" pointSize:21 diameter:36];
         btn.tag = kFeedActionBtnTag;
-
-        UIImageSymbolConfiguration *cfg =
-            [UIImageSymbolConfiguration configurationWithPointSize:21 weight:UIImageSymbolWeightRegular];
-        [btn setImage:[UIImage systemImageNamed:@"ellipsis.circle" withConfiguration:cfg] forState:UIControlStateNormal];
-        btn.tintColor = [UIColor labelColor];
-        btn.translatesAutoresizingMaskIntoConstraints = NO;
+        btn.iconTint = [UIColor labelColor];
+        btn.bubbleColor = [UIColor clearColor];
         [self addSubview:btn];
 
         // Position: right side, left of bookmark. Shifted up 4pt to

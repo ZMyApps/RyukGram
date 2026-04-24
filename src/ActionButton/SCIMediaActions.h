@@ -2,6 +2,7 @@
 
 #import <UIKit/UIKit.h>
 #import "../InstagramHeaders.h"
+#import "../Downloader/Download.h"
 #import "SCIActionMenu.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -16,6 +17,18 @@ typedef NS_ENUM(NSInteger, SCIActionContext) {
 
 @interface SCIMediaActions : NSObject
 
+// MARK: - Filename naming
+
+// `@username_context_yyyyMMdd_HHmmss` (sanitized). UUID fallback on failure.
++ (NSString *)filenameStemForMedia:(nullable id)media contextLabel:(NSString *)ctxLabel;
+
+// "feed" / "reels" / "stories".
++ (NSString *)contextLabelForContext:(SCIActionContext)ctx;
+
+// Stem read by the download + mux write sites to name output files.
++ (nullable NSString *)currentFilenameStem;
++ (void)setCurrentFilenameStem:(nullable NSString *)stem;
+
 // MARK: - Media extraction
 
 /// Return the post's caption string. Tries selectors first, falls back to
@@ -27,6 +40,16 @@ typedef NS_ENUM(NSInteger, SCIActionContext) {
 
 /// Ordered children of a carousel IGMedia. Empty array for non-carousels.
 + (NSArray *)carouselChildrenForMedia:(id)media;
+
+/// YES if the media has an audio track (`has_audio` fieldCache == 1).
++ (BOOL)mediaHasAudio:(id)media;
+
+/// Download the raw photo URL, skipping any video route.
++ (void)downloadPhotoOnlyForMedia:(id)media action:(DownloadAction)action;
+
+/// Extract the audio-only track from the DASH manifest via FFmpeg. Photos
+/// library can't hold audio, so both actions end at the share sheet.
++ (void)downloadAudioOnlyForMedia:(id)media action:(DownloadAction)action;
 
 /// Best URL for a single (non-carousel) media item. Prefers video URL, falls
 /// back to photo URL. Returns nil if nothing extractable.

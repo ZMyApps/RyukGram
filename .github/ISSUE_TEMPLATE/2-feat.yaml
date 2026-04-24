@@ -4,7 +4,7 @@ title: 'feat: '
 labels:
   - enhancement
 assignees:
-  - SoCuul
+  - faroukbmiled
 body:
   - type: checkboxes
     id: before-start
@@ -14,7 +14,7 @@ body:
       options:
         - label: >-
             I have read through the
-            [FAQ](https://github.com/SoCuul/SCInsta/wiki/FAQ)
+            [FAQ](https://github.com/faroukbmiled/RyukGram/wiki/FAQ)
           required: true
         - label: I have made sure this feature has not already been already suggested
           required: true

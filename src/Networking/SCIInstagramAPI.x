@@ -1,6 +1,7 @@
 // Reusable IG private API helper. See SCIInstagramAPI.h.
 
 #import "SCIInstagramAPI.h"
+#import "../Utils.h"
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -32,43 +33,8 @@ static NSString *sciUserAgent(void) {
 
 // ============ IG runtime accessors ============
 
-// Active IGUserSession. Walks every window across all connected scenes
-// since key window can be nil in some states.
-static id sciCurrentUserSession(void) {
-    @try {
-        UIApplication *app = [UIApplication sharedApplication];
-        NSMutableArray *windows = [NSMutableArray array];
-        if (app.keyWindow) [windows addObject:app.keyWindow];
-        for (UIWindow *w in app.windows) if (w) [windows addObject:w];
-        for (UIScene *scene in app.connectedScenes) {
-            if ([scene isKindOfClass:[UIWindowScene class]]) {
-                for (UIWindow *w in ((UIWindowScene *)scene).windows) if (w) [windows addObject:w];
-            }
-        }
-        for (id w in windows) {
-            if ([w respondsToSelector:@selector(userSession)]) {
-                id s = [w valueForKey:@"userSession"];
-                if (s) return s;
-            }
-        }
-    } @catch (__unused id e) {}
-    return nil;
-}
-
-// PK of the currently active account. Changes on quick-switch.
-static NSString *sciCurrentUserPK(void) {
-    @try {
-        id session = sciCurrentUserSession();
-        id user = session ? [session valueForKey:@"user"] : nil;
-        if (!user) return nil;
-        Ivar pkIvar = class_getInstanceVariable([user class], "_pk");
-        if (pkIvar) {
-            id pk = object_getIvar(user, pkIvar);
-            if (pk) return [NSString stringWithFormat:@"%@", pk];
-        }
-    } @catch (__unused id e) {}
-    return nil;
-}
+static id sciCurrentUserSession(void) { return [SCIUtils activeUserSession]; }
+static NSString *sciCurrentUserPK(void) { return [SCIUtils currentUserPK]; }
 
 // Bearer token for the active account, read fresh from
 // -[IGUserSession authHeaderManager] -> -[IGUserAuthHeaderManager authHeader].

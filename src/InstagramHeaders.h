@@ -43,6 +43,12 @@
 @interface IGExploreGridViewController : IGViewController
 @end
 
+@interface IGExploreViewController : IGViewController
+@end
+
+@interface IGExploreSearchTitleView : UIView
+@end
+
 @interface UIImage ()
 - (NSString *)ig_imageName;
 @end
@@ -162,6 +168,15 @@
 
 @interface IGSundialViewerPhotoView : UIView
 - (void)addLongPressGestureRecognizer; // new
+@end
+
+@interface IGSundialViewerPhotoCell : UIView
+@end
+
+@interface IGSundialViewerCarouselPhotoCell : UIView
+@end
+
+@interface IGSundialViewerCarouselCell : UIView
 @end
 
 @interface IGImageProgressView : UIView
@@ -538,6 +553,14 @@
 // IG's UINavigationBar subclass — hosts the iOS 26 liquid-glass platter layout.
 @interface IGNavigationBar : UINavigationBar @end
 
+// DM thread background + message bubble views — OLED chat theme.
+@interface IGDirectThreadBackgroundImageView : UIImageView @end
+@interface IGDirectMessageBubbleView : UIView @end
+
+// UIKit-private keyboard classes — OLED keyboard theme.
+@interface UIKBBackdropView : UIView @end
+@interface UIKBKeyplaneChargedView : UIView @end
+
 // Story tray list adapter — drives data source updates for the home feed tray.
 @interface IGListAdapter : NSObject
 - (void)performUpdatesAnimated:(BOOL)animated completion:(void (^)(BOOL))completion;
@@ -674,4 +697,39 @@ typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionHandler)(void(^handler)(NSAr
 - (void)showExplorer;
 - (void)hideExplorer;
 - (void)toggleExplorer;
+@end
+
+// IGLive classes — discovered via runtime ivar/method dump.
+@interface IGLiveFeedbackController : NSObject
+- (void)start;
+- (void)stop;
+@end
+
+@interface IGLiveCommentsContainerViewController : UIViewController
+- (void)setIsHidden:(BOOL)hidden;
+- (void)setDisabled:(BOOL)disabled;
+@end
+
+// Story/reel sticker views — data accessors resolved at runtime.
+@interface IGQuizStickerView : UIView
+@end
+
+@interface IGPollStickerView : UIView
+@end
+
+@interface IGPollStickerV2View : UIView
+@end
+
+@interface IGSliderStickerView : UIView
+@end
+
+// Composer sticker tray data source — hooked to inject the quiz model.
+@interface IGStoryStickerDataSourceImpl : NSObject
+- (NSArray *)items;
+@end
+
+@interface IGQuizStickerTrayModel : NSObject
+@property (nonatomic) BOOL isBoostEligible;
+@property (nonatomic, copy) id stickerSection;
+@property (nonatomic, copy) NSArray *prompts;
 @end

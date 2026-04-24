@@ -14,8 +14,6 @@ typedef NS_ENUM(NSInteger, SCITableCell) {
         SCITableCellNavigation,
 };
 
-///
-
 @interface SCISetting : NSObject
 
 @property (nonatomic, readonly) SCITableCell type;
@@ -28,6 +26,7 @@ typedef NS_ENUM(NSInteger, SCITableCell) {
 
 @property (nonatomic, strong) NSURL *url;
 @property (nonatomic, strong) NSURL *imageUrl;
+@property (nonatomic, copy, nullable) NSString *bundleImageName;
 
 @property (nonatomic) BOOL requiresRestart;
 @property (nonatomic) BOOL disabled;
@@ -43,6 +42,14 @@ typedef NS_ENUM(NSInteger, SCITableCell) {
 @property (nonatomic, strong) UIMenu *baseMenu;
 
 @property (nonatomic, copy, nullable) NSString *(^dynamicTitle)(void);
+
+/// Optional trailing label for a static cell. Rendered right-aligned; pairs
+/// with `subtitle` (which still renders beneath the title) when both are set.
+@property (nonatomic, copy, nullable) NSString *valueText;
+
+/// Optional override for the title text color. Primarily useful for giving
+/// action-style button cells the same tint as link cells.
+@property (nonatomic, strong, nullable) UIColor *titleColor;
 
 @property (nonatomic, strong) NSArray *navSections;
 @property (nonatomic, strong) UIViewController *navViewController;

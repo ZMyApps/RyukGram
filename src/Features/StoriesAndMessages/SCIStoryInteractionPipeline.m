@@ -63,7 +63,7 @@ static void sciMarkSeen(NSString *prefKey) {
     if (!prefKey || ![SCIUtils getBoolPref:prefKey]) return;
     UIView *overlay = sciFindOverlay(sciActiveStoryVC);
     if (!overlay) return;
-    SEL sel = NSSelectorFromString(@"sciMarkSeenTapped:");
+    SEL sel = NSSelectorFromString(@"sciStoryMarkSeenTapped:");
     if ([overlay respondsToSelector:sel])
         ((void(*)(id, SEL, id))objc_msgSend)(overlay, sel, nil);
 }

@@ -24,6 +24,8 @@ static BOOL sciPlatterContainsHiddenButton(UIView *platter) {
     return NO;
 }
 
+%group HideCallButtonsGroup
+
 // Block taps in case a hidden button still receives hit-test events during transitions.
 %hook IGDirectThreadCallButtonsCoordinator
 - (void)_didTapAudioButton:(id)arg1 {
@@ -88,3 +90,12 @@ static void sciRepackPlatters(UIView *container) {
     }
 }
 %end
+
+%end // HideCallButtonsGroup
+
+%ctor {
+    if ([SCIUtils getBoolPref:@"hide_voice_call_button"] ||
+        [SCIUtils getBoolPref:@"hide_video_call_button"]) {
+        %init(HideCallButtonsGroup);
+    }
+}

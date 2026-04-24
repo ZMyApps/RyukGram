@@ -124,7 +124,7 @@ static NSString *sciExampleForKey(NSString *key) {
         UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:@"surf"];
         if (!cell) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"surf"];
         NSArray *entry = sciSurfaceEntries()[ip.row];
-        cell.textLabel.text = entry[1];
+        cell.textLabel.text = SCILocalized(entry[1]);
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.font = [UIFont systemFontOfSize:15];
         UISwitch *sw = [UISwitch new];

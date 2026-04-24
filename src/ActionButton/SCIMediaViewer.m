@@ -1,5 +1,6 @@
 #import "SCIMediaViewer.h"
 #import "../Utils.h"
+#import "../SCIImageCache.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
@@ -57,15 +58,10 @@
     [self.view addSubview:self.spinner];
     [self.spinner startAnimating];
 
-    NSURL *url = [self.photoURL copy];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        UIImage *img = data ? [UIImage imageWithData:data] : nil;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.spinner stopAnimating];
-            if (img) self.imageView.image = img;
-        });
-    });
+    [SCIImageCache loadImageFromURL:self.photoURL completion:^(UIImage *img) {
+        [self.spinner stopAnimating];
+        if (img) self.imageView.image = img;
+    }];
 
     // Double-tap to zoom
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];

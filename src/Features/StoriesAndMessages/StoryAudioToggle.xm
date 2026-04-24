@@ -1,5 +1,7 @@
-// Story audio mute/unmute toggle. Posts mute-switch-state-changed to toggle
-// IG's audio. Reads _audioEnabled on IGAudioStatusAnnouncer for icon state.
+// Story audio mute/unmute toggle.
+// Flips IGAudioStatusAnnouncer private state then fans out to listeners
+// via the two IGUltralightAnnouncer sub-forwarders (426 dropped the old
+// mute-switch notification).
 
 #import <AVFoundation/AVFoundation.h>
 #import "StoryHelpers.h"
@@ -12,12 +14,32 @@ extern "C" void sciRefreshAllVisibleOverlays(UIViewController *);
 
 static id sciAudioAnnouncer = nil;
 
+static id sciReadIvar(id obj, const char *name) {
+    if (!obj) return nil;
+    Ivar iv = class_getInstanceVariable([obj class], name);
+    if (!iv) return nil;
+    return object_getIvar(obj, iv);
+}
+
 static BOOL sciIGAudioEnabled(void) {
     if (!sciAudioAnnouncer) return NO;
+    SEL s = NSSelectorFromString(@"isAudioEnabledForSoundBehavior:");
+    if ([sciAudioAnnouncer respondsToSelector:s]) {
+        typedef BOOL (*Fn)(id, SEL, NSInteger);
+        return ((Fn)objc_msgSend)(sciAudioAnnouncer, s, 1);
+    }
     Ivar ivar = class_getInstanceVariable([sciAudioAnnouncer class], "_audioEnabled");
     if (!ivar) return NO;
     ptrdiff_t offset = ivar_getOffset(ivar);
     return *(BOOL *)((char *)(__bridge void *)sciAudioAnnouncer + offset);
+}
+
+static void sciWriteAudioEnabled(BOOL value) {
+    if (!sciAudioAnnouncer) return;
+    Ivar ivar = class_getInstanceVariable([sciAudioAnnouncer class], "_audioEnabled");
+    if (!ivar) return;
+    ptrdiff_t offset = ivar_getOffset(ivar);
+    *(BOOL *)((char *)(__bridge void *)sciAudioAnnouncer + offset) = value;
 }
 
 // ============ Volume KVO ============
@@ -41,12 +63,29 @@ extern "C" {
 BOOL sciStoryAudioBypass = NO;
 
 void sciToggleStoryAudio(void) {
+    if (!sciAudioAnnouncer) return;
+
     BOOL on = sciIGAudioEnabled();
+    BOOL wanted = !on;
     sciStoryAudioBypass = YES;
-    [[NSNotificationCenter defaultCenter]
-        postNotificationName:@"mute-switch-state-changed"
-                      object:nil
-                    userInfo:@{@"mute-state": @(on ? 0 : 1)}];
+
+    sciWriteAudioEnabled(wanted);
+
+    // 2 = user-enabled, 1 = user-disabled.
+    Ivar stickIv = class_getInstanceVariable([sciAudioAnnouncer class], "_stickySoundState");
+    if (stickIv) {
+        ptrdiff_t off = ivar_getOffset(stickIv);
+        NSInteger *p = (NSInteger *)((char *)(__bridge void *)sciAudioAnnouncer + off);
+        *p = wanted ? 2 : 1;
+    }
+
+    SEL notify = NSSelectorFromString(@"audioStatusDidChangeIsAudioEnabled:forReason:");
+    typedef void (*NotifyFn)(id, SEL, BOOL, NSInteger);
+    id subA = sciReadIvar(sciAudioAnnouncer, "_announcerForDefaultBehaviors");
+    id subB = sciReadIvar(sciAudioAnnouncer, "_announcerForIgnoreUserPreferenceAndMatchDeviceState");
+    if (subA) ((NotifyFn)objc_msgSend)(subA, notify, wanted, 0);
+    if (subB) ((NotifyFn)objc_msgSend)(subB, notify, wanted, 0);
+
     sciStoryAudioBypass = NO;
     if (sciActiveStoryViewerVC) sciRefreshAllVisibleOverlays(sciActiveStoryViewerVC);
 }

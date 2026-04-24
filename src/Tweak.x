@@ -2,6 +2,8 @@
 #import "InstagramHeaders.h"
 #import "Tweak.h"
 #import "Utils.h"
+#import "Features/General/SCICacheManager.h"
+#import "Features/General/SCIChangelog.h"
 #include "../modules/fishhook/fishhook.h"
 
 ///////////////////////////////////////////////////////////
@@ -14,7 +16,7 @@
 ///////////////////////////////////////////////////////////
 
 // * Tweak version *
-NSString *SCIVersionString = @"v1.2.1";
+NSString *SCIVersionString = @"v1.2.2";
 
 // Variables that work across features
 BOOL dmVisualMsgsViewedButtonEnabled = false;
@@ -29,9 +31,11 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"profile_copy_button": @(YES),
         @"detailed_color_picker": @(YES),
         @"remove_screenshot_alert": @(YES),
-        @"call_confirm": @(YES),
+        @"voice_call_confirm": @(NO),
+        @"video_call_confirm": @(NO),
         @"keep_deleted_message": @(NO),
         @"hide_suggested_stories": @(NO),
+        @"profile_analyzer_accumulate": @(NO),
         @"story_tray_actions": @(NO),
         @"zoom_profile_photo": @(NO),
         @"follow_indicator": @(NO),
@@ -46,6 +50,11 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"fake_location_name": @"Eiffel Tower",
         @"fake_location_presets": @[],
         @"messages_only": @(NO),
+        @"messages_only_hide_tabbar": @(NO),
+        @"fake_follower_count": @(NO),
+        @"fake_following_count": @(NO),
+        @"fake_post_count": @(NO),
+        @"fake_verified": @(NO),
         @"launch_tab": @"default",
         @"save_profile": @(YES),
         // Per-context action buttons (new in 1.1.6)
@@ -69,6 +78,10 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"reels_action_default": @"menu",
         @"stories_action_button": @(YES),
         @"stories_action_default": @"menu",
+        @"dm_visual_action_button": @(YES),
+        @"dm_visual_action_default": @"menu",
+        @"dm_visual_seen_button": @(YES),
+        @"dm_visual_audio_toggle": @(NO),
         // Legacy long-press gesture (off by default — kept for users who prefer it)
         @"dw_legacy_gesture": @(NO),
         @"dw_confirm": @(NO),
@@ -77,10 +90,13 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"default_photo_quality": @"high",
         @"ffmpeg_encoding_speed": @"ultrafast",
         @"unfollow_confirm": @(NO),
+        @"sticker_interact_confirm": @(NO),
+        @"sticker_interact_confirm_highlights": @(NO),
         @"dw_save_action": @"share",
         @"dw_finger_count": @(3),
         @"dw_finger_duration": @(0.5),
         @"reels_tap_control": @"default",
+        @"reels_photo_tap_mute": @(NO),
         @"nav_icon_ordering": @"default",
         @"swipe_nav_tabs": @"default",
         @"enable_notes_customization": @(YES),
@@ -115,6 +131,11 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"story_seen_mode": @"button",
         @"story_audio_toggle": @(NO),
         @"view_story_mentions": @(YES),
+        @"stories_show_quiz_answer": @(NO),
+        @"stories_show_poll_votes_count": @(NO),
+        @"reels_show_quiz_answer": @(NO),
+        @"reels_show_poll_votes_count": @(NO),
+        @"force_enable_quiz_sticker": @(NO),
         @"settings_pause_playback": @(YES),
         @"embed_links": @(NO),
         @"embed_link_domain": @"kkinstagram.com",
@@ -125,7 +146,28 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         @"hide_feed_repost": @(NO),
         @"copy_comment": @(YES),
         @"download_gif_comment": @(YES),
-        @"sci_language": @"system"
+        @"cache_auto_clear_mode": @"off",
+        @"cache_auto_check_size": @(YES),
+        @"sci_changelog_force_show": @(NO),
+        @"live_anonymous_view": @(NO),
+        @"live_hide_comments": @(NO),
+        @"hide_ui_on_capture": @(NO),
+        @"paste_link_from_search": @(NO),
+        @"sci_language": @"system",
+        @"theme_force_dark": @(NO),
+        @"theme_full_oled": @(NO),
+        @"theme_oled_chat": @(NO),
+        @"theme_keyboard": @"off",
+        // Experimental IG features (credits: Radan). See SCIExperimentalGuard.
+        @"igt_homecoming": @(NO),
+        @"igt_quicksnap": @(NO),
+        @"igt_prism": @(NO),
+        @"igt_directnotes_friendmap": @(NO),
+        @"igt_directnotes_audio_reply": @(NO),
+        @"igt_directnotes_avatar_reply": @(NO),
+        @"igt_directnotes_gifs_reply": @(NO),
+        @"igt_directnotes_photo_reply": @(NO),
+        @"sci_exp_warning_seen": @(NO)
     };
     [[NSUserDefaults standardUserDefaults] registerDefaults:sciDefaults];
     [SCIUtils setSciRegisteredDefaults:sciDefaults];
@@ -151,16 +193,10 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
             ![[[NSUserDefaults standardUserDefaults] objectForKey:@"SCInstaFirstRun"] isEqualToString:SCIVersionString]
             || [SCIUtils getBoolPref:@"tweak_settings_app_launch"]
         ) {
-            NSLog(@"[SCInsta] First run, initializing");
-
-            // Display settings modal on screen
-            NSLog(@"[SCInsta] Displaying RyukGram first-time settings modal");
+            NSLog(@"[SCInsta] First run — showing settings modal");
             [SCIUtils showSettingsVC:[self window]];
         }
     });
-
-    NSLog(@"[SCInsta] Cleaning cache...");
-    [SCIUtils cleanCache];
 
     if ([SCIUtils getBoolPref:@"flex_app_launch"]) {
         [[objc_getClass("FLEXManager") sharedManager] showExplorer];
@@ -176,6 +212,24 @@ BOOL dmVisualMsgsViewedButtonEnabled = false;
         [[objc_getClass("FLEXManager") sharedManager] showExplorer];
     }
 
+}
+
+- (void)applicationDidEnterBackground:(id)arg1 {
+    %orig;
+    // Cache housekeeping while backgrounded — never competes with IG's foreground I/O.
+    [SCICacheManager runAutoClearIfDue];
+}
+%end
+
+// Tab bar only exists in the logged-in state — fire the changelog popup here
+// rather than at app launch (which runs pre-login).
+%hook IGTabBarController
+- (void)viewDidAppear:(BOOL)animated {
+    %orig;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        [SCIChangelog presentIfNewFromWindow:self.view.window];
+    });
 }
 %end
 

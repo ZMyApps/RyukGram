@@ -57,6 +57,7 @@
  *  Translation made by @bruuhim (التعريب بواسطة @bruuhim)
  */
 
+
 //////////////////////////////////////////////////////////////////////////////
 //               CHROME — TOP BAR, LANGUAGE PICKER, FIRST-RUN               //
 // Shown on the root Settings screen: title, search bar, the globe language //
@@ -67,11 +68,11 @@
 "settings.firstrun.message" = "‏مستقبلاً: اضغط مطولاً على الخطوط الثلاثة أعلى صفحة ملفك الشخصي لفتح إعدادات ريوك غرام.‏";
 "settings.firstrun.ok" = "‏مفهوم!‏";
 "settings.firstrun.title" = "‏معلومات إعدادات ريوك غرام‏";
+"settings.language.english_only" = "‏يتوفر ريوك غرام حاليًا باللغة الإنجليزية فقط. اللغات الأخرى جاهزة بانتظار الترجمة — ساهم في الترجمة إلى لغتك باتباع الدليل القصير في ملف ريدمي (README).‏";
+"settings.language.help_translate" = "‏المساعدة في الترجمة‏";
+"settings.language.ok" = "‏موافق‏";
 "settings.language.system" = "‏الافتراضي للنظام‏";
 "settings.language.title" = "‏اللغة‏";
-"settings.language.english_only" = "‏يتوفر ريوك غرام حاليًا باللغة الإنجليزية فقط. اللغات الأخرى جاهزة بانتظار الترجمة — ساهم في الترجمة إلى لغتك باتباع الدليل القصير في ملف ريدمي (README).‏";
-"settings.language.ok" = "‏موافق‏";
-"settings.language.help_translate" = "‏المساعدة في الترجمة‏";
 "settings.results.many" = "‏%lu نتائج‏";
 "settings.results.none" = "‏لا توجد نتائج‏";
 "settings.results.one" = "‏%lu نتيجة‏";
@@ -85,6 +86,8 @@
 
 "Adds a copy option to the comment long-press menu" = "‏إضافة خيار النسخ إلى قائمة الضغط المطول للتعليقات‏";
 "Adds a download option for GIF comments" = "‏إضافة خيار تنزيل لتعليقات صور جيف (GIF)‏";
+"Anonymous live viewing" = "‏مشاهدة البث المباشر مجهول الهوية‏";
+"Blocks the viewer-count heartbeat so the broadcaster doesn't see you — you also won't see the viewer count" = "‏يمنع نبض عدّاد المشاهدين فلا يراك المذيع — ولن ترى عدّاد المشاهدين أيضاً‏";
 "Browser" = "‏المتصفح‏";
 "Comments" = "‏التعليقات‏";
 "Copy comment text" = "‏نسخ نص التعليق‏";
@@ -105,13 +108,14 @@
 "Experimental features" = "‏ميزات تجريبية‏";
 "Focus/distractions" = "‏التركيز والمشتتات‏";
 "General" = "‏عام‏";
-"Hide Meta AI" = "‏إخفاء ذكاء ميتا الاصطناعي‏";
 "Hide ads" = "‏إخفاء الإعلانات‏";
 "Hide explore posts grid" = "‏إخفاء شبكة منشورات الإكسبلور‏";
 "Hide friends map" = "‏إخفاء خريطة الأصدقاء‏";
+"Hide Meta AI" = "‏إخفاء ذكاء ميتا الاصطناعي‏";
 "Hide metrics" = "‏إخفاء الإحصائيات‏";
 "Hide notes tray" = "‏إخفاء شريط الملاحظات‏";
 "Hide trending searches" = "‏إخفاء عمليات البحث الرائجة‏";
+"Hide UI on capture" = "‏إخفاء الواجهة عند الالتقاط‏";
 "Hides all suggested users for you to follow, outside your feed" = "‏إخفاء جميع المستخدمين المقترحين لمتابعتهم، خارج يومياتك‏";
 "Hides like/comment/share counts on posts and reels" = "‏إخفاء عدد الإعجابات والتعليقات والمشاركات على المنشورات ومقاطع ريلز‏";
 "Hides the friends map icon in the notes tray" = "‏إخفاء أيقونة خريطة الأصدقاء في شريط الملاحظات‏";
@@ -121,23 +125,30 @@
 "Hides the suggested broadcast channels in direct messages" = "‏إخفاء قنوات البث المقترحة في الرسائل الخاصة‏";
 "Hides the trending searches under the explore search bar" = "‏إخفاء عمليات البحث الرائجة أسفل شريط البحث في الإكسبلور‏";
 "Hold down on the Instagram logo to change the app icon" = "‏اضغط مطولاً على شعار إنستغرام لتغيير أيقونة التطبيق‏";
+"Live" = "‏البث المباشر‏";
 "Long press on the eyedropper tool in stories to customize the text color more precisely" = "‏اضغط مطولاً على أداة القطارة في القصص لتخصيص لون النص بدقة أكبر‏";
+"Long-press the heart button in a live to hide or show the comments" = "‏اضغط مطولاً على زر القلب في البث المباشر لإخفاء التعليقات أو إظهارها‏";
+"Long-press the search tab to open a copied Instagram link" = "اضغط مطولاً على تبويب البحث لفتح رابط إنستغرام المنسوخ";
 "No suggested chats" = "‏لا توجد دردشات مقترحة‏";
 "No suggested users" = "‏لا يوجد مستخدمون مقترحون‏";
 "Notes" = "‏الملاحظات‏";
+"Open app icon picker" = "‏فتح منتقي أيقونات التطبيق‏";
+"Open link from clipboard" = "فتح الرابط من الحافظة";
 "Open links in external browser" = "‏فتح الروابط في متصفح خارجي‏";
 "Opens links in Safari instead of Instagram's in-app browser" = "‏يفتح الروابط في متصفح سفاري بدلاً من متصفح إنستغرام الداخلي‏";
-"Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs" = "‏إزالة روابط تتبع إنستغرام ومعلمات التتبع من الروابط‏";
+"Privacy" = "‏الخصوصية‏";
+"Redacts RyukGram buttons from screenshots, screen recordings, and mirroring" = "‏يُخفي أزرار RyukGram من لقطات الشاشة وتسجيل الشاشة والعرض المنعكس‏";
 "Removes all ads from the Instagram app" = "‏إزالة جميع الإعلانات من تطبيق إنستغرام‏";
 "Removes igsh, utm_source, and other tracking parameters from shared links" = "‏إزالة معلمات التتبع من الروابط المشتركة‏";
-"Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker." = "‏استبدال الطوابع الزمنية النسبية لإنستغرام (\"منذ 3 أيام\") بتنسيق مخصص. قم بتبديل الأماكن التي يتم تطبيقها عليها من الداخل.‏";
+"Removes Instagram tracking wrappers (l.instagram.com) and UTM/fbclid params from URLs" = "‏إزالة روابط تتبع إنستغرام ومعلمات التتبع من الروابط‏";
 "Replace domain in shared links" = "‏استبدال النطاق في الروابط المشتركة‏";
+"Replace IG's relative timestamps (\"3d ago\") with a custom format. Toggle which surfaces it applies to inside the picker." = "‏استبدال الطوابع الزمنية النسبية لإنستغرام (\"منذ 3 أيام\") بتنسيق مخصص. قم بتبديل الأماكن التي يتم تطبيقها عليها من الداخل.‏";
 "Rewrites copied/shared links to use an embed-friendly domain for previews in Discord, Telegram, etc." = "‏إعادة كتابة الروابط المنسوخة والمشتركة لاستخدام نطاق ملائم للمعاينة في ديسكورد وتيليجرام وغيرها.‏";
 "Search bars will no longer save your recent searches" = "‏لن تقوم أشرطة البحث بحفظ عمليات بحثك الأخيرة بعد الآن‏";
 "Sharing" = "‏المشاركة‏";
 "Strip tracking from links" = "‏تجريد الروابط من التتبع‏";
 "Strip tracking params" = "‏إزالة معلمات التتبع‏";
-"These features rely on hidden Instagram flags and may not work on all accounts or versions.\nExperimental flags research by @euoradan (Radan)." = "‏تعتمد هذه الميزات على إعدادات إنستغرام المخفية وقد لا تعمل على جميع الحسابات أو الإصدارات.\nأبحاث الميزات التجريبية بواسطة @euoradan (رادان).‏";
+"Toggle live comments" = "‏تبديل التعليقات المباشرة‏";
 "Use detailed color picker" = "‏استخدام منتقي الألوان التفصيلي‏";
 
 //////////////////////////////////////////////////////////////////////////////
@@ -232,9 +243,6 @@
 "Adds a RyukGram action button above the reel sidebar with view-cover/download/share/copy/expand/repost entries. Tap opens the menu by default; change the tap behavior below." = "‏يضيف زر إجراء ريوك غرام أعلى الشريط الجانبي لمقطع ريلز مع خيارات عرض الغلاف وتنزيل ومشاركة ونسخ وتوسيع وإعادة نشر. يؤدي النقر إلى فتح القائمة افتراضيًا؛ قم بتغيير السلوك أدناه.‏";
 "Always show progress scrubber" = "‏إظهار شريط التقدم دائمًا‏";
 "Auto-scroll reels" = "‏التمرير التلقائي لمقاطع ريلز‏";
-"IG default: native behavior. RyukGram: re-advances after swiping back." = "‏الافتراضي لإنستغرام: السلوك الأصلي. ريوك غرام: يعيد التقدم بعد التمرير للخلف.‏";
-"IG default" = "‏الافتراضي لإنستغرام‏";
-"RyukGram" = "‏ريوك غرام‏";
 "Change what happens when you tap on a reel" = "‏تغيير ما يحدث عند النقر على مقطع ريلز‏";
 "Confirm reel refresh" = "‏تأكيد تحديث ريلز‏";
 "Disable auto-unmuting reels" = "‏تعطيل إلغاء الكتم التلقائي لمقاطع ريلز‏";
@@ -246,6 +254,8 @@
 "Hides the repost button on the reels sidebar" = "‏إخفاء زر إعادة النشر على الشريط الجانبي لمقاطع ريلز‏";
 "Hides the top navigation bar when watching reels" = "‏إخفاء شريط التنقل العلوي عند مشاهدة ريلز‏";
 "Hiding" = "‏إخفاء‏";
+"IG default" = "‏الافتراضي لإنستغرام‏";
+"IG default: native behavior. RyukGram: re-advances after swiping back." = "‏الافتراضي لإنستغرام: السلوك الأصلي. ريوك غرام: يعيد التقدم بعد التمرير للخلف.‏";
 "Limits" = "‏الحدود‏";
 "Limits the amount of reels available to scroll at any given time, and prevents refreshing" = "‏يحد من عدد مقاطع ريلز المتاحة للتمرير في أي وقت، ويمنع التحديث‏";
 "Only loads %@ %@" = "‏تحميل %@ %@ فقط‏";
@@ -253,11 +263,14 @@
 "Prevent doom scrolling" = "‏منع التمرير المفرط‏";
 "Prevents reels from being scrolled to the next video" = "‏يمنع التمرير إلى الفيديو التالي في ريلز‏";
 "Prevents reels from unmuting when the volume/silent button is pressed" = "‏يمنع إلغاء كتم صوت ريلز عند الضغط على أزرار الصوت‏";
+"RyukGram" = "‏ريوك غرام‏";
 "Shows an alert when you trigger a reels refresh" = "‏يعرض تنبيهًا عند بدء تحديث ريلز‏";
 "Shows buttons to reveal and auto-fill the password on locked reels" = "‏يظهر أزرارًا للكشف عن كلمة المرور وتعبئتها تلقائيًا في مقاطع ريلز المقفلة‏";
 "Tap Controls" = "‏عناصر تحكم النقر‏";
+"Tap to mute on photo reels" = "‏اضغط للكتم في ريلز الصور‏";
 "Tapping the Reels tab while on reels does nothing" = "‏النقر على تبويب ريلز أثناء التواجد فيه لا يفعل شيئًا‏";
 "Unlock password-locked reels" = "‏فتح مقاطع ريلز المقفلة بكلمة مرور‏";
+"When pause mode is on, tap on photo reels toggles audio instead of the native pause gesture" = "‏عند تفعيل وضع الإيقاف المؤقت، يؤدي النقر على ريلز الصور إلى تبديل الصوت بدلاً من إيماءة الإيقاف الأصلية‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                                 PROFILE                                  //
@@ -267,14 +280,25 @@
 "Adds a button next to the burger menu on profiles to copy username, name or bio" = "‏إضافة زر بجوار القائمة في الملفات الشخصية لنسخ اسم المستخدم أو الاسم أو البايو‏";
 "Adds a view option to the highlight long-press menu to open the cover in full-screen" = "‏إضافة خيار عرض إلى قائمة الضغط المطول على الهايلايت لفتح الغلاف بملء الشاشة‏";
 "Copy note on long press" = "‏نسخ الملاحظة عند الضغط المطول‏";
+"Fake follower count" = "‏عدد متابعين وهمي‏";
+"Fake following count" = "‏عدد المتابَعين وهمي‏";
+"Fake post count" = "‏عدد منشورات وهمي‏";
+"Fake profile stats" = "‏إحصائيات ملف شخصي وهمية‏";
+"Fake verified badge" = "‏شارة توثيق وهمية‏";
 "Follow indicator" = "‏مؤشر المتابعة‏";
+"Follower count" = "‏عدد المتابعين‏";
+"Following count" = "‏عدد المتابَعين‏";
 "Long press a profile picture to open it in full-screen with zoom, share, and save" = "‏اضغط مطولاً على صورة الملف الشخصي لفتحها بملء الشاشة مع إمكانية التكبير والمشاركة والحفظ‏";
 "Long press the note bubble on a profile to copy the text" = "‏اضغط مطولاً على فقاعة الملاحظة في الملف الشخصي لنسخ النص‏";
 "Long press to download directly (ignored when zoom is on)" = "‏اضغط مطولاً للتنزيل مباشرة (يتم تجاهله عند تشغيل التكبير)‏";
 "Long-press gestures on profile elements — kept separate from the per-feature action buttons." = "‏إيماءات الضغط المطول على عناصر الملف الشخصي — منفصلة عن أزرار الإجراءات لكل ميزة.‏";
+"Only affects your own profile header. Other users see the real numbers." = "‏يؤثر فقط على رأس ملفك الشخصي. يرى المستخدمون الآخرون الأرقام الحقيقية.‏";
+"Post count" = "‏عدد المنشورات‏";
 "Profile copy button" = "‏زر نسخ الملف الشخصي‏";
 "Save profile picture" = "‏حفظ صورة الملف الشخصي‏";
+"Show a checkmark next to your name on your own profile" = "‏إظهار علامة توثيق بجوار اسمك في ملفك الشخصي‏";
 "Shows whether the profile user follows you" = "‏يُظهر ما إذا كان صاحب الملف الشخصي يتابعك‏";
+"Tap to set" = "‏اضغط للتعيين‏";
 "View highlight cover" = "‏عرض غلاف الهايلايت‏";
 "Zoom profile photo" = "‏تكبير صورة الملف الشخصي‏";
 
@@ -330,16 +354,25 @@
 "Mark seen on story reply" = "‏تحديد كمقروءة عند الرد على القصة‏";
 "Marks a story as seen the moment you tap the heart, even with seen blocking on" = "‏يحدد القصة كمقروءة بمجرد النقر على القلب، حتى مع تفعيل حظر المشاهدة‏";
 "Marks a story as seen when you send a reply or emoji reaction, even with seen blocking on" = "‏يحدد القصة كمقروءة عند إرسال رد أو تفاعل، حتى مع تفعيل حظر المشاهدة‏";
+"Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server" = "‏يحدد القصص كمقروءة محليًا (حلقة رمادية) بينما لا يزال يحظر إرسال مؤشر المشاهدة للخادم‏";
 "Master toggle. When off, the list is ignored" = "‏المفتاح الرئيسي. عند إيقاف التشغيل، يتم تجاهل القائمة‏";
 "Other" = "‏أخرى‏";
 "Playback" = "‏التشغيل‏";
-"Marks stories as seen locally (grey ring) while still blocking the seen receipt on the server" = "‏يحدد القصص كمقروءة محليًا (حلقة رمادية) بينما لا يزال يحظر إرسال مؤشر المشاهدة للخادم‏";
 "Quick list button in stories" = "‏زر القائمة السريعة في القصص‏";
 "Search, sort, swipe to remove" = "‏بحث، فرز، التمرير للإزالة‏";
 "Seen receipts" = "‏مؤشرات القراءة‏";
 "Sending a reply or emoji reaction automatically advances to the next story" = "‏إرسال رد أو تفاعل ينقلك تلقائيًا للقصة التالية‏";
 "Show mentioned users in eye button and story menu" = "‏إظهار المستخدمين المشار إليهم في زر المشاهدة وقائمة القصة‏";
 "Shows an eye button on stories to add/remove users from the list. Off = use the 3-dot menu or long-press only" = "‏يعرض زر عين في القصص لإضافة وإزالة المستخدمين من القائمة. إيقاف = استخدم قائمة النقاط الثلاث أو الضغط المطول فقط‏";
+"Stickers" = "‏ملصقات‏";
+"Peek at poll/quiz/slider results before interacting — you can still tap to vote normally. Force Quiz brings the legacy Quiz sticker back into the story composer tray." = "‏اطلع على نتائج استطلاعات الرأي/الاختبارات/شريط التمرير قبل التفاعل — لا يزال بإمكانك النقر للتصويت بشكل طبيعي. 'إجبار ظهور ملصق الاختبار' يعيد ملصق الاختبار القديم إلى لوحة إنشاء القصة.‏";
+"Peek at poll/quiz/slider results on reels before interacting — you can still tap to vote normally." = "‏اطلع على نتائج استطلاعات الرأي/الاختبارات/شريط التمرير في الريلز قبل التفاعل — لا يزال بإمكانك النقر للتصويت بشكل طبيعي.‏";
+"Force Quiz sticker in tray" = "‏إجبار ظهور ملصق الاختبار‏";
+"Adds Quiz back to the story sticker picker" = "‏إعادة ملصق الاختبار إلى منتقي ملصقات القصة‏";
+"Show quiz answer" = "‏إظهار إجابة الاختبار‏";
+"Circle the correct option on quiz stickers, or the leading option on polls" = "‏تمييز الخيار الصحيح في ملصقات الاختبار أو الخيار الأكثر تصويتًا في الاستطلاعات‏";
+"Show poll vote counts" = "‏إظهار عدد أصوات الاستطلاع‏";
+"Show vote tallies on poll options and slider count/average before you vote" = "‏إظهار عدد الأصوات على خيارات الاستطلاع ومتوسط/عدد شريط التمرير قبل التصويت‏";
 "Stop story auto-advance" = "‏إيقاف التقدم التلقائي للقصص‏";
 "Stories" = "‏القصص‏";
 "Stories won't auto-skip to the next one when the timer ends. Tap to advance manually" = "‏لن تنتقل القصص تلقائيًا للتالية عند انتهاء المؤقت. انقر للتقدم يدويًا‏";
@@ -384,7 +417,7 @@
 "Copy text on hold" = "‏نسخ النص عند التوقف‏";
 "Custom emojis and background/text colors" = "‏إيموجي مخصصة وألوان للخلفية والنص‏";
 "Custom note themes" = "‏سمات ملاحظات مخصصة‏";
-"Disable disappearing mode swipe" = "‏تعطيل سحب وضع الاختفاء‏";
+"Disable vanish mode swipe" = "‏تعطيل سحب وضع الاختفاء‏";
 "Disable screenshot detection" = "‏تعطيل الكشف عن لقطات الشاشة‏";
 "Disable typing status" = "‏تعطيل حالة الكتابة (يكتب...)‏";
 "Disable view-once limitations" = "‏تعطيل قيود العرض لمرة واحدة‏";
@@ -405,7 +438,7 @@
 "Note actions" = "‏إجراءات الملاحظات‏";
 "Preserve messages that others unsend" = "‏الاحتفاظ بالرسائل التي يلغي الآخرون إرسالها‏";
 "Preserves messages that others unsend" = "‏يحتفظ بالرسائل التي يلغي الآخرون إرسالها‏";
-"Prevents accidental swipe-up activation of disappearing mode" = "‏يمنع التنشيط العشوائي لوضع الاختفاء عند السحب لأعلى‏";
+"Prevents accidental swipe-up activation of vanish mode" = "‏يمنع التنشيط العشوائي لوضع الاختفاء عند السحب لأعلى‏";
 "Quick list button in chats" = "‏زر القائمة السريعة في الدردشات‏";
 "Removes the audio call button from DM thread header" = "‏يزيل زر المكالمة الصوتية من أعلى المحادثة‏";
 "Removes the screenshot-prevention features for visual messages in DMs" = "‏يزيل ميزات منع لقطات الشاشة للرسائل المرئية في الرسائل الخاصة‏";
@@ -420,7 +453,6 @@
 "Shows an \"Unsent\" label on preserved messages" = "‏يعرض علامة \"أُلغي الإرسال\" على الرسائل المحفوظة‏";
 "Unlimited replay of visual messages" = "‏إعادة تشغيل غير محدودة للرسائل المرئية‏";
 "Unsent message notification" = "‏إشعار الرسائل الملغاة‏";
-"Visual messages" = "‏الرسائل المرئية‏";
 "Voice messages" = "‏الرسائل الصوتية‏";
 "Warn before clearing on refresh" = "‏تحذير قبل المسح عند التحديث‏";
 "Which chats get read-receipt blocking" = "‏الدردشات التي يُحظر فيها مؤشر القراءة‏";
@@ -439,11 +471,13 @@
 // Settings → Navigation tab                                                //
 //////////////////////////////////////////////////////////////////////////////
 
+"Also hide the bottom tab bar — only the inbox is visible" = "‏إخفاء شريط التبويبات السفلي أيضًا — يظهر صندوق الوارد فقط‏";
 "Hide create tab" = "‏إخفاء تبويب الإنشاء‏";
 "Hide explore tab" = "‏إخفاء تبويب الإكسبلور‏";
 "Hide feed tab" = "‏إخفاء تبويب اليوميات‏";
 "Hide messages tab" = "‏إخفاء تبويب الرسائل‏";
 "Hide reels tab" = "‏إخفاء تبويب ريلز‏";
+"Hide tab bar" = "‏إخفاء شريط التبويبات‏";
 "Hides every tab except DM inbox + profile and forces launch into the inbox. Settings shortcut moves to long-press on the inbox tab." = "‏يخفي كل التبويبات باستثناء صندوق الوارد والملف الشخصي ويفرض التشغيل فيه. ينتقل اختصار الإعدادات للضغط المطول على صندوق الوارد.‏";
 "Hides the create tab on the bottom navigation bar" = "‏يخفي تبويب الإنشاء من شريط التنقل السفلي‏";
 "Hides the direct messages tab on the bottom navigation bar" = "‏يخفي تبويب الرسائل المباشرة من شريط التنقل السفلي‏";
@@ -468,7 +502,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 "Confirm actions" = "‏تأكيد الإجراءات‏";
-"Confirm call" = "‏تأكيد المكالمة‏";
+"Confirm video call" = "‏تأكيد مكالمة الفيديو‏";
+"Confirm voice call" = "‏تأكيد المكالمة الصوتية‏";
 "Confirm changing theme" = "‏تأكيد تغيير السمة‏";
 "Confirm follow" = "‏تأكيد المتابعة‏";
 "Confirm follow requests" = "‏تأكيد طلبات المتابعة‏";
@@ -476,24 +511,26 @@
 "Confirm like: Reels" = "‏تأكيد الإعجاب: ريلز‏";
 "Confirm posting comment" = "‏تأكيد نشر التعليق‏";
 "Confirm repost" = "‏تأكيد إعادة النشر‏";
-"Confirm shh mode" = "‏تأكيد وضع الصمت (Shh)‏";
-"Confirm sticker interaction" = "‏تأكيد التفاعل مع الملصقات‏";
+"Confirm vanish mode" = "‏تأكيد وضع الاختفاء‏";
+"Confirm sticker interaction (stories)" = "‏تأكيد التفاعل مع الملصقات (القصص)‏";
+"Confirm sticker interaction (highlights)" = "‏تأكيد التفاعل مع الملصقات (الهايلايت)‏";
 "Confirm story emoji reaction" = "‏تأكيد تفاعل الإيموجي في القصة‏";
 "Confirm story like" = "‏تأكيد الإعجاب بالقصة‏";
 "Confirm unfollow" = "‏تأكيد إلغاء المتابعة‏";
-"Shows an alert before sending an emoji reaction on a story" = "‏يُظهر تنبيهًا قبل إرسال تفاعل إيموجي على قصة‏";
-"Shows an alert when you click the like button on posts to confirm the like" = "‏يُظهر تنبيهًا عند النقر على زر الإعجاب في المنشورات للتأكيد‏";
-"Shows an alert when you click the like button on stories to confirm the like" = "‏يُظهر تنبيهًا عند النقر على زر الإعجاب في القصص للتأكيد‏";
 "Confirm voice messages" = "‏تأكيد الرسائل الصوتية‏";
+"Shows an alert before sending an emoji reaction on a story" = "‏يُظهر تنبيهًا قبل إرسال تفاعل إيموجي على قصة‏";
 "Shows an alert to confirm before sending a voice message" = "‏يُظهر تنبيهًا للتأكيد قبل إرسال رسالة صوتية‏";
-"Shows an alert to confirm before toggling disappearing messages" = "‏يُظهر تنبيهًا للتأكيد قبل تفعيل رسائل الاختفاء‏";
+"Shows an alert to confirm before toggling vanish mode" = "‏يُظهر تنبيهًا للتأكيد قبل تفعيل وضع الاختفاء‏";
 "Shows an alert when you accept/decline a follow request" = "‏يُظهر تنبيهًا عند قبول أو رفض طلب متابعة‏";
 "Shows an alert when you change a chat theme to confirm" = "‏يُظهر تنبيهًا عند تغيير سمة الدردشة للتأكيد‏";
-"Shows an alert when you click a sticker on someone's story to confirm the action" = "‏يُظهر تنبيهًا عند النقر على ملصق في قصة شخص ما للتأكيد‏";
-"Shows an alert when you click the audio/video call button to confirm before calling" = "‏يُظهر تنبيهًا عند النقر على زر الاتصال الصوتي أو المرئي للتأكيد‏";
+"Shows an alert when you tap a sticker on someone's story" = "‏يُظهر تنبيهًا عند النقر على ملصق في قصة شخص ما‏";
+"Shows an alert when you tap a sticker inside a highlight" = "‏يُظهر تنبيهًا عند النقر على ملصق داخل هايلايت‏";
+"Shows an alert when you click the video call button to confirm before calling" = "‏يُظهر تنبيهًا عند النقر على زر مكالمة الفيديو للتأكيد قبل الاتصال‏";
+"Shows an alert when you click the voice call button to confirm before calling" = "‏يُظهر تنبيهًا عند النقر على زر المكالمة الصوتية للتأكيد قبل الاتصال‏";
 "Shows an alert when you click the follow button to confirm the follow" = "‏يُظهر تنبيهًا عند النقر على زر المتابعة للتأكيد‏";
-"Shows an alert when you click the like button on posts or stories to confirm the like" = "‏يُظهر تنبيهًا عند النقر على زر الإعجاب في المنشورات أو القصص للتأكيد‏";
+"Shows an alert when you click the like button on posts to confirm the like" = "‏يُظهر تنبيهًا عند النقر على زر الإعجاب في المنشورات للتأكيد‏";
 "Shows an alert when you click the like button on reels to confirm the like" = "‏يُظهر تنبيهًا عند النقر على زر الإعجاب في مقاطع ريلز للتأكيد‏";
+"Shows an alert when you click the like button on stories to confirm the like" = "‏يُظهر تنبيهًا عند النقر على زر الإعجاب في القصص للتأكيد‏";
 "Shows an alert when you click the post comment button to confirm" = "‏يُظهر تنبيهًا عند النقر على زر نشر التعليق للتأكيد‏";
 "Shows an alert when you click the repost button to confirm before resposting" = "‏يُظهر تنبيهًا عند النقر على زر إعادة النشر للتأكيد‏";
 "Shows an alert when you click the unfollow button to confirm" = "‏يُظهر تنبيهًا عند النقر على زر إلغاء المتابعة للتأكيد‏";
@@ -504,22 +541,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 "Backup & Restore" = "‏النسخ الاحتياطي والاستعادة‏";
-"Export settings" = "‏تصدير الإعدادات‏";
-"Export your RyukGram settings to a JSON file and import them later. Importing resets all settings to defaults before applying the imported values, and shows a preview before anything changes." = "‏قم بتصدير إعدادات ريوك غرام الخاصة بك إلى ملف جيسون (JSON) واستيرادها لاحقًا. الاستيراد يعيد تعيين جميع الإعدادات للافتراضي قبل التطبيق، ويظهر معاينة مسبقة.‏";
-"Import settings" = "‏استيراد الإعدادات‏";
-"Load settings from a JSON file" = "‏تحميل الإعدادات من ملف جيسون (JSON)‏";
-"Reset to defaults" = "‏إعادة التعيين للافتراضي‏";
-"Revert every RyukGram preference" = "‏إرجاع كل تفضيلات ريوك غرام‏";
-"Save settings as a JSON file" = "‏حفظ الإعدادات كملف جيسون (JSON)‏";
-
-//////////////////////////////////////////////////////////////////////////////
-//                               EXPERIMENTAL                               //
-// Settings → Experimental tab                                              //
-//////////////////////////////////////////////////////////////////////////////
-
-"Experimental" = "‏تجريبي‏";
-"These features are unstable and cause the Instagram app to crash unexpectedly.\n\nUse at your own risk!" = "‏هذه الميزات غير مستقرة وقد تسبب انهيار تطبيق إنستغرام بشكل مفاجئ.\n\nاستخدمها على مسؤوليتك الخاصة!‏";
-"Warning" = "‏تحذير‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                                 ADVANCED                                 //
@@ -527,17 +548,76 @@
 //////////////////////////////////////////////////////////////////////////////
 
 "Advanced" = "‏متقدم‏";
+"Auto-clear cache" = "‏مسح تلقائي للذاكرة المؤقتة‏";
 "Automatically opens settings when the app launches" = "‏يفتح الإعدادات تلقائيًا عند تشغيل التطبيق‏";
+"Cache" = "‏ذاكرة التخزين المؤقت‏";
+"Cache cleared" = "‏تم مسح ذاكرة التخزين المؤقت‏";
+"Calculating cache size…" = "‏جاري حساب حجم ذاكرة التخزين المؤقت…‏";
+"Clear" = "‏مسح‏";
+"Clear cache" = "‏مسح ذاكرة التخزين المؤقت‏";
+"Clear cache (%@)" = "‏مسح ذاكرة التخزين المؤقت (%@)‏";
+"Clear cache?" = "‏مسح ذاكرة التخزين المؤقت؟‏";
+"Clearing cache…" = "‏جاري المسح…‏";
+"Clearing still scans on demand." = "‏سيظل المسح يُجري الفحص عند الطلب.‏";
+"Daily" = "‏يومياً‏";
 "Disable safe mode" = "‏تعطيل الوضع الآمن‏";
 "Enable tweak settings quick-access" = "‏تفعيل الوصول السريع لإعدادات الأداة‏";
+"Free %@ of Instagram cache. A restart is recommended." = "‏تحرير %@ من ذاكرة إنستغرام. يُنصح بإعادة التشغيل.‏";
+"Freed %@. Restart to apply." = "‏تم تحرير %@. أعد التشغيل للتطبيق.‏";
 "Hold on the home tab to open RyukGram settings" = "‏اضغط مطولاً على تبويب الصفحة الرئيسية لفتح إعدادات ريوك غرام‏";
 "Instagram" = "‏إنستغرام‏";
+"Monthly" = "‏شهرياً‏";
+"Nothing to clear" = "‏لا شيء للمسح‏";
+"Off skips the size scan when Advanced opens." = "‏عند الإيقاف يتم تخطي فحص الحجم عند فتح «متقدم».‏";
 "Pause playback when opening settings" = "‏إيقاف التشغيل مؤقتًا عند فتح الإعدادات‏";
 "Pauses any playing video/audio when settings opens" = "‏يوقف أي فيديو أو صوت قيد التشغيل مؤقتًا عند فتح الإعدادات‏";
 "Prevents Instagram from resetting settings after crashes (at your own risk)" = "‏يمنع إنستغرام من إعادة ضبط الإعدادات بعد الانهيارات (على مسؤوليتك)‏";
+"Remove Instagram's cached images, videos, and temporary files." = "‏يُزيل صور وفيديوهات وملفات إنستغرام المؤقتة.‏";
 "Reset onboarding state" = "‏إعادة ضبط حالة التهيئة التمهيدية‏";
-"Settings" = "‏الإعدادات‏";
+"Run a silent cache clear on launch when the interval has elapsed." = "‏يُنفّذ مسحاً صامتاً للذاكرة المؤقتة عند التشغيل إذا انقضت المدة المحددة.‏";
+"Show cache size" = "‏إظهار حجم ذاكرة التخزين المؤقت‏";
 "Show tweak settings on app launch" = "‏إظهار إعدادات الأداة عند تشغيل التطبيق‏";
+"Weekly" = "‏أسبوعياً‏";
+
+//////////////////////////////////////////////////////////////////////////////
+//                         ADVANCED EXPERIMENTAL                            //
+// Settings → Advanced → Advanced experimental features                     //
+//////////////////////////////////////////////////////////////////////////////
+
+"Actions" = "‏الإجراءات‏";
+"Advanced experimental features" = "‏الميزات التجريبية المتقدمة‏";
+"All experimental toggles will be turned off. Instagram will restart." = "‏سيتم إيقاف جميع المفاتيح التجريبية. سيُعاد تشغيل Instagram.‏";
+"Direct Notes — Audio reply" = "‏ملاحظات Direct — الرد الصوتي‏";
+"Direct Notes — Avatar reply" = "‏ملاحظات Direct — الرد بالصورة الرمزية‏";
+"Direct Notes — Friend Map" = "‏ملاحظات Direct — خريطة الأصدقاء‏";
+"Direct Notes — GIFs & stickers reply" = "‏ملاحظات Direct — الرد بصور GIF والملصقات‏";
+"Direct Notes — Photo reply" = "‏ملاحظات Direct — الرد بصورة‏";
+"Disabled after repeated crashes." = "‏تم الإيقاف بعد تعطل متكرر.‏";
+"Enables GIF/sticker replies" = "‏يُفعّل الرد بصور GIF والملصقات‏";
+"Enables photo replies" = "‏يُفعّل الرد بالصور‏";
+"Enables the audio-note reply type" = "‏يُفعّل الرد بملاحظة صوتية‏";
+"Enables the avatar reply type" = "‏يُفعّل الرد بالصورة الرمزية‏";
+"Experimental flags reset" = "‏تمت إعادة تعيين الميزات التجريبية‏";
+"Flip what you want on, then tap Apply to restart. Some flags may not work on every account or IG version. Flags auto-reset if IG crashes on launch 3 times." = "‏فعّل ما تريد ثم اضغط «تطبيق» لإعادة التشغيل. قد لا تعمل بعض الميزات على جميع الحسابات أو إصدارات IG. تُعاد تعيينها تلقائيًا إذا تعطل IG عند بدء التشغيل 3 مرات.‏";
+"Forces Prism-gated experiments on" = "‏يُجبر تفعيل التجارب المُقيّدة بواسطة Prism‏";
+"Forces the Homecoming home surface / nav on" = "‏يُجبر تفعيل واجهة وتنقل Homecoming‏";
+"Forces the QuickSnap / Instants surface on in feed, inbox, stories, and notes tray" = "‏يُجبر ظهور QuickSnap / Instants في الخلاصة والرسائل والقصص وشريط الملاحظات‏";
+"Got it" = "‏فهمت‏";
+"Heads up" = "‏تنبيه‏";
+"Hidden Instagram experiments" = "‏تجارب Instagram المخفية‏";
+"Hidden Instagram experiments (in Advanced)" = "‏تجارب Instagram المخفية (في الإعدادات المتقدمة)‏";
+"Homecoming" = "Homecoming";
+"Notes & QuickSnap" = "‏الملاحظات وQuickSnap‏";
+"Prism design system" = "‏نظام تصميم Prism‏";
+"QuickSnap (Instants)" = "QuickSnap (Instants)";
+"Reset all experimental flags" = "‏إعادة تعيين جميع المفاتيح التجريبية‏";
+"Reset experimental flags?" = "‏إعادة تعيين المفاتيح التجريبية؟‏";
+"Restart Instagram to apply changes" = "‏أعِد تشغيل Instagram لتطبيق التغييرات‏";
+"Shows the friend map entry in Direct Notes" = "‏يُظهر خريطة الأصدقاء في ملاحظات Direct‏";
+"Surfaces" = "‏الواجهات‏";
+"These toggles flip hidden Instagram experiments on. Some features may not work on every account or IG version. If IG keeps crashing on launch, the flags auto-reset after 3 failed starts." = "‏تُفعّل هذه المفاتيح تجارب Instagram المخفية. قد لا تعمل بعض الميزات على جميع الحسابات أو إصدارات IG. إذا استمر IG بالتعطل عند التشغيل، تُعاد تعيين المفاتيح بعد 3 محاولات فاشلة.‏";
+"Toggle hidden Instagram experiments. Some may not work on every account or IG version." = "‏فعّل تجارب Instagram المخفية. قد لا يعمل بعضها على جميع الحسابات أو إصدارات IG.‏";
+"Turn every experimental toggle off" = "‏إيقاف جميع المفاتيح التجريبية‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                                  DEBUG                                   //
@@ -546,24 +626,38 @@
 
 "Button Cell" = "‏خلية زر‏";
 "Change the value on the right" = "‏غيّر القيمة الموجودة على اليسار‏";
+"Could not delete: %@" = "‏تعذّر الحذف: %@‏";
 "Debug" = "‏تصحيح الأخطاء‏";
+"Delete an imported override and fall back to the shipped strings" = "‏احذف تجاوزاً مستورداً وارجع إلى النصوص الأصلية‏";
+"Deleted %@ override. Restart to apply." = "‏تم حذف تجاوز %@. أعد التشغيل للتطبيق.‏";
 "Enable FLEX gesture" = "‏تفعيل إيماءة أداة فليكس (FLEX)‏";
+"Export English strings" = "‏تصدير نصوص الإنجليزية‏";
 "Hold 5 fingers on the screen to open FLEX" = "‏ضع 5 أصابع على الشاشة لفتح فليكس (FLEX)‏";
 "I have %@%@" = "‏لدي %@%@‏";
+"Import a .strings file for a language" = "‏استيراد ملف .strings للغة‏";
+"Import a .strings file to update a translation. Pick a language, select the file, restart." = "‏استورد ملف .strings لتحديث الترجمة. اختر لغة، حدد الملف، وأعد التشغيل.‏";
 "Link Cell" = "‏خلية رابط‏";
+"Localization" = "‏التعريب‏";
 "Menu Cell" = "‏خلية قائمة‏";
+"Navigation Cell" = "‏خلية التنقل‏";
+"No imported localization files to reset." = "‏لا توجد ملفات ترجمة مستوردة للإعادة.‏";
+"No overrides" = "‏لا توجد تجاوزات‏";
 "Open FLEX on app focus" = "‏فتح فليكس عند التركيز على التطبيق‏";
 "Open FLEX on app launch" = "‏فتح فليكس عند إطلاق التطبيق‏";
 "Opens FLEX when the app is focused" = "‏يفتح فليكس عندما يكون التطبيق قيد التركيز‏";
 "Opens FLEX when the app launches" = "‏يفتح فليكس عند إطلاق التطبيق‏";
+"Pick a language to delete the imported file" = "‏اختر لغة لحذف الملف المستورد‏";
+"Reset localization" = "‏إعادة تعيين الترجمة‏";
+"Share the base English .strings file for translating" = "‏مشاركة ملف .strings الأساسي بالإنجليزية للترجمة‏";
 "Static Cell" = "‏خلية ثابتة‏";
 "Stepper cell" = "‏خلية متدرج‏";
 "Switch Cell" = "‏خلية مفتاح تبديل‏";
 "Switch Cell (Restart)" = "‏خلية مفتاح تبديل (إعادة تشغيل)‏";
 "Tap the switch" = "‏انقر فوق مفتاح التبديل‏";
+"These features rely on hidden Instagram flags and may not work on all accounts or versions." = "‏تعتمد هذه الميزات على علامات Instagram مخفية وقد لا تعمل على جميع الحسابات أو الإصدارات.‏";
+"Update localization file" = "‏تحديث ملف التعريب‏";
 "Using icon" = "‏استخدام أيقونة‏";
 "Using image" = "‏استخدام صورة‏";
-"_ Example" = "‏_ مثال‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                        DOWNLOADS & MEDIA ACTIONS                         //
@@ -595,16 +689,16 @@
 "Failed to save" = "‏فشل الحفظ‏";
 "HD download complete" = "‏اكتمل التنزيل بدقة عالية (HD)‏";
 "Mute audio" = "‏كتم الصوت‏";
-"No URLs" = "‏لا توجد روابط‏";
-"No URLs found" = "‏لم يتم العثور على روابط‏";
 "No caption on this post" = "‏لا يوجد وصف في هذا المنشور‏";
 "No carousel children" = "‏لا توجد وسائط متعددة في هذا المنشور‏";
 "No cover image" = "‏لا توجد صورة غلاف‏";
 "No files downloaded" = "‏لم يتم تنزيل أي ملفات‏";
 "No media" = "‏لا توجد وسائط‏";
-"No media URL" = "‏لا يوجد رابط للوسائط‏";
 "No media to expand" = "‏لا توجد وسائط لتوسيعها‏";
 "No media to show" = "‏لا توجد وسائط لعرضها‏";
+"No media URL" = "‏لا يوجد رابط للوسائط‏";
+"No URLs" = "‏لا توجد روابط‏";
+"No URLs found" = "‏لم يتم العثور على روابط‏";
 "No video URL" = "‏لا يوجد رابط للفيديو‏";
 "Not a carousel" = "‏ليس منشورًا متعدد الوسائط‏";
 "Nothing to save" = "‏لا يوجد شيء لحفظه‏";
@@ -637,6 +731,7 @@
 "Add to block list" = "‏إضافة لقائمة الحظر‏";
 "Add to block list?" = "‏إضافة لقائمة الحظر؟‏";
 "Added to block list" = "‏تمت الإضافة لقائمة الحظر‏";
+"Added to exclude list" = "‏أُضيف إلى قائمة الاستبعاد‏";
 "Audio not loaded yet. Play the message first and try again." = "‏لم يتم تحميل الصوت بعد. قم بتشغيل الرسالة أولاً وحاول مجددًا.‏";
 "Audio sent" = "‏تم إرسال الصوت‏";
 "Audio/Video from Files" = "‏صوت أو فيديو من الملفات‏";
@@ -650,12 +745,14 @@
 "Could not get audio data. Try again after refreshing the chat." = "‏تعذر الحصول على بيانات الصوت. حاول مجددًا بعد تحديث الدردشة.‏";
 "Could not get video URL" = "‏تعذر الحصول على رابط الفيديو‏";
 "Disable read receipts" = "‏تعطيل مؤشرات القراءة‏";
+"Disappearing media" = "‏وسائط مختفية‏";
 "Done!" = "‏تم!‏";
 "Download audio" = "‏تنزيل الصوت‏";
 "Downloading audio..." = "‏جارِ تنزيل الصوت...‏";
 "Enable read receipts" = "‏تفعيل مؤشرات القراءة‏";
 "Error: %@" = "‏خطأ: %@‏";
 "Exclude chat" = "‏استبعاد الدردشة‏";
+"Exclude from seen" = "‏استبعاد من المُشاهد‏";
 "Exclude story seen" = "‏استبعاد مشاهدة القصة‏";
 "Excluded" = "‏مستبعد‏";
 "Extracting audio..." = "‏جارِ استخراج الصوت...‏";
@@ -663,6 +760,10 @@
 "File sending not supported" = "‏إرسال الملفات غير مدعوم‏";
 "Follow" = "‏متابعة‏";
 "Following" = "‏تُتابع‏";
+"Inserts a button on disappearing media overlays" = "‏يُضيف زراً على طبقة الوسائط المختفية‏";
+"Inserts a speaker button to mute/unmute disappearing media" = "‏يُضيف زر مكبر صوت لكتم/إلغاء كتم الوسائط المختفية‏";
+"Inserts an eye button to mark the current disappearing media as viewed" = "‏يُضيف زر عين لتعليم الوسائط المختفية الحالية كمُشاهدة‏";
+"Mark as viewed" = "‏تعليم كمُشاهدة‏";
 "Mark messages as seen" = "‏تحديد الرسائل كمقروءة‏";
 "Mark seen" = "‏تحديد كمقروءة‏";
 "Marked as seen" = "‏تم التحديد كمقروءة‏";
@@ -671,6 +772,7 @@
 "Mentions" = "‏الإشارات‏";
 "Message sender not found" = "‏لم يتم العثور على مُرسل الرسالة‏";
 "Messages settings" = "‏إعدادات الرسائل‏";
+"Audio URL not available" = "‏رابط الصوت غير متاح‏";
 "Mute story audio" = "‏كتم صوت القصة‏";
 "No audio URL found. Try again after refreshing the chat." = "‏لم يتم العثور على رابط للصوت. حاول مجددًا بعد تحديث الدردشة.‏";
 "No mentions in this story" = "‏لا توجد إشارات في هذه القصة‏";
@@ -686,26 +788,25 @@
 "Remove" = "‏إزالة‏";
 "Remove from block list" = "‏إزالة من قائمة الحظر‏";
 "Remove from block list?" = "‏إزالة من قائمة الحظر؟‏";
+"Remove from exclude list" = "‏إزالة من قائمة الاستبعاد‏";
 "Removed" = "‏تمت الإزالة‏";
+"Removed from list" = "‏تمت الإزالة من القائمة‏";
 "Save GIF" = "‏حفظ صورة جيف (GIF)‏";
 "Selection too short (min 0.5s)" = "‏التحديد قصير جدًا (الحد الأدنى 0.5 ثانية)‏";
-"Send Audio" = "‏إرسال صوت‏";
 "Send anyway" = "‏إرسال على أي حال‏";
+"Send Audio" = "‏إرسال صوت‏";
 "Send failed: %@" = "‏فشل الإرسال: %@‏";
 "Send service not found" = "‏لم يتم العثور على خدمة الإرسال‏";
-"Share" = "‏مشاركة‏";
+"Show audio toggle" = "‏إظهار زر الصوت‏";
+"Show mark-as-viewed button" = "‏إظهار زر علامة كمُشاهدة‏";
 "Story read receipts disabled" = "‏تم تعطيل مؤشرات قراءة القصص‏";
 "Story read receipts enabled" = "‏تم تفعيل مؤشرات قراءة القصص‏";
-"Story seen receipts will be blocked for @%@." = "‏سيتم حظر مؤشرات مشاهدة القصة لـ @%@.‏";
 "This chat will resume normal read-receipt behavior." = "‏ستستأنف هذه الدردشة السلوك الطبيعي لمؤشر القراءة.‏";
 "Total: %@" = "‏الإجمالي: %@‏";
-"Un-exclude" = "‏إلغاء الاستبعاد‏";
 "Un-exclude chat" = "‏إلغاء استبعاد الدردشة‏";
 "Un-exclude chat?" = "‏إلغاء استبعاد الدردشة؟‏";
 "Un-exclude story seen" = "‏إلغاء استبعاد مشاهدة القصة‏";
-"Un-exclude story seen?" = "‏إلغاء استبعاد مشاهدة القصة؟‏";
 "Un-excluded" = "‏تم إلغاء الاستبعاد‏";
-"Unblock" = "‏إلغاء الحظر‏";
 "Unblocked" = "‏تم إلغاء الحظر‏";
 "Unlimited replay enabled" = "‏تم تفعيل الإعادة غير المحدودة‏";
 "Unmute story audio" = "‏إلغاء كتم صوت القصة‏";
@@ -728,6 +829,9 @@
 "Add preset" = "‏إضافة إعداد مسبق‏";
 "Change location" = "‏تغيير الموقع‏";
 "Click the Apply button after this to see the emoji" = "‏انقر على زر تطبيق بعد هذا لرؤية الإيموجي‏";
+"Clipboard is not an Instagram URL" = "الحافظة لا تحتوي على رابط إنستغرام";
+"Comments hidden" = "‏تم إخفاء التعليقات‏";
+"Comments shown" = "‏تم إظهار التعليقات‏";
 "Copied text to clipboard" = "‏تم نسخ النص إلى الحافظة‏";
 "Copy" = "‏نسخ‏";
 "Copy all" = "‏نسخ الكل‏";
@@ -738,18 +842,167 @@
 "Current: %@" = "‏الحالي: %@‏";
 "Disable" = "‏تعطيل‏";
 "Download GIF" = "‏تنزيل صورة جيف (GIF)‏";
+"Dropped pin" = "‏دبوس الموقع‏";
 "Enable" = "‏تفعيل‏";
+"Enable Location Services for Instagram in Settings to use your current location." = "‏فعّل خدمات الموقع لإنستغرام من الإعدادات لاستخدام موقعك الحالي.‏";
 "Enter Emoji Text" = "‏أدخل نص الإيموجي‏";
 "Fake location" = "‏موقع وهمي‏";
+"Location access denied" = "‏تم رفض الوصول إلى الموقع‏";
+"Location Services off" = "‏خدمات الموقع متوقفة‏";
 "Name" = "‏الاسم‏";
 "Nothing to copy" = "‏لا يوجد شيء لنسخه‏";
+"Open Settings" = "‏فتح الإعدادات‏";
+"Pick location" = "‏اختر الموقع‏";
 "Save" = "‏حفظ‏";
 "Save preset" = "‏حفظ الإعداد المسبق‏";
 "Saved locations" = "‏المواقع المحفوظة‏";
 "Select color" = "‏اختيار اللون‏";
 "Set location" = "‏تعيين الموقع‏";
 "Settings…" = "‏الإعدادات…‏";
+"Turn Location Services on in Settings → Privacy to use your current location." = "‏فعّل خدمات الموقع من الإعدادات ← الخصوصية لاستخدام موقعك الحالي.‏";
 "Type emoji..." = "‏اكتب إيموجي...‏";
+
+"Theme" = "‏السمة‏";
+"Appearance" = "‏المظهر‏";
+"Keyboard" = "‏لوحة المفاتيح‏";
+"Force dark mode" = "‏فرض الوضع الداكن‏";
+"Keep Instagram in dark appearance regardless of iOS system setting" = "‏إبقاء انستغرام في الوضع الداكن بغض النظر عن إعدادات النظام‏";
+"Full OLED" = "‏OLED كامل‏";
+"Replace Instagram's dark grays with pure black across the entire app" = "‏استبدال الرمادي الداكن في انستغرام بالأسود النقي في جميع أنحاء التطبيق‏";
+"OLED chat theme" = "‏سمة OLED للمحادثات‏";
+"Pure black DM thread background and incoming message bubbles" = "‏خلفية سوداء نقية لمحادثات الرسائل وفقاعات الرسائل الواردة‏";
+"Keyboard theme" = "‏سمة لوحة المفاتيح‏";
+"Override the keyboard appearance when typing inside Instagram" = "‏تجاوز مظهر لوحة المفاتيح عند الكتابة داخل انستغرام‏";
+"Dark uses the system dark keyboard. OLED forces the keyboard backdrop to pure black." = "‏الداكن يستخدم لوحة المفاتيح الداكنة للنظام. OLED يفرض خلفية لوحة المفاتيح إلى الأسود النقي.‏";
+"Dark" = "‏داكن‏";
+"OLED" = "OLED";
+"Apply & restart" = "‏تطبيق وإعادة التشغيل‏";
+"Restart Instagram to apply your theme changes" = "‏أعد تشغيل انستغرام لتطبيق تغييرات السمة‏";
+"Theme changes only take effect after an app restart. Tap Apply below when you're done choosing." = "‏لا تُطبَّق تغييرات السمة إلا بعد إعادة تشغيل التطبيق. اضغط تطبيق بالأسفل عند الانتهاء من الاختيار.‏";
+
+//////////////////////////////////////////////////////////////////////////////
+//                            PROFILE ANALYZER                              //
+// Settings → General → Profile Analyzer                                    //
+//////////////////////////////////////////////////////////////////////////////
+
+"%lu followers · %lu following" = "‏%lu متابع · %lu يتابع‏";
+"%lu of %lu" = "‏%lu من %lu‏";
+"Analysis complete" = "‏اكتمل التحليل‏";
+"Analysis failed" = "‏فشل التحليل‏";
+"Another analysis is already running" = "‏هناك تحليل آخر قيد التشغيل بالفعل‏";
+"Available after your next scan" = "‏متاحة بعد التحليل التالي‏";
+"Cancelled" = "‏تم الإلغاء‏";
+"Couldn't fetch profile information" = "‏تعذّر جلب معلومات الملف الشخصي‏";
+"Fetching followers (%lu/%ld)…" = "‏جاري جلب المتابعين (%lu/%ld)…‏";
+"Fetching following (%lu/%ld)…" = "‏جاري جلب المتابَعين (%lu/%ld)…‏";
+"Fetching profile info…" = "‏جاري جلب معلومات الملف الشخصي…‏";
+"Categories" = "‏الفئات‏";
+"First scan: %@" = "‏أول تحليل: %@‏";
+"Follower count exceeds %ld — analysis disabled to avoid rate limits." = "‏عدد المتابعين يتجاوز %ld — التحليل معطّل لتجنب حدود المعدل.‏";
+"Gained since last scan" = "‏اكتسبتهم منذ آخر تحليل‏";
+"Last scan: %@" = "‏آخر تحليل: %@‏";
+"Lost followers" = "‏متابعون مفقودون‏";
+"Mutual followers" = "‏متابعون متبادلون‏";
+"Name: %@ → %@" = "‏الاسم: %@ ← %@‏";
+"New followers" = "‏متابعون جدد‏";
+"No results" = "‏لا توجد نتائج‏";
+"No active Instagram session found" = "‏لا توجد جلسة Instagram نشطة‏";
+"No scan yet" = "‏لا يوجد تحليل بعد‏";
+"Not following you back" = "‏لا يتابعونك بالمقابل‏";
+"OK" = "‏حسنًا‏";
+"Private account" = "‏حساب خاص‏";
+"Profile Analyzer" = "‏محلل الملف الشخصي‏";
+"Profile picture changed" = "‏تم تغيير صورة الملف الشخصي‏";
+"Profile updates" = "‏تحديثات الملف الشخصي‏";
+"Removes cached snapshots for this account. You'll lose since-last-scan diffs." = "‏يزيل اللقطات المحفوظة لهذا الحساب. ستفقد الفروق منذ آخر تحليل.‏";
+"Request failed" = "‏فشل الطلب‏";
+"Reset analyzer data?" = "‏إعادة تعيين بيانات المحلل؟‏";
+"Run analysis" = "‏تشغيل التحليل‏";
+"Run your first analysis" = "‏شغّل أول تحليل لك‏";
+"Search username or name" = "‏ابحث باسم المستخدم أو الاسم‏";
+"Since last scan" = "‏منذ آخر تحليل‏";
+"Starting…" = "‏يبدأ…‏";
+"They follow you, you don't follow back" = "‏يتابعونك، لكنك لا تتابعهم‏";
+"Too many followers" = "‏عدد متابعين كبير جدًا‏";
+"Too many followers to analyze" = "‏عدد المتابعين أكبر من أن يُحلَّل‏";
+"Unfollow" = "‏إلغاء المتابعة‏";
+"Unfollow @%@?" = "‏إلغاء متابعة @%@؟‏";
+"Unfollowed you since last scan" = "‏ألغوا متابعتك منذ آخر تحليل‏";
+"Username, name or picture changes" = "‏تغييرات اسم المستخدم أو الاسم أو الصورة‏";
+"Username: @%@ → @%@" = "‏اسم المستخدم: @%@ ← @%@‏";
+"We refuse to run when the follower count exceeds %ld to avoid Instagram rate limits." = "‏لا نشغّل التحليل عندما يتجاوز عدد المتابعين %ld لتجنب حدود Instagram.‏";
+"You both follow each other" = "‏تتابعان بعضكما البعض‏";
+"You don't follow back" = "‏لا تتابعهم بالمقابل‏";
+"You follow them, they don't follow back" = "‏تتابعهم، لكنهم لا يتابعونك‏";
+"You started following" = "‏بدأت تتابعهم‏";
+"You unfollowed" = "‏ألغيت متابعتهم‏";
+
+"%@ %lu accounts? The first %ld will be processed to avoid rate limits." = "‏%@ %lu حسابًا؟ ستتم معالجة أول %ld لتجنّب حدود المعدل.‏";
+"%@ %lu accounts? This runs sequentially with a short pause between each." = "‏%@ %lu حسابًا؟ ستتم المعالجة بالتتابع مع وقفة قصيرة بين كل طلب.‏";
+"%lu account(s) · %lu snapshot(s) · tap to inspect" = "‏%lu حساب · %lu لقطة · انقر للفحص‏";
+"%lu accounts followed" = "‏تمت متابعة %lu حسابًا‏";
+"%lu accounts unfollowed" = "‏تم إلغاء متابعة %lu حسابًا‏";
+"%lu entries across %lu lists · tap to inspect" = "‏%lu إدخال عبر %lu قائمة · انقر للفحص‏";
+"%lu preferences · tap to inspect" = "‏%lu تفضيلات · انقر للفحص‏";
+"(empty)" = "‏(فارغ)‏";
+"(no analyzer data)" = "‏(لا توجد بيانات محلل)‏";
+"(no lists)" = "‏(لا توجد قوائم)‏";
+"About Profile Analyzer" = "‏عن محلل الملف الشخصي‏";
+"All preferences (%lu)" = "‏جميع التفضيلات (%lu)‏";
+"Apply imported data?" = "‏تطبيق البيانات المستوردة؟‏";
+"Batch follow" = "‏متابعة جماعية‏";
+"Batch follow finished" = "‏اكتملت المتابعة الجماعية‏";
+"Batch unfollow" = "‏إلغاء متابعة جماعي‏";
+"Batch unfollow finished" = "‏اكتمل إلغاء المتابعة الجماعي‏";
+"Continue" = "‏متابعة‏";
+"Current snapshot" = "‏اللقطة الحالية‏";
+"Embed domains" = "‏نطاقات التضمين‏";
+"Excluded lists" = "‏القوائم المستبعدة‏";
+"Excluded story users" = "‏مستخدمو القصص المستبعدون‏";
+"Existing values for the selected scope will be replaced. The app may need to restart for some changes to take effect." = "‏سيتم استبدال القيم الحالية للنطاق المحدد. قد يحتاج التطبيق إلى إعادة التشغيل ليسري مفعول بعض التغييرات.‏";
+"Export" = "‏تصدير‏";
+"File has no importable sections." = "‏لا يحتوي الملف على أقسام قابلة للاستيراد.‏";
+"File is not a valid RyukGram export." = "‏الملف ليس تصديرًا صالحًا من RyukGram.‏";
+"Filter" = "‏تصفية‏";
+"First scan: we collect your followers and following lists and save them locally." = "‏أول تحليل: نجمع قوائم المتابعين والمتابَعين ونحفظها محليًا.‏";
+"Follow %lu" = "‏متابعة %lu‏";
+"Followers" = "‏المتابعون‏";
+"Following… %lu / %lu" = "‏جارٍ المتابعة… %lu / %lu‏";
+"Full name" = "‏الاسم الكامل‏";
+"Heads up: this feature is in beta and hits Instagram's private API. Running it back-to-back or right after heavy follow/unfollow activity can trigger a short rate-limit. Use it sparingly and at your own risk." = "‏تنبيه: هذه الميزة تجريبية وتستخدم واجهة Instagram الخاصة. تشغيلها بشكل متتالٍ أو بعد نشاط متابعة/إلغاء متابعة كثيف قد يسبب حدًا مؤقتًا. استخدمها باعتدال وعلى مسؤوليتك.‏";
+"Import complete" = "‏اكتمل الاستيراد‏";
+"Include" = "‏تضمين‏";
+"Included story users" = "‏مستخدمو القصص المدرجون‏";
+"Inspect the full payload" = "‏افحص البيانات الكاملة‏";
+"Keep scan history" = "‏الاحتفاظ بسجل التحليلات‏";
+"Large accounts are blocked: analysis is disabled above 13,000 followers to avoid Instagram rate-limiting the whole app." = "‏الحسابات الكبيرة محظورة: يتم تعطيل التحليل فوق 13,000 متابع لتجنّب قيام Instagram بتحديد معدل التطبيق بأكمله.‏";
+"Nothing is uploaded — everything stays on this device and can be wiped from the trash icon." = "‏لا يتم رفع أي شيء — كل البيانات تبقى على هذا الجهاز ويمكن مسحها من أيقونة سلة المهملات.‏";
+"Not verified only" = "‏غير الموثقة فقط‏";
+"Nothing was applied." = "‏لم يتم تطبيق شيء.‏";
+"Posts" = "‏المنشورات‏";
+"Preferences" = "‏التفضيلات‏";
+"Previous snapshot" = "‏اللقطة السابقة‏";
+"Private only" = "‏الخاصة فقط‏";
+"Profile Analyzer data" = "‏بيانات محلل الملف الشخصي‏";
+"Raw" = "‏خام‏";
+"Raw JSON" = "‏JSON الخام‏";
+"Reset analyzer data" = "‏إعادة تعيين بيانات المحلل‏";
+"Reset complete" = "‏اكتملت إعادة التعيين‏";
+"Reset selected data?" = "‏إعادة تعيين البيانات المحددة؟‏";
+"Second scan onward: each scan compares against the last, so we can show gained/lost followers, your own follow/unfollow moves, and profile updates." = "‏من التحليل الثاني فصاعدًا: يقارن كل تحليل بما قبله، لتظهر المتابعين الجدد والمفقودين وإجراءاتك من متابعة/إلغاء متابعة وتحديثات الملف الشخصي.‏";
+"Select all" = "‏تحديد الكل‏";
+"Selected data will be cleared. Tap any row to see what's stored." = "‏سيتم مسح البيانات المحددة. انقر على أي صف لرؤية ما هو مخزّن.‏";
+"Settings" = "‏الإعدادات‏";
+"Sort" = "‏ترتيب‏";
+"This can't be undone." = "‏لا يمكن التراجع عن هذا الإجراء.‏";
+"Tick what to apply. Tap any row to inspect. Sections not in the file are disabled." = "‏حدّد ما تريد تطبيقه. انقر على أي صف للفحص. الأقسام غير الموجودة في الملف معطّلة.‏";
+"Tick what to include. Tap any row to inspect its contents." = "‏حدّد ما تريد تضمينه. انقر على أي صف لفحص محتوياته.‏";
+"Unfollow %lu" = "‏إلغاء متابعة %lu‏";
+"Unfollowing… %lu / %lu" = "‏جارٍ إلغاء المتابعة… %lu / %lu‏";
+"Username A → Z" = "‏اسم المستخدم أ ← ي‏";
+"Username Z → A" = "‏اسم المستخدم ي ← أ‏";
+"Verified only" = "‏الموثقة فقط‏";
+"When on, scans compare against your first scan so new/lost followers and profile updates don't disappear between scans." = "‏عند التفعيل، تُقارن التحليلات بتحليلك الأول فلا يختفي المتابعون الجدد/المفقودون وتحديثات الملفات الشخصية بين التحليلات.‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                         SETTINGS VIEWS & DIALOGS                         //
@@ -758,72 +1011,62 @@
 
 "Add chat" = "‏إضافة دردشة‏";
 "Add custom domain" = "‏إضافة نطاق مخصص‏";
+"Add preset…" = "‏إضافة إعداد مسبق…‏";
 "Add to list?" = "‏إضافة للقائمة؟‏";
 "Add user" = "‏إضافة مستخدم‏";
-"Could not resolve user ID" = "‏تعذر تحليل معرف المستخدم‏";
-"Enter username" = "‏أدخل اسم المستخدم‏";
-"Enter username of the DM thread" = "‏أدخل اسم المستخدم لمحادثة الرسائل الخاصة‏";
-"No DM thread found with @%@" = "‏لم يتم العثور على محادثة رسائل مع @%@‏";
-"User '%@' not found" = "‏لم يتم العثور على المستخدم '%@'‏";
-"Add preset…" = "‏إضافة إعداد مسبق…‏";
-"All RyukGram settings will be reset to defaults and the imported values applied. The app will need to restart for some changes to take effect." = "‏سيتم إعادة تعيين جميع إعدادات ريوك غرام للافتراضي وتطبيق القيم المستوردة. سيحتاج التطبيق لإعادة التشغيل لتفعيل التغييرات.‏";
 "Apply" = "‏تطبيق‏";
-"Apply imported settings?" = "‏تطبيق الإعدادات المستوردة؟‏";
 "Apply to" = "‏تطبيق على‏";
 "Chats" = "‏الدردشات‏";
 "Could not read file." = "‏تعذرت قراءة الملف.‏";
+"Could not resolve user ID" = "‏تعذر تحليل معرف المستخدم‏";
 "Could not write temporary file." = "‏تعذرت كتابة الملف المؤقت.‏";
 "Current location" = "‏الموقع الحالي‏";
 "Custom" = "‏مخصص‏";
 "Date Format" = "‏تنسيق التاريخ‏";
 "Delete" = "‏حذف‏";
-"Done editing" = "‏تم التعديل‏";
-"Edit values" = "‏تعديل القيم‏";
 "Enable fake location" = "‏تفعيل الموقع الوهمي‏";
-"Every RyukGram preference will revert to its built-in default. This can't be undone." = "‏ستعود كل تفضيلات ريوك غرام إلى قيمها الافتراضية المدمجة. لا يمكن التراجع عن هذا.‏";
+"Enter username" = "‏أدخل اسم المستخدم‏";
+"Enter username of the DM thread" = "‏أدخل اسم المستخدم لمحادثة الرسائل الخاصة‏";
 "Excluded chats" = "‏الدردشات المستبعدة‏";
 "Excluded users" = "‏المستخدمون المستبعدون‏";
-"File is not a valid RyukGram settings export." = "‏الملف ليس ملف تصدير إعدادات ريوك غرام صالح.‏";
 "Follow default" = "‏اتباع الافتراضي‏";
 "Force OFF (allow unsends)" = "‏إيقاف إجباري (السماح بإلغاء الإرسال)‏";
 "Force ON (preserve unsends)" = "‏تشغيل إجباري (الاحتفاظ بالرسائل الملغاة)‏";
-"Form view" = "‏عرض النموذج‏";
 "Format" = "‏التنسيق‏";
 "Import failed" = "‏فشل الاستيراد‏";
-"Import preview" = "‏معاينة الاستيراد‏";
 "Included chats" = "‏الدردشات المشمولة‏";
 "Included users" = "‏المستخدمون المشمولون‏";
-"KD: ON" = "‏الاحتفاظ: تشغيل‏";
 "KD: default" = "‏الاحتفاظ: الافتراضي‏";
+"KD: ON" = "‏الاحتفاظ: تشغيل‏";
 "Keep-deleted" = "‏الاحتفاظ بالمحذوف‏";
 "Keep-deleted override" = "‏تجاوز الاحتفاظ بالمحذوف‏";
+"Name (A–Z)" = "‏الاسم (أ–ي)‏";
+"No DM thread found with @%@" = "‏لم يتم العثور على محادثة رسائل مع @%@‏";
 "Off" = "‏إيقاف‏";
-"On" = "‏تشغيل‏";
 "Presets" = "‏الإعدادات المسبقة‏";
-"Raw JSON view" = "‏عرض جيسون (JSON) الخام‏";
-"Remove Selected" = "‏إزالة المحدد‏";
+"Recently added" = "‏المُضاف مؤخراً‏";
 "Remove from list" = "‏إزالة من القائمة‏";
+"Remove Selected" = "‏إزالة المحدد‏";
 "Reset" = "‏إعادة تعيين‏";
-"Reset all settings?" = "‏إعادة تعيين كافة الإعدادات؟‏";
 "Saved presets are reusable. Tap a preset to make it the active location." = "‏الإعدادات المسبقة المحفوظة قابلة لإعادة الاستخدام. انقر على الإعداد لجعله الموقع النشط.‏";
+"Search" = "‏بحث‏";
 "Search address or place" = "‏بحث عن عنوان أو مكان‏";
 "Search by name or username" = "‏بحث بالاسم أو اسم المستخدم‏";
 "Search by username or name" = "‏البحث باسم المستخدم أو الاسم‏";
-"Search settings" = "‏إعدادات البحث‏";
 "Select" = "‏تحديد‏";
 "Select location on map" = "‏تحديد الموقع على الخريطة‏";
 "Set current location" = "‏تعيين الموقع الحالي‏";
 "Set keep-deleted override" = "‏تعيين تجاوز الاحتفاظ بالمحذوف‏";
 "Settings exported" = "‏تم تصدير الإعدادات‏";
-"Settings imported" = "‏تم استيراد الإعدادات‏";
+"Show map button" = "‏إظهار زر الخريطة‏";
 "Show seconds" = "‏إظهار الثواني‏";
 "Sort by" = "‏فرز حسب‏";
 "Story users" = "‏مستخدمي القصص‏";
 "Toggle each NSDate formatter IG uses. Different surfaces (feed, comments, stories, DMs) go through different methods — enable the ones you want the custom format applied to." = "‏بدّل كل أداة تنسيق NSDate يستخدمها إنستغرام. الأقسام المختلفة (اليوميات، التعليقات، القصص، الرسائل الخاصة) لها طرق مختلفة — فعّل ما تريد تطبيق التنسيق المخصص عليه.‏";
 "Use this location" = "‏استخدام هذا الموقع‏";
-"When on, all CoreLocation requests inside Instagram return the location below." = "‏عند التشغيل، ستعيد كل طلبات الموقع (CoreLocation) داخل إنستغرام الموقع أدناه.‏";
+"User '%@' not found" = "‏لم يتم العثور على المستخدم '%@'‏";
+"Username (A–Z)" = "‏اسم المستخدم (أ–ي)‏";
 "When on, all CoreLocation requests inside Instagram return the location below. Toggle the map button to show or hide the quick toggle on the Friends Map view." = "‏عند التشغيل، ستعيد كل طلبات الموقع داخل إنستغرام الموقع أدناه. اضغط على زر الخريطة لإظهار أو إخفاء التبديل السريع في خريطة الأصدقاء.‏";
-"Show map button" = "‏إظهار زر الخريطة‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                             REELS (FEATURES)                             //
@@ -859,6 +1102,7 @@
 
 "720p • progressive • fastest" = "‏720p • تدريجي • الأسرع‏";
 "Are you sure?" = "‏هل أنت متأكد؟‏";
+"Bundle" = "‏الحزمة‏";
 "Copy audio URL" = "‏نسخ رابط الصوت‏";
 "Copy quality info" = "‏نسخ معلومات الجودة‏";
 "Copy video URL" = "‏نسخ رابط الفيديو‏";
@@ -871,11 +1115,14 @@
 "Could not extract video url from reel" = "‏تعذر استخراج رابط الفيديو من مقطع ريلز‏";
 "Could not extract video url from story" = "‏تعذر استخراج رابط الفيديو من القصة‏";
 "Download Quality" = "‏جودة التنزيل‏";
+"Extras" = "Extras";
 "FFmpegKit Debug" = "‏تصحيح أخطاء FFmpegKit‏";
 "Later" = "‏لاحقًا‏";
 "No!" = "‏لا!‏";
+"OK" = "‏حسناً‏";
 "Restart" = "‏إعادة تشغيل‏";
 "Restart required" = "‏إعادة التشغيل مطلوبة‏";
+"username" = "‏اسم المستخدم‏";
 "Yes" = "‏نعم‏";
 "You must restart the app to apply this change" = "‏يجب عليك إعادة تشغيل التطبيق لتطبيق هذا التغيير‏";
 
@@ -884,44 +1131,58 @@
 // Strings from the About / Credits footer of Settings.                     //
 //////////////////////////////////////////////////////////////////////////////
 
-"%@ — view source, report issues, see releases" = "‏%@ — عرض المصدر، الإبلاغ عن مشاكل، رؤية الإصدارات‏";
+"%@ — GitHub & Telegram" = "‏%@ — جيت هاب وتيليجرام‏";
+"About" = "‏حول‏";
+"Arabic translation" = "‏الترجمة العربية‏";
+"Chinese (Traditional) translation" = "الترجمة الصينية (التقليدية)";
 "Credits" = "‏شكر وتقدير‏";
-"Developer" = "‏المطور‏";
+"Developers" = "‏المطوّرون‏";
 "Donate to SoCuul" = "‏تبرع إلى SoCuul‏";
+"installed" = "‏مُثبّت‏";
+"Korean translation" = "‏الترجمة الكورية‏";
+"latest" = "‏الأحدث‏";
+"Links" = "‏الروابط‏";
+"No releases" = "‏لا توجد إصدارات‏";
 "Original SCInsta developer" = "‏مطور SCInsta الأصلي‏";
-"Ryuk" = "‏ريوك (Ryuk)‏";
-"RyukGram %@\n\nInstagram v%@\n\nBased on SCInsta by SoCuul" = "‏ريوك غرام %@\n\nإنستغرام إصدار %@\n\nمبني على SCInsta بواسطة SoCuul\n\nالتعريب بواسطة @bruuhim‏";
-"RyukGram on GitHub" = "‏ريوك غرام على غيت هاب (GitHub)‏";
-"SoCuul" = "‏SoCuul‏";
+"Release notes" = "‏ملاحظات الإصدار‏";
+"Releases" = "‏الإصدارات‏";
+"Report an issue" = "‏الإبلاغ عن مشكلة‏";
+"Russian translation" = "‏الترجمة الروسية‏";
+"RyukGram developer" = "‏مطوّر RyukGram‏";
+"Join Telegram channel" = "‏انضم إلى قناة تيليجرام‏";
+"Source code" = "‏الكود المصدري‏";
+"View on GitHub" = "‏عرض على جيت هاب‏";
+"Spanish translation" = "‏الترجمة الإسبانية‏";
 "Support the original developer" = "‏ادعم المطور الأصلي‏";
-"View Repo" = "‏عرض المستودع‏";
-"View the source code on GitHub" = "‏عرض الكود المصدري على غيت هاب (GitHub)‏";
+"Telegram channel" = "‏قناة تيليجرام‏";
+"Testing and feature suggestions" = "‏الاختبار واقتراحات الميزات‏";
+"Tweak settings" = "‏إعدادات التعديل‏";
+"Version" = "‏الإصدار‏";
+"Version, credits, and links" = "‏الإصدار والاعتمادات والروابط‏";
+"What's new in RyukGram" = "‏جديد RyukGram‏";
 
 //////////////////////////////////////////////////////////////////////////////
 //                             HD DOWNLOADS                                 //
 // Enhanced / HD downloads settings (DASH + FFmpegKit encoding).            //
 //////////////////////////////////////////////////////////////////////////////
 
+"720p • progressive • silent" = "‏720p • تدريجي • صامت‏";
+"Audio extract failed" = "‏فشل استخراج الصوت‏";
+"Audio only" = "‏الصوت فقط‏";
+"Audio ready" = "‏الصوت جاهز‏";
 "Download video at the highest available quality" = "‏تنزيل الفيديو بأعلى جودة متاحة‏";
 "Downloads HD video via DASH streams and encodes to H.264. Requires FFmpegKit." = "‏تنزيل الفيديو عالي الدقة (HD) عبر بث داش (DASH) وترميزه إلى H.264. يتطلب حزمة FFmpegKit.‏";
 "Encoding speed" = "‏سرعة الترميز‏";
 "Enhanced downloads" = "‏تنزيلات محسّنة‏";
-"FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable." = "‏حزمة FFmpegKit غير متوفرة. قم بتثبيت تطبيق IPA المُحمّل جانبياً أو نسخة _ffmpeg .deb للتفعيل.‏";
 "Faster = lower quality" = "‏أسرع = جودة أقل‏";
+"FFmpeg not available" = "‏FFmpeg غير متاح‏";
+"FFmpegKit is not available. Install the sideloaded IPA or the _ffmpeg .deb variant to enable." = "‏حزمة FFmpegKit غير متوفرة. قم بتثبيت تطبيق IPA المُحمّل جانبياً أو نسخة _ffmpeg .deb للتفعيل.‏";
+"No audio stream available" = "‏لا يتوفر مسار صوتي‏";
+"No audio track found" = "‏لم يتم العثور على مسار صوتي‏";
+"Photo" = "‏صورة‏";
 "Photo quality" = "‏جودة الصورة‏";
+"Raw image (no audio, no video)" = "‏صورة خام (بدون صوت أو فيديو)‏";
+"silent" = "‏صامت‏";
 "Use highest resolution available" = "‏استخدام أعلى دقة متاحة‏";
 "Video quality" = "‏جودة الفيديو‏";
 "Which quality to download" = "‏الجودة المراد تنزيلها‏";
-
-//////////////////////////////////////////////////////////////////////////////
-//                           EXPERIMENTAL / DEBUG                           //
-// Placeholder rows only shown in the experimental settings sandbox.        //
-//////////////////////////////////////////////////////////////////////////////
-
-"Navigation Cell" = "‏خلية التنقل‏";
-"Localization" = "‏التعريب‏";
-"Update localization file" = "‏تحديث ملف التعريب‏";
-"Import a .strings file for a language" = "‏استيراد ملف .strings للغة‏";
-"Import a .strings file to update a translation. Pick a language, select the file, restart." = "‏استورد ملف .strings لتحديث الترجمة. اختر لغة، حدد الملف، وأعد التشغيل.‏";
-"Export English strings" = "‏تصدير نصوص الإنجليزية‏";
-"Share the base English .strings file for translating" = "‏مشاركة ملف .strings الأساسي بالإنجليزية للترجمة‏";

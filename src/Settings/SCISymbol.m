@@ -1,4 +1,5 @@
 #import "SCISymbol.h"
+#import "../Localization/SCILocalization.h"
 
 @interface SCISymbol ()
 
@@ -32,15 +33,26 @@
 
 - (UIImage *)image {
     UIImage *symbol = [UIImage systemImageNamed:self.name];
-    
+
+    // Fallback to PNGs in RyukGram.bundle, template-rendered so the cell's
+    // tintColor recolors them the same way SF Symbols get tinted.
+    if (!symbol) {
+        NSBundle *resource = SCILocalizationBundle();
+        UIImage *bundled = resource ? [UIImage imageNamed:self.name
+                                                 inBundle:resource
+                            compatibleWithTraitCollection:nil]
+                                    : nil;
+        return [bundled imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    }
+
     if (self.size || (self.size && self.weight)) {
         UIImageSymbolConfiguration *symbolConfig = [UIImageSymbolConfiguration configurationWithTextStyle:UIFontTextStyleTitle1];
         symbolConfig = [symbolConfig configurationByApplyingConfiguration:
                         [UIImageSymbolConfiguration configurationWithPointSize:self.size weight:self.weight]];
-        
+
         return [symbol imageWithConfiguration:symbolConfig];
     }
-    
+
     return symbol;
 }
 

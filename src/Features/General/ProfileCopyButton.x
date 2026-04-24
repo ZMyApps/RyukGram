@@ -1,5 +1,6 @@
 #import "../../Utils.h"
 #import "../../InstagramHeaders.h"
+#import "../../SCIChrome.h"
 #import "../../../modules/JGProgressHUD/JGProgressHUD.h"
 #import <objc/runtime.h>
 #import <substrate.h>
@@ -103,9 +104,6 @@ static void sci_copyAndToast(NSString *value, NSString *label) {
     NSString *fullName = [sci_valueForAnyKey(user, @[@"fullName", @"fullname", @"name"]) description];
     NSString *biography = [sci_valueForAnyKey(user, @[@"biography", @"bio", @"profileBiography"]) description];
 
-    NSLog(@"[SCInsta] copy button user=%@ name=%@ bioLen=%lu",
-          username, fullName, (unsigned long)biography.length);
-
     UIAlertController *menu = [UIAlertController alertControllerWithTitle:SCILocalized(@"Copy from profile")
                                                                   message:nil
                                                            preferredStyle:UIAlertControllerStyleActionSheet];
@@ -154,15 +152,14 @@ static void sci_copyAndToast(NSString *value, NSString *label) {
 @end
 
 static UIView *sci_buildCopyButton(void) {
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    SCIChromeButton *btn = [[SCIChromeButton alloc] initWithSymbol:@"doc.on.doc"
+                                                         pointSize:16
+                                                          diameter:24];
     btn.accessibilityIdentifier = @"sci-profile-copy-button";
     btn.accessibilityLabel = @"Copy profile info";
-    UIImageSymbolConfiguration *cfg =
-        [UIImageSymbolConfiguration configurationWithPointSize:16
-                                                        weight:UIImageSymbolWeightRegular];
-    UIImage *icon = [[UIImage systemImageNamed:@"doc.on.doc"] imageByApplyingSymbolConfiguration:cfg];
-    [btn setImage:icon forState:UIControlStateNormal];
-    btn.tintColor = [UIColor labelColor];
+    btn.iconTint = [UIColor labelColor];
+    btn.bubbleColor = [UIColor clearColor];
+    btn.translatesAutoresizingMaskIntoConstraints = YES;
     btn.frame = CGRectMake(0, 0, 24, 44);
     [btn addTarget:[SCIProfileCopyTarget shared]
             action:@selector(handleTap:)

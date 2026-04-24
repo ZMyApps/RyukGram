@@ -31,9 +31,11 @@ static void new_sciStoryLikeTap(id self, SEL _cmd, id button) {
 }
 
 %ctor {
-    Class cls = NSClassFromString(@"IGStoryLikesInteractionControllingImpl");
+    Class cls = NSClassFromString(@"_TtC22IGStoryLikesController38IGStoryLikesInteractionControllingImpl");
+    if (!cls) cls = NSClassFromString(@"IGStoryLikesInteractionControllingImpl");
     if (!cls) return;
-    SEL sel = NSSelectorFromString(@"handleStoryLikeTapWithButton:");
+    SEL sel = NSSelectorFromString(@"handleStoryLikeTapWith:");
+    if (!class_getInstanceMethod(cls, sel)) sel = NSSelectorFromString(@"handleStoryLikeTapWithButton:");
     if (!class_getInstanceMethod(cls, sel)) return;
     MSHookMessageEx(cls, sel, (IMP)new_sciStoryLikeTap, (IMP *)&orig_sciStoryLikeTap);
 }

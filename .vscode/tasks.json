@@ -22,7 +22,7 @@
             }
         },
         {
-            "label": "Build SCInsta and deploy with IPA",
+            "label": "Build RyukGram and deploy with IPA",
             "type": "shell",
             "command": "./build-dev.sh true",
             "group": {

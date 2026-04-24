@@ -22,7 +22,7 @@ else
     make DEV=1
 
     # Change framework locations to @rpath
-    install_name_tool -change "/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate" "@rpath/CydiaSubstrate.framework/CydiaSubstrate" ".theos/obj/debug/SCInsta.dylib" 2>/dev/null || true
+    install_name_tool -change "/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate" "@rpath/CydiaSubstrate.framework/CydiaSubstrate" ".theos/obj/debug/RyukGram.dylib" 2>/dev/null || true
 
     _scinsta_devquick_after
 fi

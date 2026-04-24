@@ -3,6 +3,7 @@
 
 #import "../../Utils.h"
 #import "../../InstagramHeaders.h"
+#import "../../SCIImageCache.h"
 #import "../../Networking/SCIInstagramAPI.h"
 #import "StoryHelpers.h"
 #import <objc/runtime.h>
@@ -358,21 +359,15 @@ static NSDictionary *sciMentionUserInfo(id mention) {
     avatar.tintColor = [UIColor tertiaryLabelColor];
 
     if (picURL) {
-        NSURL *url = [picURL copy];
         NSInteger row = indexPath.row;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            if (!data) return;
-            UIImage *img = [UIImage imageWithData:data];
+        [SCIImageCache loadImageFromURL:picURL completion:^(UIImage *img) {
             if (!img) return;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UITableViewCell *c = [tableView cellForRowAtIndexPath:
-                    [NSIndexPath indexPathForRow:row inSection:0]];
-                if (!c) return;
-                UIImageView *av = [c.contentView viewWithTag:kAvTag];
-                if (av) { av.image = img; av.tintColor = nil; }
-            });
-        });
+            UITableViewCell *c = [tableView cellForRowAtIndexPath:
+                [NSIndexPath indexPathForRow:row inSection:0]];
+            if (!c) return;
+            UIImageView *av = [c.contentView viewWithTag:kAvTag];
+            if (av) { av.image = img; av.tintColor = nil; }
+        }];
     }
 
     [followBtn removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];

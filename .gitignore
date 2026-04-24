@@ -39,8 +39,7 @@ upstream-scinsta
 *.ipa
 *.dylib
 deploy.sh
-PENDING_CHANGES.md
-PENDING_CHANGES.md.bk
+PENDING_CHANGES.*
 wrapper/
 scripts/*.py
 scripts/__pycache__/
@@ -50,3 +49,9 @@ modules/ffmpegkit/
 
 # External reference tweaks
 exp_flags/
+
+# Source packaging
+zip-src.sh
+RyukGram-src-*.zip
+*.zip
+*_diff.txt

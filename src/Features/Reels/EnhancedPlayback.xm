@@ -160,6 +160,8 @@ static void sciForceUnmuteCell(id videoCell) {
     }
 }
 
+%group ReelsPauseModeGroup
+
 %hook IGSundialViewerVideoCell
 // hidden=YES on play; IG resets it on the next pause.
 - (void)sundialVideoPlaybackViewDidStartPlaying:(id)view {
@@ -193,6 +195,57 @@ static void sciForceUnmuteCell(id videoCell) {
             if (playing) sciHidePlayView(self);
         });
     }
+}
+%end
+
+// ============ PHOTO REELS: TAP-TO-MUTE ============
+// Skip IG's single-tap delegate on photo cells and drive the mute via the
+// same hardware-switch notification StoryAudioToggle uses.
+
+extern "C" void sciToggleStoryAudio(void);
+
+static BOOL sciIsPhotoMuteEnabled(void) {
+    return sciIsPausePlayMode() && [SCIUtils getBoolPref:@"reels_photo_tap_mute"];
+}
+
+%hook IGSundialViewerPhotoCell
+- (void)gestureController:(id)gc didObserveSingleTap:(id)tap {
+    if (sciIsPhotoMuteEnabled()) { sciToggleStoryAudio(); return; }
+    %orig;
+}
+%end
+
+%hook IGSundialViewerCarouselPhotoCell
+- (void)gestureController:(id)gc didObserveSingleTap:(id)tap {
+    if (sciIsPhotoMuteEnabled()) { sciToggleStoryAudio(); return; }
+    %orig;
+}
+%end
+
+// Carousels route the tap through the outer cell, so hijack there too —
+// but only when the visible page is a photo. Video pages keep %orig.
+%hook IGSundialViewerCarouselCell
+- (void)gestureController:(id)gc didObserveSingleTap:(id)tap {
+    if (!sciIsPhotoMuteEnabled()) { %orig; return; }
+    BOOL hasVideo = NO, hasPhoto = NO;
+    NSMutableArray<UIView *> *stack = [NSMutableArray arrayWithObject:self];
+    for (int d = 0; d < 6 && stack.count && !hasVideo; d++) {
+        NSMutableArray<UIView *> *next = [NSMutableArray array];
+        for (UIView *sub in stack) {
+            NSString *cls = NSStringFromClass([sub class]);
+            if ([cls isEqualToString:@"IGSundialViewerCarouselVideoCell"]) {
+                if (!CGRectIsEmpty(CGRectIntersection(sub.bounds, self.bounds)) &&
+                    sub.window) hasVideo = YES;
+            } else if ([cls isEqualToString:@"IGSundialViewerCarouselPhotoCell"]) {
+                if (!CGRectIsEmpty(CGRectIntersection(sub.bounds, self.bounds)) &&
+                    sub.window) hasPhoto = YES;
+            }
+            for (UIView *s in sub.subviews) [next addObject:s];
+        }
+        stack = next;
+    }
+    if (hasPhoto && !hasVideo) { sciToggleStoryAudio(); return; }
+    %orig;
 }
 %end
 
@@ -309,9 +362,15 @@ static void new_playbackToggle_layoutSubviews(id self, SEL _cmd) {
 }
 %end
 
+%end // ReelsPauseModeGroup
+
 // ============ RUNTIME HOOKS ============
 
 %ctor {
+    if (![[SCIUtils getStringPref:@"reels_tap_control"] isEqualToString:@"pause"]) return;
+
+    %init(ReelsPauseModeGroup);
+
     Class toggleClass = objc_getClass("IGSundialPlaybackToggle.IGSundialPlaybackToggleView");
     if (toggleClass) {
         MSHookMessageEx(toggleClass, @selector(didMoveToSuperview),

@@ -4,7 +4,7 @@
 #define SCI_CUSTOM_DOMAINS_KEY @"embed_custom_domains"
 
 static NSArray *sciPresetDomains(void) {
-    return @[@"kkinstagram.com", @"ddinstagram.com", @"d.ddinstagram.com", @"g.ddinstagram.com"];
+    return @[@"eeinstagram.com", @"vxinstagram.com", @"kkinstagram.com", @"ddinstagram.com", @"d.ddinstagram.com", @"g.ddinstagram.com"];
 }
 
 @interface SCIEmbedDomainViewController ()

@@ -5,14 +5,17 @@
 @implementation SCIDashRepresentation
 @end
 
+// Resolve _fieldCache per class (walking the hierarchy). Caching the ivar
+// against IGAPIStorableObject and then reading that offset from an unrelated
+// class like IGVideo segfaults — ivar offsets aren't shared.
 static id sciDashFieldCache(id obj, NSString *key) {
-    if (!obj || !key) return nil;
-    static Ivar fcIvar = NULL;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        Class c = NSClassFromString(@"IGAPIStorableObject");
-        if (c) fcIvar = class_getInstanceVariable(c, "_fieldCache");
-    });
+    if (!obj || !key.length) return nil;
+    Ivar fcIvar = NULL;
+    @try {
+        for (Class c = [obj class]; c && !fcIvar; c = class_getSuperclass(c)) {
+            fcIvar = class_getInstanceVariable(c, "_fieldCache");
+        }
+    } @catch (__unused id e) { return nil; }
     if (!fcIvar) return nil;
     id fc = nil;
     @try { fc = object_getIvar(obj, fcIvar); } @catch (__unused id e) { return nil; }
@@ -24,30 +27,170 @@ static id sciDashFieldCache(id obj, NSString *key) {
 
 @implementation SCIDashParser
 
+// Looks like XML DASH manifest or a URL to one.
+static BOOL sciLooksLikeManifest(id val) {
+    if (![val isKindOfClass:[NSString class]]) return NO;
+    NSString *s = (NSString *)val;
+    if (s.length < 10) return NO;
+    NSString *head = [s substringToIndex:MIN((NSUInteger)16, s.length)];
+    return [head containsString:@"<MPD"] || [head containsString:@"<?xml"]
+        || [head hasPrefix:@"http"];
+}
+
+// Walk a fieldCache dict looking for any key containing "dash" or "manifest".
+static NSString *sciScanDictForManifest(NSDictionary *dict, NSString *path, int depth) {
+    if (depth > 3 || ![dict isKindOfClass:[NSDictionary class]]) return nil;
+    for (NSString *k in dict) {
+        id v = dict[k];
+        NSString *lk = k.lowercaseString;
+        if (([lk containsString:@"dash"] || [lk containsString:@"manifest"]) && sciLooksLikeManifest(v)) {
+            NSLog(@"[SCInsta][Dash] hit %@/%@ (len=%lu)", path, k, (unsigned long)[(NSString *)v length]);
+            return v;
+        }
+        if ([v isKindOfClass:[NSDictionary class]]) {
+            NSString *found = sciScanDictForManifest(v, [NSString stringWithFormat:@"%@/%@", path, k], depth + 1);
+            if (found) return found;
+        } else if ([v isKindOfClass:[NSArray class]]) {
+            for (id item in (NSArray *)v) {
+                if ([item isKindOfClass:[NSDictionary class]]) {
+                    NSString *found = sciScanDictForManifest(item, [NSString stringWithFormat:@"%@/%@[]", path, k], depth + 1);
+                    if (found) return found;
+                }
+            }
+        }
+    }
+    return nil;
+}
+
+static NSDictionary *sciFieldCacheDict(id obj) {
+    if (!obj) return nil;
+    Ivar fcIvar = NULL;
+    @try {
+        for (Class c = [obj class]; c && !fcIvar; c = class_getSuperclass(c)) {
+            fcIvar = class_getInstanceVariable(c, "_fieldCache");
+        }
+    } @catch (__unused id e) { return nil; }
+    if (!fcIvar) return nil;
+    id fc = nil;
+    @try { fc = object_getIvar(obj, fcIvar); } @catch (__unused id e) { return nil; }
+    return [fc isKindOfClass:[NSDictionary class]] ? fc : nil;
+}
+
+// Coerce an arbitrary object (NSString or NSData) into a manifest string.
+static NSString *sciToManifestString(id val) {
+    if ([val isKindOfClass:[NSString class]] && [(NSString *)val length] > 10) return val;
+    if ([val isKindOfClass:[NSData class]] && [(NSData *)val length] > 10) {
+        NSString *s = [[NSString alloc] initWithData:(NSData *)val encoding:NSUTF8StringEncoding];
+        if (s.length > 10) return s;
+    }
+    return nil;
+}
+
 + (NSString *)dashManifestForMedia:(id)media {
     if (!media) return nil;
 
     NSArray *keys = @[@"video_dash_manifest", @"dash_manifest",
                       @"video_dash_manifest_url", @"dash_manifest_url"];
 
+    // Direct hits on the media's fieldCache (older builds).
     for (NSString *key in keys) {
         id val = sciDashFieldCache(media, key);
-        if ([val isKindOfClass:[NSString class]] && [(NSString *)val length] > 10)
-            return val;
+        if (sciLooksLikeManifest(val)) return val;
     }
 
+    // IGBaseMedia -videoDashManifest (used through IG v440ish).
+    @try {
+        if ([media respondsToSelector:@selector(videoDashManifest)]) {
+            id val = ((id(*)(id, SEL))objc_msgSend)(media, @selector(videoDashManifest));
+            NSString *str = sciToManifestString(val);
+            if (sciLooksLikeManifest(str)) return str;
+        }
+    } @catch (__unused id e) {}
+
+    // Nested IGVideo — both fieldCache + the new -dashManifestData NSData getter.
     id video = nil;
-    SEL videoSel = @selector(video);
-    if ([media respondsToSelector:videoSel]) {
-        video = ((id(*)(id, SEL))objc_msgSend)(media, videoSel);
-        if (video && ![(id)video isKindOfClass:[NSObject class]]) video = nil;
-    }
+    @try {
+        if ([media respondsToSelector:@selector(video)]) {
+            video = ((id(*)(id, SEL))objc_msgSend)(media, @selector(video));
+        }
+    } @catch (__unused id e) { video = nil; }
     if (video) {
         for (NSString *key in keys) {
             id val = sciDashFieldCache(video, key);
-            if ([val isKindOfClass:[NSString class]] && [(NSString *)val length] > 10)
-                return val;
+            if (sciLooksLikeManifest(val)) return val;
         }
+        @try {
+            if ([video respondsToSelector:@selector(dashManifestData)]) {
+                id val = ((id(*)(id, SEL))objc_msgSend)(video, @selector(dashManifestData));
+                NSString *str = sciToManifestString(val);
+                if (sciLooksLikeManifest(str)) return str;
+            }
+        } @catch (__unused id e) {}
+        // Direct ivar read as last resort (handles future property removals).
+        @try {
+            Ivar iv = NULL;
+            for (Class c = [video class]; c && !iv; c = class_getSuperclass(c))
+                iv = class_getInstanceVariable(c, "_dashManifestData");
+            if (iv) {
+                id val = object_getIvar(video, iv);
+                NSString *str = sciToManifestString(val);
+                if (sciLooksLikeManifest(str)) return str;
+            }
+        } @catch (__unused id e) {}
+    }
+
+    // Wider scan: walk the fieldCache dict recursively for any key containing
+    // "dash" or "manifest".
+    NSDictionary *fc = sciFieldCacheDict(media);
+    if (fc) {
+        NSString *found = sciScanDictForManifest(fc, @"fieldCache", 0);
+        if (found) return found;
+
+        // Last-ditch manifest hunt + dump via iterative stack (no recursion,
+        // no block self-capture).
+        NSMutableArray *stack = [NSMutableArray arrayWithObject:@[fc, @"fieldCache", @(0)]];
+        NSString *bigManifest = nil;
+        NSString *bigManifestPath = nil;
+        NSMutableArray *longStrings = [NSMutableArray array];
+        while (stack.count) {
+            NSArray *frame = stack.lastObject; [stack removeLastObject];
+            id obj = frame[0];
+            NSString *path = frame[1];
+            int depth = [frame[2] intValue];
+            if (depth > 4) continue;
+            if ([obj isKindOfClass:[NSDictionary class]]) {
+                for (NSString *k in obj) {
+                    [stack addObject:@[obj[k], [NSString stringWithFormat:@"%@/%@", path, k], @(depth + 1)]];
+                }
+            } else if ([obj isKindOfClass:[NSArray class]]) {
+                NSUInteger i = 0;
+                for (id item in obj) {
+                    [stack addObject:@[item, [NSString stringWithFormat:@"%@[%lu]", path, (unsigned long)i++], @(depth + 1)]];
+                }
+            } else if ([obj isKindOfClass:[NSString class]]) {
+                NSString *s = obj;
+                if (s.length > 300) {
+                    NSString *head = [s substringToIndex:MIN((NSUInteger)32, s.length)];
+                    if (!bigManifest && ([head containsString:@"<MPD"] || [head containsString:@"<?xml"])) {
+                        bigManifest = s;
+                        bigManifestPath = path;
+                    }
+                    if (s.length > 200) [longStrings addObject:@[path, @(s.length), [s substringToIndex:MIN((NSUInteger)120, s.length)]]];
+                }
+            }
+        }
+        if (bigManifest) {
+            NSLog(@"[SCInsta][Dash] found manifest at %@ (len=%lu)", bigManifestPath, (unsigned long)bigManifest.length);
+            return bigManifest;
+        }
+
+        static dispatch_once_t once;
+        dispatch_once(&once, ^{
+            NSLog(@"[SCInsta][Dash] no manifest found; top-level keys=%@", [[fc allKeys] componentsJoinedByString:@","]);
+            for (NSArray *row in longStrings) {
+                NSLog(@"[SCInsta][Dash]  long-str %@ (len=%@) head=%@", row[0], row[1], row[2]);
+            }
+        });
     }
 
     return nil;

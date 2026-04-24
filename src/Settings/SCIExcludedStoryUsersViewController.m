@@ -90,7 +90,7 @@
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:SCILocalized(@"Add user")
                                                                    message:SCILocalized(@"Enter username")
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) { tf.placeholder = @"username"; tf.autocapitalizationType = UITextAutocapitalizationTypeNone; }];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) { tf.placeholder = SCILocalized(@"username"); tf.autocapitalizationType = UITextAutocapitalizationTypeNone; }];
     [alert addAction:[UIAlertAction actionWithTitle:SCILocalized(@"Cancel") style:UIAlertActionStyleCancel handler:nil]];
     [alert addAction:[UIAlertAction actionWithTitle:SCILocalized(@"Search") style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *a) {
         NSString *q = [alert.textFields.firstObject.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -131,7 +131,7 @@
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:SCILocalized(@"Sort by")
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
-    NSArray *titles = @[@"Recently added", @"Username (A–Z)"];
+    NSArray *titles = @[SCILocalized(@"Recently added"), SCILocalized(@"Username (A–Z)")];
     for (NSInteger i = 0; i < (NSInteger)titles.count; i++) {
         UIAlertAction *a = [UIAlertAction actionWithTitle:titles[i]
                                                     style:UIAlertActionStyleDefault

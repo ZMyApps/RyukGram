@@ -3,6 +3,7 @@
 
 #import "../../InstagramHeaders.h"
 #import "../../Utils.h"
+#import "../../SCIChrome.h"
 #import "../../ActionButton/SCIActionButton.h"
 #import "../../ActionButton/SCIMediaActions.h"
 #import <objc/runtime.h>
@@ -119,17 +120,14 @@ static id sciReelsMediaProvider(UIView *sourceView) {
     if (![SCIUtils getBoolPref:@"reels_action_button"]) return;
     if (!self.superview) return;
 
-    UIButton *btn = (UIButton *)[self viewWithTag:kReelActionBtnTag];
+    SCIChromeButton *btn = (SCIChromeButton *)[self viewWithTag:kReelActionBtnTag];
+    if (![btn isKindOfClass:[SCIChromeButton class]]) btn = nil;
 
     if (!btn) {
-        btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.tag = kReelActionBtnTag;
-
         UIImageSymbolConfiguration *symCfg =
             [UIImageSymbolConfiguration configurationWithPointSize:24 weight:UIImageSymbolWeightSemibold];
         UIImage *base = [UIImage systemImageNamed:@"ellipsis.circle" withConfiguration:symCfg];
-        // Bake the drop shadow into a single UIImage so no CALayer shadow is
-        // applied to the button itself.
+        // Bake the drop shadow into the image so no CALayer shadow is needed.
         CGFloat pad = 8;
         CGSize sz = CGSizeMake(base.size.width + pad * 2, base.size.height + pad * 2);
         UIGraphicsImageRenderer *r = [[UIGraphicsImageRenderer alloc] initWithSize:sz];
@@ -144,11 +142,20 @@ static id sciReelsMediaProvider(UIView *sourceView) {
             CGContextRestoreGState(c);
         }];
 
-        [btn setImage:icon forState:UIControlStateNormal];
-        btn.tintColor = [UIColor whiteColor];
+        btn = [[SCIChromeButton alloc] initWithSymbol:@"" pointSize:0 diameter:40];
+        btn.tag = kReelActionBtnTag;
+        btn.bubbleColor = [UIColor clearColor];
+        btn.iconView.image = icon;
+
+        // Capsule configuration gives us the native dark platter animation
+        // when the menu opens/closes — behaviour parity with IG's own chrome.
+        UIButtonConfiguration *cfg = [UIButtonConfiguration plainButtonConfiguration];
+        cfg.cornerStyle = UIButtonConfigurationCornerStyleCapsule;
+        cfg.background.backgroundColor = [UIColor clearColor];
+        cfg.contentInsets = NSDirectionalEdgeInsetsZero;
+        btn.configuration = cfg;
 
         self.clipsToBounds = NO;
-        btn.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:btn];
 
         [NSLayoutConstraint activateConstraints:@[
@@ -159,7 +166,6 @@ static id sciReelsMediaProvider(UIView *sourceView) {
         ]];
     }
 
-    // Reconfigure with fresh media provider.
     [SCIActionButton configureButton:btn
                              context:SCIActionContextReels
                              prefKey:@"reels_action_default"
